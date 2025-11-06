@@ -38,6 +38,8 @@ body{
   /* Prefer Monaco; fall back to Menlo, Courier New, then generic monospace */
   font-family: Monaco, Menlo, "Courier New", monospace;
   background:var(--bg);
+  background-attachment:fixed; /* ensure gradient stays in place */
+  background-size:100% 100%; /* stretch gradient to full body */
   color:var(--text);
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
@@ -281,7 +283,7 @@ main{
   max-width:none;
   margin:0;
   /* use the same left offset as the header so main content aligns with header text */
-  padding:1.25rem 1.25rem 1.25rem var(--header-text-offset); /* top right bottom left */
+  padding:1.25rem 1.25rem 0 var(--header-text-offset); /* top right bottom left - removed bottom padding */
   /* Increase base font-size for main content for better readability */
   font-size:1.125rem; /* ~18px */
   background:transparent; /* let the page gradient show through */
@@ -298,10 +300,45 @@ main{
 /* Sections */
 .about-section{margin:1.5rem 0}
 
+/* Scroll animation for About Me section - ONLY on homepage with hero */
+body.has-hero .about-section {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+body.has-hero .about-section.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Remove bottom margin from contact section to prevent brown band */
+section#contact{margin-bottom:0}
+.contact-center{margin-bottom:0}
+
 /* Projects grid and cards */
 .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin:1.25rem 0}
 .project-card{background:var(--surface);border:1px solid var(--muted-border);padding:1rem;border-radius:8px}
 .project-card h3{color:#e6f7ff}
+.project-image{width:100%;height:200px;object-fit:cover;border-radius:6px;margin-bottom:1rem}
+
+/* Scroll animation for project cards - ONLY on homepage with hero */
+body.has-hero .project-card {
+  opacity: 0;
+  transform: translateY(40px) scale(0.95);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+body.has-hero .project-card.animate-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Stagger animation delay for multiple cards - ONLY on homepage */
+body.has-hero .project-card:nth-child(1).animate-in { transition-delay: 0.1s; }
+body.has-hero .project-card:nth-child(2).animate-in { transition-delay: 0.2s; }
+body.has-hero .project-card:nth-child(3).animate-in { transition-delay: 0.3s; }
+body.has-hero .project-card:nth-child(4).animate-in { transition-delay: 0.4s; }
 
 /* Links */
 a{color:var(--accent)}
@@ -309,7 +346,7 @@ a:hover{color:var(--accent-strong)}
 
 /* Footer */
 /* Footer matches the last color stop of the page gradient for a cohesive edge */
-footer{background:#523726;color:var(--text);text-align:center;padding:1rem 0;border-top:1px solid rgba(255,255,255,0.04);position:static;margin-top:auto}
+footer{background:transparent;color:var(--text);text-align:center;padding:1rem 0;border-top:1px solid rgba(255,255,255,0.04);position:static;margin-top:auto}
 
 /* Utility */
 p small{color:rgba(230,238,248,0.7)}
@@ -321,7 +358,7 @@ p small{color:rgba(230,238,248,0.7)}
   nav{padding:0.2rem 0.5rem}
   nav a{padding:0.3rem 0.6rem;font-size:0.92rem}
   .container{padding:0.75rem}
-  main{padding:0.75rem}
+  main{padding:0.75rem 0.75rem 0 0.75rem} /* removed bottom padding to prevent brown band */
 }
 
 /* Utility: center short text blocks */
@@ -356,7 +393,9 @@ p small{color:rgba(230,238,248,0.7)}
   background: transparent; /* let the body gradient show through */
   color: #ffffff; /* white text across contact area */
   border: none; /* keep no border */
+  border-bottom: none; /* ensure no bottom border */
   box-shadow: none;
+  padding-bottom: 0; /* remove any bottom padding that might create space */
 }
 
 /* .contact-center: homepage contact layout */
@@ -367,7 +406,7 @@ p small{color:rgba(230,238,248,0.7)}
   text-align:center;
   gap:1rem;
   margin-top:0.6rem;
-  margin-bottom:2rem;
+  margin-bottom:0; /* remove bottom margin to eliminate brown band */
 }
 .contact-center .contact-info{
   max-width:100%;
@@ -451,6 +490,7 @@ p small{color:rgba(230,238,248,0.7)}
 .btn-primary:hover{opacity:0.95;transform:translateY(-1px);box-shadow:var(--btn-shadow-hover)}
 .form-note{font-size:0.9rem;color:rgba(230,238,248,0.8);margin-bottom:1.5rem}
 .form-success{margin-top:0.5rem;padding:0.6rem 0.8rem;background:rgba(125,211,252,0.08);border:1px solid rgba(125,211,252,0.12);color:var(--accent);border-radius:6px;display:none}
+.form-submit-row{display:flex;gap:0.75rem;align-items:center;margin-top:0.5rem}
 
 @media (max-width:600px){
   .contact-form .form-row{flex-direction:column}
@@ -483,6 +523,10 @@ p small{color:rgba(230,238,248,0.7)}
 
 /* Social buttons container: align multiple circular icons with spacing */
 .social-buttons{display:flex;gap:0.5rem;align-items:center;justify-content:center}
+
+/* Remove margin from paragraph containing social buttons to prevent brown band */
+p:has(.social-buttons){margin:0}
+.contact-info p:last-child{margin-bottom:0}
 
 /* Allow icons inside the bubble to size consistently (SVG or IMG) */
 .social-bubble img,.social-bubble .social-icon{width:20px;height:20px;display:block}
