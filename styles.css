@@ -61,9 +61,20 @@ header{
   border-bottom:none; /* remove visible line so photo shows cleanly behind header */
 }
 
-/* Non-home masthead (black bar) */
+/* Non-home masthead (gradient header for Experience, Contact, Projects) */
 body:not(.has-hero) .masthead{
-  background:#000000; /* solid black backdrop for header+nav */
+  background: linear-gradient(180deg, 
+    #260701 0%,
+    #2f0e07 10%,
+    #38160d 20%,
+    #411d13 30%,
+    #4a2419 40%,
+    #532c1e 50%,
+    #5c3324 60%,
+    #653a2a 70%,
+    #6e4230 85%,
+    #774936 100%
+  ); /* Rich dark-to-light brown gradient (top to bottom) from Coolors palette */
   position:relative;
   z-index:65;
 }
@@ -73,6 +84,7 @@ body:not(.has-hero) .subheader{
   /* draw a subtle separation line against the body gradient if present */
   border-bottom:1px solid rgba(255,255,255,0.04);
   box-shadow:none;
+  color: #ffffff; /* Ensure white text for good contrast on brown gradient */
 }
 
 /* Make header text slightly smaller to match reduced padding */
@@ -450,15 +462,17 @@ main{
 /* Experience page bullet point animations */
 .bullet-point {
   opacity: 0;
-  transform: translateX(-30px);
+  transform: translate3d(-30px, 0, 0);
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: transform, opacity;
   margin-top: 2rem; /* Add space above bullet points */
   font-size: 1.2rem; /* Larger font for bullet points */
 }
 
 .bullet-point.animate-in {
   opacity: 1;
-  transform: translateX(0);
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
 }
 
 /* Make the main experience paragraph larger */
@@ -476,18 +490,93 @@ main{
 /* Scroll animation for About Me section - ONLY on homepage with hero */
 body.has-hero .about-section {
   opacity: 0;
-  transform: translateY(50px);
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+  isolation: isolate; /* Create new stacking context to prevent conflicts with hero */
+  transform-style: preserve-3d; /* Ensure proper 3D rendering */
 }
 
 body.has-hero .about-section.animate-in {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
 }
 
 /* Remove bottom margin from contact section to prevent brown band */
 section#contact{margin-bottom:0}
 .contact-center{margin-bottom:0}
+
+/* Homepage contact section scroll animations - ONLY on homepage with hero */
+body.has-hero #contact h2 {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact h2.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+body.has-hero #contact .profile-image {
+  opacity: 0;
+  transform: translate3d(-40px, 0, 0) scale(0.9);
+  transition: opacity 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact .profile-image.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+body.has-hero #contact .contact-info {
+  opacity: 0;
+  transform: translate3d(40px, 0, 0);
+  transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact .contact-info.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+body.has-hero #contact .social-buttons {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact .social-buttons.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* Staggered animation for homepage contact social buttons */
+body.has-hero #contact .social-bubble {
+  opacity: 0;
+  transform: translate3d(0, 15px, 0) scale(0.8);
+  transition: opacity 0.5s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact .social-bubble.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+body.has-hero #contact .social-bubble:nth-child(1).animate-in { transition-delay: 0.1s; }
+body.has-hero #contact .social-bubble:nth-child(2).animate-in { transition-delay: 0.2s; }
+body.has-hero #contact .social-bubble:nth-child(3).animate-in { transition-delay: 0.3s; }
 
 /* Projects grid and cards */
 .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin:1.25rem 0}
@@ -498,13 +587,15 @@ section#contact{margin-bottom:0}
 /* Scroll animation for project cards - ONLY on homepage with hero */
 body.has-hero .project-card {
   opacity: 0;
-  transform: translateY(40px) scale(0.95);
+  transform: translate3d(0, 40px, 0) scale(0.95);
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: transform, opacity;
 }
 
 body.has-hero .project-card.animate-in {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
 }
 
 /* Stagger animation delay for multiple cards - ONLY on homepage */
@@ -516,13 +607,15 @@ body.has-hero .project-card:nth-child(4).animate-in { transition-delay: 0.4s; }
 /* Scroll animation for project cards - ONLY on Projects page (no has-hero class) */
 body:not(.has-hero) .project-card {
   opacity: 0;
-  transform: translateY(50px) scale(0.95);
+  transform: translate3d(0, 50px, 0) scale(0.95);
   transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  will-change: transform, opacity;
 }
 
 body:not(.has-hero) .project-card.animate-in {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
 }
 
 /* Stagger animation delay for Projects page */
@@ -616,6 +709,77 @@ p small{color:rgba(230,238,248,0.7)}
 .contact-page.contact-center .contact-info{ max-width:700px; margin:0 auto }
 .contact-page.contact-center .contact-form{ margin:0 auto }
 
+/* Contact page scroll animations */
+.contact-page h2 {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page h2.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+.contact-page .profile-image {
+  opacity: 0;
+  transform: translate3d(-40px, 0, 0) scale(0.9);
+  transition: opacity 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page .profile-image.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+.contact-page .contact-form {
+  opacity: 0;
+  transform: translate3d(40px, 0, 0);
+  transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page .contact-form.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+.contact-page .social-buttons {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page .social-buttons.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* Staggered animation for social buttons */
+.contact-page .social-bubble {
+  opacity: 0;
+  transform: translate3d(0, 15px, 0) scale(0.8);
+  transition: opacity 0.5s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page .social-bubble.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+.contact-page .social-bubble:nth-child(1).animate-in { transition-delay: 0.1s; }
+.contact-page .social-bubble:nth-child(2).animate-in { transition-delay: 0.2s; }
+.contact-page .social-bubble:nth-child(3).animate-in { transition-delay: 0.3s; }
+
 /* Force contact text to white for contrast */
 .contact-page h2,
 .contact-page p,
@@ -681,7 +845,7 @@ p small{color:rgba(230,238,248,0.7)}
 }
 .btn-primary{display:inline-block;padding:0.6rem 1.1rem;border-radius:9999px;background:linear-gradient(90deg,var(--accent),var(--accent-strong));color:#041526;border:none;cursor:pointer;font-weight:600}
 .btn-primary{box-shadow:var(--btn-shadow)}
-.btn-primary:hover{opacity:0.95;transform:translateY(-1px);box-shadow:var(--btn-shadow-hover)}
+.btn-primary:hover{opacity:0.95;transform:translate3d(0, -1px, 0);box-shadow:var(--btn-shadow-hover)}
 .form-note{font-size:0.9rem;color:rgba(230,238,248,0.8);margin-bottom:1.5rem}
 .form-success{margin-top:0.5rem;padding:0.6rem 0.8rem;background:rgba(125,211,252,0.08);border:1px solid rgba(125,211,252,0.12);color:var(--accent);border-radius:6px;display:none}
 .form-submit-row{display:flex;gap:0.75rem;align-items:center;margin-top:0.5rem}
@@ -708,7 +872,7 @@ p small{color:rgba(230,238,248,0.7)}
   /* give social bubbles the same base shadow as other buttons */
   box-shadow: var(--btn-shadow);
 }
-.social-bubble:hover{transform:translateY(-3px);box-shadow:var(--btn-shadow-hover);background:linear-gradient(135deg, rgba(125,211,252,0.12), rgba(124,58,237,0.12));}
+.social-bubble:hover{transform:translate3d(0, -3px, 0);box-shadow:var(--btn-shadow-hover);background:linear-gradient(135deg, rgba(125,211,252,0.12), rgba(124,58,237,0.12));}
 .social-bubble svg{width:20px;height:20px;fill:currentColor}
 
 @media (max-width:600px){
