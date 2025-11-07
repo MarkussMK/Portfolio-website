@@ -138,8 +138,88 @@ header p{font-size:0.95rem;margin-top:0}
   letter-spacing:0.06em;
   text-shadow: 0 8px 20px rgba(0,0,0,0.65); /* keep subtle shadow for contrast */
   pointer-events:none; /* clicks pass through to underlying controls */
+  
+  /* Initial animation state */
+  opacity: 0;
+  transform: translate(-50%, -50%) translateY(30px);
+  animation: heroTextFadeIn 1.5s ease-out 0.5s forwards;
 }
 
+/* Hero text animation */
+@keyframes heroTextFadeIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0);
+  }
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  color: #ffffff;
+  text-align: center;
+  opacity: 0;
+  transform: translateX(-50%) translateY(10px);
+  animation: scrollIndicatorFadeIn 1s ease-out 2s forwards;
+}
+
+.scroll-indicator.fade-out {
+  animation: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px);
+  transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+}
+
+.scroll-indicator::before {
+  content: "";
+  display: block;
+  width: 2px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.6);
+  margin: 0 auto 8px;
+  animation: scrollLine 2s ease-in-out infinite;
+}
+
+.scroll-indicator::after {
+  content: "⌄";
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 300;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+.scroll-text {
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 5px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+/* Scroll indicator animations */
+@keyframes scrollIndicatorFadeIn {
+  0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes scrollLine {
+  0%, 100% { height: 30px; opacity: 0.6; }
+  50% { height: 20px; opacity: 1; }
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
 
 /* Masthead layout & overlay behavior */
 .masthead{
@@ -300,6 +380,99 @@ main{
 /* Sections */
 .about-section{margin:1.5rem 0}
 
+/* About Me section layout */
+.about-row {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  margin: 3rem auto;
+  max-width: 1200px;
+  justify-content: center;
+}
+
+.about-row.centered-only {
+  justify-content: center;
+}
+
+.about-text-centered {
+  flex: 1;
+  text-align: center;
+  max-width: 600px;
+  padding: 0 1rem;
+}
+
+.about-text-centered.full-width {
+  max-width: 800px;
+}
+
+.about-image {
+  flex: 0 0 300px;
+  text-align: center;
+}
+
+.about-photo {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.about-text-centered p {
+  font-size: 1.3rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Responsive: stack on smaller screens */
+@media (max-width: 768px) {
+  .about-row,
+  .about-row.reverse {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  
+  .about-image {
+    flex: none;
+  }
+  
+  .about-photo {
+    max-width: 250px;
+  }
+  
+  .about-text-centered.full-width {
+    max-width: 100%;
+  }
+}
+
+/* Experience page bullet point animations */
+.bullet-point {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  margin-top: 2rem; /* Add space above bullet points */
+  font-size: 1.2rem; /* Larger font for bullet points */
+}
+
+.bullet-point.animate-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Make the main experience paragraph larger */
+.about-section .center-block p:not(.bullet-point) {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin-bottom: 2.5rem; /* More space before bullet points */
+}
+
+/* Stagger animation delays for bullet points */
+.bullet-point:nth-of-type(2).animate-in { transition-delay: 0.2s; }
+.bullet-point:nth-of-type(3).animate-in { transition-delay: 0.4s; }
+.bullet-point:nth-of-type(4).animate-in { transition-delay: 0.6s; }
+
 /* Scroll animation for About Me section - ONLY on homepage with hero */
 body.has-hero .about-section {
   opacity: 0;
@@ -340,25 +513,46 @@ body.has-hero .project-card:nth-child(2).animate-in { transition-delay: 0.2s; }
 body.has-hero .project-card:nth-child(3).animate-in { transition-delay: 0.3s; }
 body.has-hero .project-card:nth-child(4).animate-in { transition-delay: 0.4s; }
 
+/* Scroll animation for project cards - ONLY on Projects page (no has-hero class) */
+body:not(.has-hero) .project-card {
+  opacity: 0;
+  transform: translateY(50px) scale(0.95);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+body:not(.has-hero) .project-card.animate-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Stagger animation delay for Projects page */
+body:not(.has-hero) .project-card:nth-child(1).animate-in { transition-delay: 0.1s; }
+body:not(.has-hero) .project-card:nth-child(2).animate-in { transition-delay: 0.3s; }
+body:not(.has-hero) .project-card:nth-child(3).animate-in { transition-delay: 0.5s; }
+body:not(.has-hero) .project-card:nth-child(4).animate-in { transition-delay: 0.7s; }
+
 /* Links */
 a{color:var(--accent)}
 a:hover{color:var(--accent-strong)}
 
 /* Footer */
 /* Footer matches the last color stop of the page gradient for a cohesive edge */
-footer{background:transparent;color:var(--text);text-align:center;padding:1rem 0;border-top:1px solid rgba(255,255,255,0.04);position:static;margin-top:auto}
+footer{background:transparent;color:var(--text);text-align:center;padding:1rem 0;border-top:1px solid rgba(255,255,255,0.04);position:static;margin-top:3rem}
 
 /* Utility */
 p small{color:rgba(230,238,248,0.7)}
 
 /* Responsive tweaks */
 @media (max-width:480px){
-  nav ul{gap:0.5rem;flex-wrap:wrap}
+  nav ul{gap:0.5rem;flex-wrap:wrap;justify-content:center}
   /* reduce mobile nav button padding too */
-  nav{padding:0.2rem 0.5rem}
+  nav{padding:0.2rem 0.5rem;justify-content:center}
   nav a{padding:0.3rem 0.6rem;font-size:0.92rem}
   .container{padding:0.75rem}
   main{padding:0.75rem 0.75rem 0 0.75rem} /* removed bottom padding to prevent brown band */
+  
+  /* Center navigation on mobile */
+  .subheader nav ul{ margin:0;justify-content:center }
 }
 
 /* Utility: center short text blocks */
