@@ -37,7 +37,11 @@
     <!-- hero image -->
         <img class="hero-img" src="page background.jpg" alt="Decorative background">
     <!-- hero text -->
-        <div class="hero-quote" role="heading" aria-level="1">let’s create something exceptional together</div>
+        <div class="hero-quote" role="heading" aria-level="1">let's create something exceptional together</div>
+    <!-- scroll indicator -->
+        <div class="scroll-indicator">
+            <div class="scroll-text">Scroll</div>
+        </div>
     </div>
 
     <!-- Main content -->
@@ -45,16 +49,37 @@
     <!-- About -->
         <section id="About my portfolio" class="about-section">
                         <h2 class="center-text">About Me</h2>
-                        <div class="center-block">
-                            <p>I’m an Automation Engineer with a deep passion for technology, innovation, and building things that work smarter. I love bringing complex systems to life — from designing efficient automation workflows to writing clean, powerful code that makes ideas run seamlessly.</p>
-
-                            <p>Whether it’s streamlining processes, developing custom tools, or integrating systems that make work effortless, I focus on turning challenges into elegant, reliable solutions. I work closely with teams and creators to understand every detail and ensure that every project not only functions flawlessly but also reflects a clear vision and purpose.</p>
-
-                            <p>With experience in automation frameworks, scripting, and modern programming tools, I combine technical precision with creative problem-solving to deliver results that make an impact.</p>
-
-                            <p>If you’re looking for someone who can turn technical vision into reality — efficient, scalable, and built to last.</p>
-                            <!-- slogan moved to hero -->
+                        
+                        <!-- First paragraph - image on right -->
+                        <div class="about-row">
+                            <div class="about-text-centered">
+                                <p>I'm an Automation Engineer with a deep passion for technology, innovation, and building things that work smarter. I love bringing complex systems to life — from designing efficient automation workflows to writing clean, powerful code that makes ideas run seamlessly.</p>
+                            </div>
+                            <div class="about-image">
+                                <img src="aboutmesection.jpg" alt="Markuss Šube - Automation Engineer" class="about-photo">
+                            </div>
                         </div>
+
+                        <!-- Second paragraph - image on left -->
+                        <div class="about-row">
+                            <div class="about-image">
+                                <img src="aboutmesection1.jpg" alt="Markuss Šube - Problem Solver" class="about-photo">
+                            </div>
+                            <div class="about-text-centered">
+                                <p>Whether it's streamlining processes, developing custom tools, or integrating systems that make work effortless, I focus on turning challenges into elegant, reliable solutions. I work closely with teams and creators to understand every detail and ensure that every project functions flawlessly.</p>
+                            </div>
+                        </div>
+
+                        <!-- Third paragraph - text on left, image on right -->
+                        <div class="about-row">
+                            <div class="about-text-centered">
+                                <p>With experience in automation frameworks, scripting, and modern programming tools, I combine technical precision with creative problem-solving to deliver results that make an impact. If you're looking for someone who can turn technical vision into reality — efficient, scalable, and built to last.</p>
+                            </div>
+                            <div class="about-image">
+                                <img src="aboutmesection2.jpg" alt="Markuss Šube - Technical Excellence" class="about-photo">
+                            </div>
+                        </div>
+                        
             <!-- Use nav to visit pages -->
             <p class="center-text">Read more about me on the Experience page.</p>
         </section>
@@ -223,6 +248,43 @@
                 projectCards.forEach(card => {
                     observer.observe(card);
                 });
+            })();
+
+            // Scroll indicator hide on scroll
+            (function(){
+                const scrollIndicator = document.querySelector('.scroll-indicator');
+                if (!scrollIndicator) return;
+
+                let hasScrolled = false;
+                let ticking = false;
+                
+                function updateScrollIndicator() {
+                    const scrollY = window.scrollY;
+                    
+                    // Start fading when user scrolls past 80px for more patience
+                    if (!hasScrolled && scrollY > 80) {
+                        hasScrolled = true;
+                        
+                        // Add fade-out class for smooth transition
+                        scrollIndicator.classList.add('fade-out');
+                        
+                        // Remove from DOM after animation completes
+                        setTimeout(() => {
+                            scrollIndicator.style.display = 'none';
+                        }, 1500); // Match the CSS transition duration (1.5s)
+                    }
+                    
+                    ticking = false;
+                }
+                
+                function onScroll() {
+                    if (!ticking && !hasScrolled) {
+                        requestAnimationFrame(updateScrollIndicator);
+                        ticking = true;
+                    }
+                }
+
+                window.addEventListener('scroll', onScroll, {passive: true});
             })();
             </script>
 </body>
