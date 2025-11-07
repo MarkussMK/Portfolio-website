@@ -56,14 +56,14 @@
                                 <p>I'm an Automation Engineer with a deep passion for technology, innovation, and building things that work smarter. I love bringing complex systems to life — from designing efficient automation workflows to writing clean, powerful code that makes ideas run seamlessly.</p>
                             </div>
                             <div class="about-image">
-                                <img src="aboutmesection.jpg" alt="Markuss Šube - Automation Engineer" class="about-photo">
+                                <img src="aboutmesection.jpg" alt="Markuss Šube - Automation Engineer" class="about-photo" loading="lazy">
                             </div>
                         </div>
 
                         <!-- Second paragraph - image on left -->
                         <div class="about-row">
                             <div class="about-image">
-                                <img src="aboutmesection1.jpg" alt="Markuss Šube - Problem Solver" class="about-photo">
+                                <img src="aboutmesection1.jpg" alt="Markuss Šube - Problem Solver" class="about-photo" loading="lazy">
                             </div>
                             <div class="about-text-centered">
                                 <p>Whether it's streamlining processes, developing custom tools, or integrating systems that make work effortless, I focus on turning challenges into elegant, reliable solutions. I work closely with teams and creators to understand every detail and ensure that every project functions flawlessly.</p>
@@ -76,7 +76,7 @@
                                 <p>With experience in automation frameworks, scripting, and modern programming tools, I combine technical precision with creative problem-solving to deliver results that make an impact. If you're looking for someone who can turn technical vision into reality — efficient, scalable, and built to last.</p>
                             </div>
                             <div class="about-image">
-                                <img src="aboutmesection2.jpg" alt="Markuss Šube - Technical Excellence" class="about-photo">
+                                <img src="aboutmesection2.jpg" alt="Markuss Šube - Technical Excellence" class="about-photo" loading="lazy">
                             </div>
                         </div>
                         
@@ -248,6 +248,66 @@
                 projectCards.forEach(card => {
                     observer.observe(card);
                 });
+            })();
+
+            // Homepage contact section scroll animation
+            (function(){
+                const contactElements = [
+                    { selector: '#contact h2', delay: 0 },
+                    { selector: '#contact .profile-image', delay: 200 },
+                    { selector: '#contact .contact-info', delay: 400 },
+                    { selector: '#contact .social-buttons', delay: 600 }
+                ];
+
+                const socialBubbles = document.querySelectorAll('#contact .social-bubble');
+
+                // Intersection Observer for contact section animations
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            requestAnimationFrame(() => {
+                                entry.target.classList.add('animate-in');
+                            });
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.15,
+                    rootMargin: '0px 0px -50px 0px'
+                });
+
+                // Observe main contact elements with staggered timing
+                contactElements.forEach(({ selector, delay }) => {
+                    const element = document.querySelector(selector);
+                    if (element) {
+                        if (delay > 0) {
+                            setTimeout(() => observer.observe(element), delay);
+                        } else {
+                            observer.observe(element);
+                        }
+                    }
+                });
+
+                // Observe social bubbles separately for staggered animation
+                if (socialBubbles.length) {
+                    const socialObserver = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                requestAnimationFrame(() => {
+                                    entry.target.classList.add('animate-in');
+                                });
+                                socialObserver.unobserve(entry.target);
+                            }
+                        });
+                    }, {
+                        threshold: 0.2,
+                        rootMargin: '0px 0px -30px 0px'
+                    });
+
+                    socialBubbles.forEach(bubble => {
+                        socialObserver.observe(bubble);
+                    });
+                }
             })();
 
             // Scroll indicator hide on scroll
