@@ -70,7 +70,7 @@
             </a>
 
             <a class="social-bubble spotify" href="https://open.spotify.com/artist/4uIBBmr7idW92I0KmrGq6w?si=LbZuECFCR224XIyutVt-Sg" target="_blank" rel="noopener noreferrer" aria-label="Spotify (opens in new tab)">
-              <img src="SpotifyLogo.png" alt="Spotify logo">
+              <img src="SpotifyLogo.png" alt="Spotify logo" loading="lazy">
             </a>
           </span>
         </p>
@@ -79,6 +79,67 @@
   </main>
 
   <script>
+    // Contact page scroll animations
+    (function(){
+      const elements = [
+        { selector: '.contact-page h2', delay: 0 },
+        { selector: '.contact-page .profile-image', delay: 200 },
+        { selector: '.contact-page .contact-form', delay: 400 },
+        { selector: '.contact-page .social-buttons', delay: 600 }
+      ];
+
+      const socialBubbles = document.querySelectorAll('.contact-page .social-bubble');
+
+      // Intersection Observer for scroll animations
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            requestAnimationFrame(() => {
+              entry.target.classList.add('animate-in');
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      });
+
+      // Observe main elements
+      elements.forEach(({ selector, delay }) => {
+        const element = document.querySelector(selector);
+        if (element) {
+          if (delay > 0) {
+            setTimeout(() => observer.observe(element), delay);
+          } else {
+            observer.observe(element);
+          }
+        }
+      });
+
+      // Observe social bubbles separately for staggered animation
+      if (socialBubbles.length) {
+        const socialObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              requestAnimationFrame(() => {
+                entry.target.classList.add('animate-in');
+              });
+              socialObserver.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.2,
+          rootMargin: '0px 0px -30px 0px'
+        });
+
+        socialBubbles.forEach(bubble => {
+          socialObserver.observe(bubble);
+        });
+      }
+    })();
+
+    // Contact form functionality
     (function(){
       const FORM_ENDPOINT = 'https://formspree.io/f/xqagrkya';
       const form = document.getElementById('contactForm');
