@@ -30,9 +30,9 @@
   <h2 class="center-text">Experience</h2>
       <div class="center-block">
         <p>Experience in software testing, bug identification and quality assurance processes. Uses test case execution and defect tracking to ensure stable product performance. Knowledge of problem-solving techniques and adherence to project timelines, which contributes to successful software releases. Student currently studying automation engineering, open, communicative, positive and goal-oriented young person, interested in acquiring new knowledge and applying it in practice.</p>
-        <p>• Third place winner at the 47th Latvian Student Scientific-Practical City Conference.</p>
-        <p>• Part-time Junior Tester for 1 year and 2 months at SIA TEVALE, assisting with Web development testing.</p>
-        <p>• Automation Engineer Intern at SIA Eligent, focusing on developing and testing automation frameworks.</p>
+        <p class="bullet-point">• Third place winner at the 47th Latvian Student Scientific-Practical City Conference.</p>
+        <p class="bullet-point">• Part-time Junior Tester for 1 year and 2 months at SIA TEVALE, assisting with Web development testing.</p>
+        <p class="bullet-point">• Automation Engineer Intern at SIA Eligent, focusing on developing and testing automation frameworks.</p>
       </div>
     </section>
   </main>
@@ -40,5 +40,33 @@
   <footer>
     <p>&copy; designed by MŠ</p>
   </footer>
+
+  <script>
+    // Animate bullet points when page loads
+    (function(){
+      const bulletPoints = document.querySelectorAll('.bullet-point');
+      if (!bulletPoints.length) return;
+
+      // Intersection Observer for bullet point animations
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Add animation class when bullet point comes into view
+            entry.target.classList.add('animate-in');
+            // Stop observing once animated
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.3, // Trigger when 30% of the element is visible
+        rootMargin: '0px 0px -20px 0px' // Trigger slightly before fully in view
+      });
+
+      // Start observing each bullet point
+      bulletPoints.forEach(bullet => {
+        observer.observe(bullet);
+      });
+    })();
+  </script>
 </body>
 </html>
