@@ -15,7 +15,7 @@
   );
   --surface:#07101a;
   /* slightly warmer light text for improved contrast on the brown/teal gradient */
-  --text:#f3efe6;
+  --text:#ffffff;
   /* header/content left offset — used to align header text, nav and main content */
   --header-text-offset: 18px;
   --masthead-offset:1rem;
@@ -489,15 +489,38 @@ main{
 
 /* Scroll animation for About Me section - ONLY on homepage with hero */
 body.has-hero .about-section {
-  opacity: 0;
-  transform: translate3d(0, 30px, 0);
-  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
-  will-change: transform, opacity;
   isolation: isolate; /* Create new stacking context to prevent conflicts with hero */
   transform-style: preserve-3d; /* Ensure proper 3D rendering */
 }
 
-body.has-hero .about-section.animate-in {
+/* Individual About Me row animations */
+body.has-hero .about-row {
+  opacity: 0;
+  transform: translate3d(0, 40px, 0);
+  transition: opacity 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero .about-row.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* Staggered delays for each About Me row */
+body.has-hero .about-row:nth-child(2).animate-in { transition-delay: 0.2s; } /* First paragraph */
+body.has-hero .about-row:nth-child(3).animate-in { transition-delay: 0.4s; } /* Second paragraph */
+body.has-hero .about-row:nth-child(4).animate-in { transition-delay: 0.6s; } /* Third paragraph */
+
+/* About Me title animation */
+body.has-hero .about-section h2 {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero .about-section h2.animate-in {
   opacity: 1;
   transform: translate3d(0, 0, 0);
   will-change: auto;
@@ -580,7 +603,7 @@ body.has-hero #contact .social-bubble:nth-child(3).animate-in { transition-delay
 
 /* Projects grid and cards */
 .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin:1.25rem 0}
-.project-card{background:var(--surface);border:1px solid var(--muted-border);padding:1rem;border-radius:8px}
+.project-card{background:#272123;border:1px solid var(--muted-border);padding:1rem;border-radius:8px}
 .project-card h3{color:#e6f7ff}
 .project-image{width:100%;height:200px;object-fit:cover;border-radius:6px;margin-bottom:1rem}
 
@@ -598,11 +621,7 @@ body.has-hero .project-card.animate-in {
   will-change: auto;
 }
 
-/* Stagger animation delay for multiple cards - ONLY on homepage */
-body.has-hero .project-card:nth-child(1).animate-in { transition-delay: 0.1s; }
-body.has-hero .project-card:nth-child(2).animate-in { transition-delay: 0.2s; }
-body.has-hero .project-card:nth-child(3).animate-in { transition-delay: 0.3s; }
-body.has-hero .project-card:nth-child(4).animate-in { transition-delay: 0.4s; }
+/* All project cards appear together - no staggered delays on homepage */
 
 /* Scroll animation for project cards - ONLY on Projects page (no has-hero class) */
 body:not(.has-hero) .project-card {
