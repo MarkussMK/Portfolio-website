@@ -200,28 +200,41 @@
                 window.addEventListener('scroll', onScroll, {passive:true});
             })();
 
-            // About Me scroll animation
+            // About Me scroll animation - staggered rows
             (function(){
-                const aboutSection = document.querySelector('.about-section');
-                if (!aboutSection) return;
+                const aboutTitle = document.querySelector('.about-section h2');
+                const aboutRows = document.querySelectorAll('.about-row');
+                
+                if (!aboutTitle && !aboutRows.length) return;
 
                 // Intersection Observer for scroll animation
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
-                            // Add animation class when section comes into view
-                            entry.target.classList.add('animate-in');
+                            requestAnimationFrame(() => {
+                                entry.target.classList.add('animate-in');
+                            });
                             // Stop observing once animated
                             observer.unobserve(entry.target);
                         }
                     });
                 }, {
-                    threshold: 0.2, // Trigger when 20% of the section is visible
-                    rootMargin: '0px 0px -50px 0px' // Trigger slightly before fully in view
+                    threshold: 0.15, // Trigger when 15% of the element is visible
+                    rootMargin: '0px 0px -30px 0px' // Trigger slightly before fully in view
                 });
 
-                // Start observing the About Me section
-                observer.observe(aboutSection);
+                // Observe the title first
+                if (aboutTitle) {
+                    observer.observe(aboutTitle);
+                }
+
+                // Observe each About Me row for staggered animation
+                aboutRows.forEach((row, index) => {
+                    // Add a slight delay for each row to create staggered effect
+                    setTimeout(() => {
+                        observer.observe(row);
+                    }, index * 100); // 100ms delay between each row observation
+                });
             })();
 
             // Project cards scroll animation
