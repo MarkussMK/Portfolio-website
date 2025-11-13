@@ -35,38 +35,43 @@
         <p class="bullet-point">• Automation Engineer Intern at SIA Eligent, focusing on developing and testing automation frameworks.</p>
       </div>
     </section>
+
+    <section class="skills-section">
+      <h2 class="center-text">Technical Skills</h2>
+      <div class="center-block">
+        <div class="skills-grid">
+          <div class="skill-item">
+            <h3>Programming Languages</h3>
+            <div class="skill-tags">
+              <span class="skill-tag">C++</span>
+              <span class="skill-tag">C#</span>
+              <span class="skill-tag">Python</span>
+            </div>
+          </div>
+          <div class="skill-item">
+            <h3>Web Technologies</h3>
+            <div class="skill-tags">
+              <span class="skill-tag">HTML</span>
+              <span class="skill-tag">JavaScript</span>
+              <span class="skill-tag">SQL</span>
+            </div>
+          </div>
+          <div class="skill-item">
+            <h3>Engineering & Design</h3>
+            <div class="skill-tags">
+              <span class="skill-tag">PLC Programming</span>
+              <span class="skill-tag">3D CAD Design</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
     <p>&copy; designed by MŠ</p>
   </footer>
 
-  <script>
-    // Animate bullet points when page loads
-    (function(){
-      const bulletPoints = document.querySelectorAll('.bullet-point');
-      if (!bulletPoints.length) return;
-
-      // Intersection Observer for bullet point animations
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            // Add animation class when bullet point comes into view
-            entry.target.classList.add('animate-in');
-            // Stop observing once animated
-            observer.unobserve(entry.target);
-          }
-        });
-      }, {
-        threshold: 0.3, // Trigger when 30% of the element is visible
-        rootMargin: '0px 0px -20px 0px' // Trigger slightly before fully in view
-      });
-
-      // Start observing each bullet point
-      bulletPoints.forEach(bullet => {
-        observer.observe(bullet);
-      });
-    })();
-  </script>
+  <script src="animations.js"></script>
 </body>
 </html>
