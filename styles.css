@@ -475,6 +475,78 @@ main{
   will-change: auto;
 }
 
+/* Skills section styling */
+.skills-section {
+  margin: 3rem 0;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.skill-item {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+  background: #272123;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--muted-border);
+}
+
+.skill-item.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+.skill-item h3 {
+  color: #e6f7ff;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.skill-tag {
+  background: linear-gradient(135deg, rgba(125,211,252,0.2), rgba(124,58,237,0.2));
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid rgba(125,211,252,0.3);
+  transition: all 0.3s ease;
+}
+
+.skill-tag:hover {
+  background: linear-gradient(135deg, rgba(125,211,252,0.3), rgba(124,58,237,0.3));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(125,211,252,0.2);
+}
+
+/* Staggered animation for skill items */
+.skill-item:nth-child(1).animate-in { transition-delay: 0.1s; }
+.skill-item:nth-child(2).animate-in { transition-delay: 0.2s; }
+.skill-item:nth-child(3).animate-in { transition-delay: 0.3s; }
+
+/* Center the third skill item when it's alone on its row */
+.skill-item:nth-child(3) {
+  grid-column: 1 / -1;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
 /* Make the main experience paragraph larger */
 .about-section .center-block p:not(.bullet-point) {
   font-size: 1.25rem;
