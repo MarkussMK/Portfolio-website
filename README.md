@@ -1,7 +1,7 @@
 Markuss Šube - Portfolio Website
 ==================================
 
-🌐 **Live Site**: [markuss.cv](www.markuss.cv)
+🌐 **Live Site**: [www.markuss.cv](www.markuss.cv)
 
 Overview
 --------
@@ -152,4 +152,5 @@ The contact form uses Formspree (https://formspree.io/) for backend processing. 
 **Live Portfolio**: 🌐 [markusscv.github.io](https://markusscv.github.io)
 
 This portfolio demonstrates modern web development practices including responsive design, performance optimization, and professional deployment through GitHub Pages.
+
 
