@@ -45,8 +45,8 @@
           <img src="jmeter-tutorial.png" alt="JMeter performance testing interface" class="project-image" loading="lazy">
         </div>
         <div class="project-card">
-          <h3>Project D</h3>
-          <p>Short description for Project D. Replace with your real content.</p>
+          <h3>Web design and development</h3>
+          <p>Currently working on this portfolio website to showcase my skills and projects. I designed and developed it using HTML, CSS, and JavaScript with new plans to remake it fully in a more creative and challenging way..</p>
         </div>
       </div>
     </section>
@@ -56,32 +56,6 @@
     <p>&copy; designed by MŠ</p>
   </footer>
 
-  <script>
-    // Project cards scroll animation for Projects page
-    (function(){
-      const projectCards = document.querySelectorAll('.project-card');
-      if (!projectCards.length) return;
-
-      // Intersection Observer for project cards
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            // Add animation class when card comes into view
-            entry.target.classList.add('animate-in');
-            // Stop observing once animated
-            observer.unobserve(entry.target);
-          }
-        });
-      }, {
-        threshold: 0.2, // Trigger when 20% of the card is visible
-        rootMargin: '0px 0px -30px 0px' // Trigger slightly before fully in view
-      });
-
-      // Start observing each project card
-      projectCards.forEach(card => {
-        observer.observe(card);
-      });
-    })();
-  </script>
+  <script src="animations.js"></script>
 </body>
 </html>
