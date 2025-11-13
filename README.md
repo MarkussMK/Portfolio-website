@@ -1,9 +1,13 @@
 Markuss Šube - Portfolio Website
 ==================================
 
+🌐 **Live Site**: [markusscv.github.io](https://markusscv.github.io)
+
 Overview
 --------
 A modern, responsive portfolio website for Markuss Šube, Automation Engineer and back-end programmer. Features smooth scroll animations, responsive design, and interactive elements across multiple pages.
+
+**Status**: ✅ Fully operational and published on GitHub Pages
 
 ## Features
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices
@@ -15,10 +19,23 @@ A modern, responsive portfolio website for Markuss Šube, Automation Engineer an
 Files Structure
 ---------------
 - `index.html` — Homepage with hero section, About Me, and project previews
-- `Experience.html` — Experience page with animated bullet points
+- `Experience.html` — Experience page with skills section and animated bullet points  
 - `Projects.html` — Full projects showcase with detailed descriptions and images
 - `Contact.html` — Contact page with form and social media links
-- `styles.css` — Centralized styling, animations, and responsive design
+- `animations.js` — Centralized JavaScript for all animations and interactions
+- `styles.css` — Complete styling, animations, and responsive design
+
+## Deployment
+
+### GitHub Pages
+This portfolio is live and accessible at **[markuss.cv](www.markuss.cv)**
+
+The site is automatically deployed through GitHub Pages using the main branch. Any updates pushed to the repository are automatically reflected on the live site.
+
+### Domain Configuration  
+- **Custom Domain**: markusscv domain
+- **HTTPS**: Secure connection enabled
+- **Performance**: Optimized for fast loading with GitHub's CDN
 
 ## Key Components
 
@@ -30,6 +47,7 @@ Files Structure
 - **Contact Preview**: Quick contact section with social media links
 
 ### Experience Page (`Experience.html`)
+- **Skills Section**: Organized technical skills in Frontend, Backend, Tools, and Databases
 - **Professional Summary**: Highlighted introduction paragraph
 - **Animated Achievements**: Bullet points that animate in sequence when scrolled into view
 - **Responsive Layout**: Mobile-optimized design
@@ -48,6 +66,11 @@ Files Structure
 
 ## Technical Details
 
+### Code Organization
+- **Modular JavaScript**: All animations and interactions centralized in `animations.js`
+- **Separation of Concerns**: Clean separation between HTML, CSS, and JavaScript
+- **Maintainable Code**: Easy to update and extend functionality
+
 ### Animations
 - **CSS Keyframes**: Smooth entrance animations for text and elements
 - **Intersection Observer**: Efficient scroll-triggered animations
@@ -61,12 +84,15 @@ Files Structure
 - **Typography**: Readable fonts at all screen sizes
 
 ### Performance
-- **Efficient Animations**: Hardware-accelerated CSS transforms
-- **Lazy Loading**: Intersection Observer for performance
-- **Minimal JavaScript**: Lightweight scripts for better load times
-- **Optimized CSS**: Efficient selectors and minimal redundancy
+- **Hardware Acceleration**: CSS transforms with `translate3d()` for smooth animations
+- **Efficient Animations**: Intersection Observer API for scroll-triggered animations
+- **Optimized Loading**: Minimal JavaScript footprint and efficient CSS
+- **GitHub Pages CDN**: Fast global content delivery
 
-## Setup & Preview
+## Setup & Development
+
+### Live Site
+🌐 **Production**: [markusscv.github.io](https://markusscv.github.io)
 
 ### Local Development
 From the project folder, run a simple HTTP server:
@@ -112,15 +138,17 @@ Use the "Live Server" extension for real-time editing previews.
 - Graceful degradation for older browsers
 
 ## Contact Form Setup
-The contact form uses Formspree (https://formspree.io/) for backend processing. Update the endpoint in `Contact.html` if needed.
+The contact form uses Formspree (https://formspree.io/) for backend processing. The form is fully functional on the live site.
 
 ## Future Enhancements
-- **Dark/Light Mode Toggle**: Theme switching capability
+- **Analytics Integration**: Visitor tracking and performance metrics
+- **Dark/Light Mode Toggle**: Theme switching capability  
 - **More Projects**: Additional project showcases
 - **Blog Section**: Technical writing and insights
-- **Performance Metrics**: Loading time optimizations
-- **SEO Optimization**: Meta tags and structured data
+- **Advanced SEO**: Meta tags and structured data optimization
 
 ---
 
-**Note**: This portfolio showcases modern web development practices including responsive design, CSS animations, and user experience optimization.
+**Live Portfolio**: 🌐 [markusscv.github.io](https://markusscv.github.io)
+
+This portfolio demonstrates modern web development practices including responsive design, performance optimization, and professional deployment through GitHub Pages.
