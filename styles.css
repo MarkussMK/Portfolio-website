@@ -1214,3 +1214,39 @@ p:has(.social-buttons){margin:0}
 
 /* Small Instagram photo next to the bubble (not currently used) */
 /* Removed unused .insta-photo styles to keep stylesheet lean. */
+
+/* Responsive video styling for mobile devices */
+.scroll-video {
+    display: none; /* Hidden by default on desktop */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+/* Media query for tablet and mobile devices */
+@media (max-width: 768px) {
+    .robot-arm {
+        display: none; /* Hide robot arms on smaller screens */
+    }
+    
+    /* Show only the first video on mobile */
+    .scroll-video {
+        display: none; /* Hide all videos by default */
+    }
+    
+    /* Show only the first video (in the first about-row) */
+    .about-row:first-of-type .scroll-video {
+        display: block;
+    }
+    
+    .about-image {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Hide the entire about-image containers for 2nd and 3rd sections on mobile */
+    .about-row:not(:first-of-type) .about-image {
+        display: none;
+    }
+}
