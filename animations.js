@@ -352,6 +352,180 @@ function initContactForm() {
   }
 }
 
+// Robot Arm Cursor Following Animation - Red Dot Follows Cursor
+function initRobotArms() {
+  const robotArms = document.querySelectorAll('.robot-arm');
+  if (!robotArms.length) return;
+
+  let mouseX = 0;
+  let mouseY = 0;
+
+  // Track mouse movement
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  // Animate each robot arm
+  robotArms.forEach((arm, index) => {
+    const segment1 = arm.querySelector('.arm-segment-1');
+    const segment2 = arm.querySelector('.arm-segment-2');
+    const segment3 = arm.querySelector('.arm-segment-3');
+    const armEnd = arm.querySelector('.arm-end');
+    
+    if (!segment1 || !segment2 || !segment3 || !armEnd) return;
+
+    // Smooth interpolation variables for red dot position
+    let targetEndX = 0;
+    let targetEndY = 0;
+    let currentEndX = 0;
+    let currentEndY = 0;
+    let currentGripperAngle = 0;
+    let targetGripperAngle = 0;
+
+    // Segment lengths for calculations
+    const segmentLength1 = 60;
+    const segmentLength2 = 45;
+    const segmentLength3 = 35;
+    const maxReach = segmentLength1 + segmentLength2 + segmentLength3;
+
+    function updateArmPosition() {
+      const armRect = arm.getBoundingClientRect();
+      const baseX = armRect.left + armRect.width / 2;
+      const baseY = armRect.bottom - 20; // Adjusted for new base position
+
+      // Calculate target position for red dot (relative to base)
+      targetEndX = mouseX - baseX;
+      targetEndY = -(mouseY - baseY); // Negative for correct coordinate system
+
+      // Smooth interpolation for red dot movement
+      const lerpFactor = 0.12;
+      currentEndX += (targetEndX - currentEndX) * lerpFactor;
+      currentEndY += (targetEndY - currentEndY) * lerpFactor;
+
+      // Constrain red dot to reachable area
+      const distance = Math.sqrt(currentEndX * currentEndX + currentEndY * currentEndY);
+      let endX = currentEndX;
+      let endY = currentEndY;
+
+      if (distance > maxReach) {
+        const scale = maxReach / distance;
+        endX = currentEndX * scale;
+        endY = currentEndY * scale;
+      }
+
+      // Position red dot directly
+      armEnd.style.left = `calc(50% + ${endX}px)`;
+      armEnd.style.bottom = `${20 + endY}px`;
+      armEnd.style.transform = `translateX(-50%)`;
+
+      // Simplified forward kinematics approach
+      if (distance > 1) {
+        // Calculate base angle towards target, constrained to 120 degrees
+        const targetAngle = Math.atan2(endX, endY);
+        let angle1 = targetAngle;
+        angle1 = Math.max(-Math.PI/3, Math.min(Math.PI/3, angle1)); // ±60° = ±π/3 radians
+        
+        // Calculate where segment 1 ends
+        const joint1X = Math.sin(angle1) * segmentLength1;
+        const joint1Y = Math.cos(angle1) * segmentLength1;
+        
+        // Vector from joint1 to target
+        const toTargetX = endX - joint1X;
+        const toTargetY = endY - joint1Y;
+        const toTargetDistance = Math.sqrt(toTargetX * toTargetX + toTargetY * toTargetY);
+        
+        // If target is within reach of remaining segments
+        if (toTargetDistance <= segmentLength2 + segmentLength3) {
+          // Use 2-link inverse kinematics for segments 2 and 3
+          const D = toTargetDistance;
+          const L1 = segmentLength2;
+          const L2 = segmentLength3;
+          
+          // Law of cosines to find angles
+          const cosAngle2 = (L1*L1 + D*D - L2*L2) / (2*L1*D);
+          const cosAngle3 = (L1*L1 + L2*L2 - D*D) / (2*L1*L2);
+          
+          if (cosAngle2 >= -1 && cosAngle2 <= 1 && cosAngle3 >= -1 && cosAngle3 <= 1) {
+            const baseAngle = Math.atan2(toTargetX, toTargetY);
+            const angle2Offset = Math.acos(cosAngle2);
+            const angle3Offset = Math.acos(cosAngle3);
+            
+            // Segment 2 angle
+            const angle2 = baseAngle + angle2Offset;
+            
+            // Calculate where segment 2 ends
+            const joint2X = joint1X + Math.sin(angle2) * segmentLength2;
+            const joint2Y = joint1Y + Math.cos(angle2) * segmentLength2;
+            
+            // Segment 3 angle (from joint2 to target)
+            const angle3 = Math.atan2(endX - joint2X, endY - joint2Y);
+            
+            // Calculate where segment 3 actually ends (red dot position)
+            const actualEndX = joint2X + Math.sin(angle3) * segmentLength3;
+            const actualEndY = joint2Y + Math.cos(angle3) * segmentLength3;
+            
+            // Apply transformations
+            segment1.style.transform = `translateX(-50%) rotate(${angle1 * (180 / Math.PI)}deg)`;
+            
+            segment2.style.left = `calc(50% + ${joint1X}px)`;
+            segment2.style.bottom = `${20 + joint1Y}px`;
+            segment2.style.transform = `translateX(-50%) rotate(${angle2 * (180 / Math.PI)}deg)`;
+            
+            segment3.style.left = `calc(50% + ${joint2X}px)`;
+            segment3.style.bottom = `${20 + joint2Y}px`;
+            segment3.style.transform = `translateX(-50%) rotate(${angle3 * (180 / Math.PI)}deg)`;
+            
+            // Position red dot at the actual end of segment 3 and rotate toward cursor
+            // Always calculate angle to cursor for continuous tracking
+            targetGripperAngle = Math.atan2(endX - actualEndX, endY - actualEndY) * (180 / Math.PI);
+            // Smooth interpolation for gripper rotation
+            currentGripperAngle += (targetGripperAngle - currentGripperAngle) * 0.08;
+            
+            armEnd.style.left = `calc(50% + ${actualEndX}px)`;
+            armEnd.style.bottom = `${20 + actualEndY}px`;
+            armEnd.style.transform = `translateX(-50%) rotate(${currentGripperAngle}deg)`;
+          }
+        } else {
+          // Target too far, stretch towards it
+          const stretchAngle = Math.atan2(toTargetX, toTargetY);
+          
+          const joint2X = joint1X + Math.sin(stretchAngle) * segmentLength2;
+          const joint2Y = joint1Y + Math.cos(stretchAngle) * segmentLength2;
+          
+          // Calculate actual end position when stretching
+          const actualEndX = joint2X + Math.sin(stretchAngle) * segmentLength3;
+          const actualEndY = joint2Y + Math.cos(stretchAngle) * segmentLength3;
+          
+          segment1.style.transform = `translateX(-50%) rotate(${angle1 * (180 / Math.PI)}deg)`;
+          
+          segment2.style.left = `calc(50% + ${joint1X}px)`;
+          segment2.style.bottom = `${20 + joint1Y}px`;
+          segment2.style.transform = `translateX(-50%) rotate(${stretchAngle * (180 / Math.PI)}deg)`;
+          
+          segment3.style.left = `calc(50% + ${joint2X}px)`;
+          segment3.style.bottom = `${20 + joint2Y}px`;
+          segment3.style.transform = `translateX(-50%) rotate(${stretchAngle * (180 / Math.PI)}deg)`;
+          
+          // Position red dot at the actual end of segment 3 and rotate toward cursor
+          // Always calculate angle to cursor for continuous tracking
+          targetGripperAngle = Math.atan2(endX - actualEndX, endY - actualEndY) * (180 / Math.PI);
+          // Smooth interpolation for gripper rotation
+          currentGripperAngle += (targetGripperAngle - currentGripperAngle) * 0.08;
+          
+          armEnd.style.left = `calc(50% + ${actualEndX}px)`;
+          armEnd.style.bottom = `${20 + actualEndY}px`;
+          armEnd.style.transform = `translateX(-50%) rotate(${currentGripperAngle}deg)`;
+        }
+      }
+
+      requestAnimationFrame(updateArmPosition);
+    }
+
+    updateArmPosition();
+  });
+}
+
 // Main initialization function
 function initAnimations() {
   // Always available animations
@@ -367,6 +541,7 @@ function initAnimations() {
     initScrollIndicator();
     initAboutMeAnimations();
     initHomepageContactAnimations();
+    initRobotArms();
   }
 }
 
