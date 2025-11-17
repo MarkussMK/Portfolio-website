@@ -1,7 +1,7 @@
 Markuss Šube - Portfolio Website
 ==================================
 
-🌐 **Live Site**: [www.markuss.cv](www.markuss.cv)
+🌐 **Live Site**: [markusscv.github.io](https://markusscv.github.io)
 
 Overview
 --------
@@ -11,10 +11,13 @@ A modern, responsive portfolio website for Markuss Šube, Automation Engineer an
 
 ## Features
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices
+- **Interactive Robot Arms**: Advanced kinematic animations that follow cursor movement (desktop)
+- **Scroll-Controlled Video**: Engaging video animation on mobile devices
 - **Scroll Animations**: Engaging animations for About Me, project cards, and experience bullets
 - **Interactive Hero Section**: Parallax background with animated text and scroll indicator
 - **Contact Form**: Functional contact form powered by Formspree
 - **Modern Styling**: Clean design with gradient backgrounds and professional styling
+- **Inverse Kinematics**: Realistic 4-joint robot arm movement with gimbal constraints
 
 Files Structure
 ---------------
@@ -42,7 +45,9 @@ The site is automatically deployed through GitHub Pages using the main branch. A
 ### Homepage (`index.html`)
 - **Hero Section**: Animated text overlay with parallax background image
 - **Scroll Indicator**: Animated indicator that guides users to scroll down
-- **About Me**: Three-section layout with alternating text and images
+- **About Me**: Three-section layout with interactive robot arms (desktop) or scroll video (mobile)
+- **Robot Arms Animation**: Advanced inverse kinematics system with 4-joint articulation and cursor tracking
+- **Responsive Video**: Scroll-controlled video playback on mobile devices for optimized performance
 - **Project Previews**: Animated cards showcasing key projects
 - **Contact Preview**: Quick contact section with social media links
 
@@ -74,14 +79,21 @@ The site is automatically deployed through GitHub Pages using the main branch. A
 ### Animations
 - **CSS Keyframes**: Smooth entrance animations for text and elements
 - **Intersection Observer**: Efficient scroll-triggered animations
+- **Robot Arm Kinematics**: Real-time inverse kinematics calculations for natural movement
+- **Smooth Interpolation**: Linear interpolation for fluid robot arm motion (0.08 factor)
+- **Gimbal Constraints**: 120° rotation limits on first joint for realistic movement
+- **Cursor Tracking**: V-shaped gripper that continuously tracks mouse position
+- **Scroll Video Control**: Frame-accurate video scrubbing based on scroll position
 - **Staggered Timing**: Sequential animations for better visual impact
-- **Mobile Optimized**: Animations work smoothly on all devices
+- **Mobile Optimized**: Animations work smoothly on all devices with automatic fallbacks
 
 ### Responsive Design
+- **Adaptive Interface**: Robot arms on desktop (768px+), single video on mobile
 - **Mobile Navigation**: Centered navigation buttons on smaller screens
 - **Flexible Layouts**: Content adapts to different screen sizes
 - **Image Optimization**: Responsive images with proper scaling
 - **Typography**: Readable fonts at all screen sizes
+- **Performance Optimization**: Hardware-accelerated animations with video fallbacks
 
 ### Performance
 - **Hardware Acceleration**: CSS transforms with `translate3d()` for smooth animations
@@ -125,12 +137,11 @@ Use the "Live Server" extension for real-time editing previews.
 
 ### Image Requirements
 - `page background.jpg` - Hero background image
-- `aboutmesection.jpg` - About Me first image
-- `aboutmesection1.jpg` - About Me second image  
-- `aboutmesection2.jpg` - About Me third image
+- `aboutmesection1.jpg` - Contact page profile image
 - `pfp.jpg` - Contact page profile image
 - `nordpool project.jpeg` - NordPool project image
 - `jmeter-tutorial.png` - JMeter project image
+- `Ieraksts 2025-11-17 140436.mp4/.webm` - Scroll-controlled video for mobile devices
 
 ## Browser Support
 - Modern browsers with Intersection Observer support
@@ -146,11 +157,11 @@ The contact form uses Formspree (https://formspree.io/) for backend processing. 
 - **More Projects**: Additional project showcases
 - **Blog Section**: Technical writing and insights
 - **Advanced SEO**: Meta tags and structured data optimization
+- **Enhanced Robot Arms**: Multi-arm coordination and physics simulation
+- **Interactive Video Controls**: User-controlled video playback modes
 
 ---
 
 **Live Portfolio**: 🌐 [markusscv.github.io](https://markusscv.github.io)
 
 This portfolio demonstrates modern web development practices including responsive design, performance optimization, and professional deployment through GitHub Pages.
-
-
