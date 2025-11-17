@@ -526,6 +526,58 @@ function initRobotArms() {
   });
 }
 
+// Scroll-controlled video playback for mobile devices
+function initScrollVideos() {
+  const videos = document.querySelectorAll('.scroll-video');
+  if (!videos.length) return;
+
+  videos.forEach(video => {
+    // Preload video metadata
+    video.addEventListener('loadedmetadata', () => {
+      const videoContainer = video.closest('.about-image');
+      if (!videoContainer) return;
+
+      function updateVideoProgress() {
+        const containerRect = videoContainer.getBoundingClientRect();
+        const containerTop = containerRect.top;
+        const containerHeight = containerRect.height;
+        const windowHeight = window.innerHeight;
+
+        // Calculate when container is in viewport
+        const startPosition = windowHeight;
+        const endPosition = -containerHeight;
+        const totalDistance = startPosition - endPosition;
+        
+        // Calculate scroll progress (0 to 1)
+        let progress = (startPosition - containerTop) / totalDistance;
+        progress = Math.max(0, Math.min(1, progress));
+
+        // Update video current time based on scroll progress
+        if (video.duration) {
+          video.currentTime = progress * video.duration;
+        }
+      }
+
+      // Throttled scroll handler
+      let ticking = false;
+      function handleScroll() {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            updateVideoProgress();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      
+      // Initial update
+      updateVideoProgress();
+    });
+  });
+}
+
 // Main initialization function
 function initAnimations() {
   // Always available animations
@@ -542,6 +594,7 @@ function initAnimations() {
     initAboutMeAnimations();
     initHomepageContactAnimations();
     initRobotArms();
+    initScrollVideos(); // Add scroll video functionality
   }
 }
 
