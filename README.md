@@ -1,167 +1,74 @@
-Markuss Šube - Portfolio Website
-==================================
+# Markuss Šube - Interactive Robot Portfolio
 
-🌐 **Live Site**: [markusscv.github.io](https://markusscv.github.io)
+🤖 **Live Site**: [www.markuss.cv](https://www.markuss.cv)
 
-Overview
---------
-A modern, responsive portfolio website for Markuss Šube, Automation Engineer and back-end programmer. Features smooth scroll animations, responsive design, and interactive elements across multiple pages.
+## Overview
+An interactive portfolio website featuring an immersive robot arm game experience. Built for Markuss Šube, Automation Engineer. The site challenges visitors with misprogrammed robot arms they must navigate carefully to explore the portfolio.
 
-**Status**: ✅ Fully operational and published on GitHub Pages
+## Key Features
 
-## Features
-- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
-- **Interactive Robot Arms**: Advanced kinematic animations that follow cursor movement (desktop)
-- **Scroll-Controlled Video**: Engaging video animation on mobile devices
-- **Scroll Animations**: Engaging animations for About Me, project cards, and experience bullets
-- **Interactive Hero Section**: Parallax background with animated text and scroll indicator
-- **Contact Form**: Functional contact form powered by Formspree
-- **Modern Styling**: Clean design with gradient backgrounds and professional styling
-- **Inverse Kinematics**: Realistic 4-joint robot arm movement with gimbal constraints
+### 🎮 Interactive Robot Game Mode
+- **Warning System**: Dramatic typewriter effect introduction with choice-based interactions
+- **8 Robot Arms**: Advanced inverse kinematics with cursor tracking and zoom animations
+- **Game Mechanics**: Touch a robot arm and face consequences with "Try Again" or "Quit Game" options
+- **Session Memory**: Choice persistence throughout browsing session
 
-Files Structure
----------------
-- `index.html` — Homepage with hero section, About Me, and project previews
-- `Experience.html` — Experience page with skills section and animated bullet points  
-- `Projects.html` — Full projects showcase with detailed descriptions and images
-- `Contact.html` — Contact page with form and social media links
-- `animations.js` — Centralized JavaScript for all animations and interactions
-- `styles.css` — Complete styling, animations, and responsive design
+### 🎨 Visual Experience
+- **Industrial Cogs**: 4 floating animated cogs with gray industrial aesthetic
+- **Screen Shake Effects**: Dramatic feedback when robots are disturbed
+- **Large-Scale Typography**: Bold Montserrat font spanning full screen width
+- **Responsive Design**: Optimized for desktop interaction (mobile users skip the game)
 
-## Deployment
+### 📱 Multi-Page Portfolio
+- **Experience Page**: Professional skills and achievements
+- **Projects Page**: Detailed project showcases
+- **Contact Page**: Functional contact form with social links
 
-### GitHub Pages
-This portfolio is live and accessible at **[markuss.cv](www.markuss.cv)**
+## File Structure
+```
+├── index.html          # Main page with robot game
+├── Experience.html     # Professional experience
+├── Projects.html       # Project portfolio
+├── Contact.html        # Contact information
+├── animations.js       # Robot interactions & animations
+├── styles.css         # Complete styling system
+└── README.md          # This file
+```
 
-The site is automatically deployed through GitHub Pages using the main branch. Any updates pushed to the repository are automatically reflected on the live site.
+## Technical Highlights
 
-### Domain Configuration  
-- **Custom Domain**: markusscv domain
-- **HTTPS**: Secure connection enabled
-- **Performance**: Optimized for fast loading with GitHub's CDN
+### Robot Arm System
+- **Inverse Kinematics**: Real-time 4-joint arm calculations
+- **Smooth Interpolation**: Fluid cursor following with realistic constraints
+- **Zoom Animations**: 1.4x scale effect when arms are touched
+- **Warning Overlays**: Typewriter effect messages with choice buttons
 
-## Key Components
+### Interactive Elements
+- **Choice System**: Accept/Refuse robot interaction with session persistence
+- **Scroll Management**: Always start from top, smooth scroll to top on reset
+- **Button Layouts**: Proper spacing to prevent text overlap
+- **Mobile Detection**: Robot game disabled on touch devices
 
-### Homepage (`index.html`)
-- **Hero Section**: Animated text overlay with parallax background image
-- **Scroll Indicator**: Animated indicator that guides users to scroll down
-- **About Me**: Three-section layout with interactive robot arms (desktop) or scroll video (mobile)
-- **Robot Arms Animation**: Advanced inverse kinematics system with 4-joint articulation and cursor tracking
-- **Responsive Video**: Scroll-controlled video playback on mobile devices for optimized performance
-- **Project Previews**: Animated cards showcasing key projects
-- **Contact Preview**: Quick contact section with social media links
-
-### Experience Page (`Experience.html`)
-- **Skills Section**: Organized technical skills in Frontend, Backend, Tools, and Databases
-- **Professional Summary**: Highlighted introduction paragraph
-- **Animated Achievements**: Bullet points that animate in sequence when scrolled into view
-- **Responsive Layout**: Mobile-optimized design
-
-### Projects Page (`Projects.html`)
-- **Project Cards**: Detailed project descriptions with images
-- **Scroll Animations**: Cards animate in with staggered timing
-- **External Links**: Direct links to project recognitions and resources
-- **Image Integration**: Project screenshots and relevant images
-
-### Contact Page (`Contact.html`)
-- **Contact Form**: JavaScript-powered form with success messaging
-- **Social Media Integration**: Links to Instagram, LinkedIn, and Spotify
-- **Professional Image**: Profile photo for personal connection
-- **Responsive Design**: Mobile-friendly layout
-
-## Technical Details
-
-### Code Organization
-- **Modular JavaScript**: All animations and interactions centralized in `animations.js`
-- **Separation of Concerns**: Clean separation between HTML, CSS, and JavaScript
-- **Maintainable Code**: Easy to update and extend functionality
-
-### Animations
-- **CSS Keyframes**: Smooth entrance animations for text and elements
-- **Intersection Observer**: Efficient scroll-triggered animations
-- **Robot Arm Kinematics**: Real-time inverse kinematics calculations for natural movement
-- **Smooth Interpolation**: Linear interpolation for fluid robot arm motion (0.08 factor)
-- **Gimbal Constraints**: 120° rotation limits on first joint for realistic movement
-- **Cursor Tracking**: V-shaped gripper that continuously tracks mouse position
-- **Scroll Video Control**: Frame-accurate video scrubbing based on scroll position
-- **Staggered Timing**: Sequential animations for better visual impact
-- **Mobile Optimized**: Animations work smoothly on all devices with automatic fallbacks
-
-### Responsive Design
-- **Adaptive Interface**: Robot arms on desktop (768px+), single video on mobile
-- **Mobile Navigation**: Centered navigation buttons on smaller screens
-- **Flexible Layouts**: Content adapts to different screen sizes
-- **Image Optimization**: Responsive images with proper scaling
-- **Typography**: Readable fonts at all screen sizes
-- **Performance Optimization**: Hardware-accelerated animations with video fallbacks
-
-### Performance
-- **Hardware Acceleration**: CSS transforms with `translate3d()` for smooth animations
-- **Efficient Animations**: Intersection Observer API for scroll-triggered animations
-- **Optimized Loading**: Minimal JavaScript footprint and efficient CSS
-- **GitHub Pages CDN**: Fast global content delivery
-
-## Setup & Development
-
-### Live Site
-🌐 **Production**: [markusscv.github.io](https://markusscv.github.io)
+## Getting Started
 
 ### Local Development
-From the project folder, run a simple HTTP server:
-
 ```bash
 # Python HTTP server
 python -m http.server 8000
 
-# Node.js alternative
-npx http-server . -p 8000
+# Or use VS Code Live Server extension
 ```
 
-Then open http://localhost:8000/index.html
+Visit `http://localhost:8000`
 
-### VS Code Live Server (Recommended)
-Use the "Live Server" extension for real-time editing previews.
-
-## Customization
-
-### Key CSS Variables (in `:root`)
-- `--bg`: Main gradient background
-- `--accent`: Accent color for highlights and links
-- `--header-text-offset`: Header alignment offset
-- `--pill-nudge`: Navigation button alignment
-
-### Animation Timing
-- Homepage animations: Quick, subtle (0.6s)
-- Projects page animations: Dramatic (0.7s) 
-- Experience bullets: Sequential (staggered delays)
-
-### Image Requirements
-- `page background.jpg` - Hero background image
-- `aboutmesection1.jpg` - Contact page profile image
-- `pfp.jpg` - Contact page profile image
-- `nordpool project.jpeg` - NordPool project image
-- `jmeter-tutorial.png` - JMeter project image
-- `Ieraksts 2025-11-17 140436.mp4/.webm` - Scroll-controlled video for mobile devices
+### Deployment
+Deployed via GitHub Pages. Updates to main branch automatically go live.
 
 ## Browser Support
-- Modern browsers with Intersection Observer support
-- Mobile Safari, Chrome, Firefox, Edge
-- Graceful degradation for older browsers
-
-## Contact Form Setup
-The contact form uses Formspree (https://formspree.io/) for backend processing. The form is fully functional on the live site.
-
-## Future Enhancements
-- **Analytics Integration**: Visitor tracking and performance metrics
-- **Dark/Light Mode Toggle**: Theme switching capability  
-- **More Projects**: Additional project showcases
-- **Blog Section**: Technical writing and insights
-- **Advanced SEO**: Meta tags and structured data optimization
-- **Enhanced Robot Arms**: Multi-arm coordination and physics simulation
-- **Interactive Video Controls**: User-controlled video playback modes
+- Modern desktop browsers for full robot game experience
+- Mobile browsers with game-free portfolio browsing
+- Requires JavaScript enabled
 
 ---
 
-**Live Portfolio**: 🌐 [markusscv.github.io](https://markusscv.github.io)
-
-This portfolio demonstrates modern web development practices including responsive design, performance optimization, and professional deployment through GitHub Pages.
+**Experience the Robot Portfolio**: 🤖 [www.markuss.cv](https://www.markuss.cv)
