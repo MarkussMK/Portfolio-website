@@ -22,6 +22,226 @@ function triggerAnimation(entry) {
   return false;
 }
 
+// Screen shake effect
+function triggerScreenShake() {
+  document.body.classList.add('screen-shake');
+  setTimeout(() => {
+    document.body.classList.remove('screen-shake');
+  }, 600);
+}
+
+// Robot Warning System
+function showRobotWarning() {
+  // Check if robots are disabled for this session
+  if (robotsDisabled) {
+    return; // Do nothing if robots are disabled
+  }
+  
+  // Trigger screen shake
+  triggerScreenShake();
+  
+  const warningOverlay = document.getElementById('robotWarning');
+  const typewriterElement = document.getElementById('robotTypewriter');
+  const warningButtons = warningOverlay.querySelector('.warning-buttons');
+  
+  if (!warningOverlay || !typewriterElement) return;
+
+  // Clear previous typewriter content
+  typewriterElement.innerHTML = '';
+  
+  // Hide buttons initially
+  if (warningButtons) {
+    warningButtons.classList.remove('show');
+  }
+  
+  // Show overlay
+  warningOverlay.classList.remove('hidden');
+  
+  // Start typewriter effect for robot warning
+  const robotText = "SEE? I TOLD YOU BUT YOU DIDNT LISTEN. WOULD YOU LIKE TO TRY TO MANEUVER YOUR WAY THROUGH AGAIN?";
+  let charIndex = 0;
+
+  function typeRobotChar() {
+    if (charIndex < robotText.length) {
+      const char = robotText[charIndex];
+      const span = document.createElement('span');
+      span.className = 'typewriter-char';
+      span.textContent = char;
+      span.style.animationDelay = '0s';
+      
+      typewriterElement.appendChild(span);
+      charIndex++;
+      
+      const baseSpeed = 40;
+      const randomDelay = Math.random() * 20;
+      setTimeout(typeRobotChar, baseSpeed + randomDelay);
+    } else {
+      // Remove cursor after typing is complete and show buttons
+      setTimeout(() => {
+        typewriterElement.style.borderRight = 'none';
+        if (warningButtons) {
+          warningButtons.classList.add('show');
+        }
+      }, 500);
+    }
+  }
+
+  // Start typing after short delay
+  setTimeout(typeRobotChar, 300);
+}
+
+function initRobotWarningSystem() {
+  const tryAgainBtn = document.getElementById('tryAgainBtn');
+  const quitGameBtn = document.getElementById('quitGameBtn');
+  
+  if (tryAgainBtn) {
+    tryAgainBtn.addEventListener('click', () => {
+      const warningOverlay = document.getElementById('robotWarning');
+      if (warningOverlay) {
+        warningOverlay.classList.add('hidden');
+      }
+      
+      // Scroll to top of page when clicking try again
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
+  
+  if (quitGameBtn) {
+    quitGameBtn.addEventListener('click', () => {
+      const warningOverlay = document.getElementById('robotWarning');
+      if (warningOverlay) {
+        warningOverlay.classList.add('hidden');
+      }
+      
+      // Disable robots for the session
+      robotsDisabled = true;
+      
+      // Scroll to top of page
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
+}
+
+// Global variable to track if robots are disabled
+let robotsDisabled = false;
+
+// Initial warning overlay functionality
+function initInitialWarningOverlay() {
+  const overlay = document.getElementById('initialWarning');
+  const refuseBtn = document.getElementById('refuseBtn');
+  const acceptBtn = document.getElementById('acceptBtn');
+  const warningButtons = document.querySelector('.warning-buttons');
+  
+  if (!overlay) return;
+
+  // Skip warning on mobile/tablet since robot arms don't work well on touch
+  if (window.innerWidth <= 1024) {
+    overlay.style.display = 'none';
+    return;
+  }
+
+  // Disable scrolling initially
+  document.body.classList.add('warning-active');
+
+  // Initialize typewriter effect
+  initTypewriter();
+
+  // Handle refuse button - disable robots for session
+  if (refuseBtn) {
+    refuseBtn.addEventListener('click', () => {
+      robotsDisabled = true;
+      overlay.classList.add('hidden');
+      document.body.classList.remove('warning-active'); // Re-enable scrolling
+    });
+  }
+
+  // Handle accept button - enable robots (default behavior)
+  if (acceptBtn) {
+    acceptBtn.addEventListener('click', () => {
+      robotsDisabled = false;
+      overlay.classList.add('hidden');
+      document.body.classList.remove('warning-active'); // Re-enable scrolling
+    });
+  }
+
+  // Function to show buttons after typewriter finishes
+  window.showWarningButtons = function() {
+    if (warningButtons) {
+      warningButtons.classList.add('show');
+    }
+  };
+}
+
+// Typewriter effect
+function initTypewriter() {
+  const typewriterElement = document.getElementById('typewriter');
+  if (!typewriterElement) return;
+
+  const text = "WANT TO SEE MY PORTFOLIO?";
+  const text2 = " GO AHEAD, BUT BE CAREFUL... I MISPROGRAMMED SOME ROBOTS. THEY DON'T LIKE TO BE TOUCHED.";
+  let charIndex = 0;
+
+  function typeChar() {
+    if (charIndex < text.length) {
+      const char = text[charIndex];
+      const span = document.createElement('span');
+      span.className = 'typewriter-char';
+      span.textContent = char;
+      span.style.animationDelay = '0s';
+      
+      typewriterElement.appendChild(span);
+      charIndex++;
+      
+      // Vary the speed slightly for more realistic effect
+      const baseSpeed = 50;
+      const randomDelay = Math.random() * 30;
+      setTimeout(typeChar, baseSpeed + randomDelay);
+    } else {
+      // Add pause after first part, then continue with second part
+      setTimeout(() => {
+        charIndex = 0; // Reset for second part
+        typeSecondPart();
+      }, 800); // 800ms pause
+    }
+  }
+
+  function typeSecondPart() {
+    if (charIndex < text2.length) {
+      const char = text2[charIndex];
+      const span = document.createElement('span');
+      span.className = 'typewriter-char';
+      span.textContent = char;
+      span.style.animationDelay = '0s';
+      
+      typewriterElement.appendChild(span);
+      charIndex++;
+      
+      // Vary the speed slightly for more realistic effect
+      const baseSpeed = 50;
+      const randomDelay = Math.random() * 30;
+      setTimeout(typeSecondPart, baseSpeed + randomDelay);
+    } else {
+      // Remove cursor after typing is complete
+      setTimeout(() => {
+        typewriterElement.style.borderRight = 'none';
+        // Show the warning buttons after typewriter finishes
+        if (window.showWarningButtons) {
+          window.showWarningButtons();
+        }
+      }, 1000);
+    }
+  }
+
+  // Start typing after a short delay
+  setTimeout(typeChar, 500);
+}
+
 // Hero parallax animation (index.html only)
 function initHeroParallax() {
   const img = document.querySelector('.hero-img');
@@ -375,6 +595,19 @@ function initRobotArms() {
     
     if (!segment1 || !segment2 || !segment3 || !armEnd) return;
 
+    // Add "angry" reaction when touched - now shows warning overlay
+    arm.addEventListener('mouseenter', () => {
+      // Add zoom animation
+      arm.classList.add('zoom-touched');
+      
+      // Remove zoom after animation completes
+      setTimeout(() => {
+        arm.classList.remove('zoom-touched');
+      }, 600);
+      
+      showRobotWarning();
+    });
+
     // Smooth interpolation variables for red dot position
     let targetEndX = 0;
     let targetEndY = 0;
@@ -383,16 +616,16 @@ function initRobotArms() {
     let currentGripperAngle = 0;
     let targetGripperAngle = 0;
 
-    // Segment lengths for calculations
-    const segmentLength1 = 60;
-    const segmentLength2 = 45;
-    const segmentLength3 = 35;
+    // Segment lengths for calculations (scaled up by 1.5x)
+    const segmentLength1 = 90;
+    const segmentLength2 = 68;
+    const segmentLength3 = 53;
     const maxReach = segmentLength1 + segmentLength2 + segmentLength3;
 
     function updateArmPosition() {
       const armRect = arm.getBoundingClientRect();
       const baseX = armRect.left + armRect.width / 2;
-      const baseY = armRect.bottom - 20; // Adjusted for new base position
+      const baseY = armRect.bottom - 30; // Adjusted for new scaled base position
 
       // Calculate target position for red dot (relative to base)
       targetEndX = mouseX - baseX;
@@ -416,7 +649,7 @@ function initRobotArms() {
 
       // Position red dot directly
       armEnd.style.left = `calc(50% + ${endX}px)`;
-      armEnd.style.bottom = `${20 + endY}px`;
+      armEnd.style.bottom = `${30 + endY}px`;
       armEnd.style.transform = `translateX(-50%)`;
 
       // Simplified forward kinematics approach
@@ -469,11 +702,11 @@ function initRobotArms() {
             segment1.style.transform = `translateX(-50%) rotate(${angle1 * (180 / Math.PI)}deg)`;
             
             segment2.style.left = `calc(50% + ${joint1X}px)`;
-            segment2.style.bottom = `${20 + joint1Y}px`;
+            segment2.style.bottom = `${30 + joint1Y}px`;
             segment2.style.transform = `translateX(-50%) rotate(${angle2 * (180 / Math.PI)}deg)`;
             
             segment3.style.left = `calc(50% + ${joint2X}px)`;
-            segment3.style.bottom = `${20 + joint2Y}px`;
+            segment3.style.bottom = `${30 + joint2Y}px`;
             segment3.style.transform = `translateX(-50%) rotate(${angle3 * (180 / Math.PI)}deg)`;
             
             // Position red dot at the actual end of segment 3 and rotate toward cursor
@@ -483,7 +716,7 @@ function initRobotArms() {
             currentGripperAngle += (targetGripperAngle - currentGripperAngle) * 0.08;
             
             armEnd.style.left = `calc(50% + ${actualEndX}px)`;
-            armEnd.style.bottom = `${20 + actualEndY}px`;
+            armEnd.style.bottom = `${30 + actualEndY}px`;
             armEnd.style.transform = `translateX(-50%) rotate(${currentGripperAngle}deg)`;
           }
         } else {
@@ -500,11 +733,11 @@ function initRobotArms() {
           segment1.style.transform = `translateX(-50%) rotate(${angle1 * (180 / Math.PI)}deg)`;
           
           segment2.style.left = `calc(50% + ${joint1X}px)`;
-          segment2.style.bottom = `${20 + joint1Y}px`;
+          segment2.style.bottom = `${30 + joint1Y}px`;
           segment2.style.transform = `translateX(-50%) rotate(${stretchAngle * (180 / Math.PI)}deg)`;
           
           segment3.style.left = `calc(50% + ${joint2X}px)`;
-          segment3.style.bottom = `${20 + joint2Y}px`;
+          segment3.style.bottom = `${30 + joint2Y}px`;
           segment3.style.transform = `translateX(-50%) rotate(${stretchAngle * (180 / Math.PI)}deg)`;
           
           // Position red dot at the actual end of segment 3 and rotate toward cursor
@@ -514,7 +747,7 @@ function initRobotArms() {
           currentGripperAngle += (targetGripperAngle - currentGripperAngle) * 0.08;
           
           armEnd.style.left = `calc(50% + ${actualEndX}px)`;
-          armEnd.style.bottom = `${20 + actualEndY}px`;
+          armEnd.style.bottom = `${30 + actualEndY}px`;
           armEnd.style.transform = `translateX(-50%) rotate(${currentGripperAngle}deg)`;
         }
       }
@@ -580,6 +813,12 @@ function initScrollVideos() {
 
 // Main initialization function
 function initAnimations() {
+  // Always scroll to top on page load/reload
+  if (history.scrollRestoration) {
+    history.scrollRestoration = 'manual';
+  }
+  window.scrollTo(0, 0);
+
   // Always available animations
   initBulletPointAnimations();
   initSkillsAnimations();
@@ -587,10 +826,16 @@ function initAnimations() {
   initContactPageAnimations();
   initContactForm();
 
-  // Homepage-specific animations
-  if (document.body.classList.contains('has-hero')) {
-    initHeroParallax();
-    initScrollIndicator();
+  // Homepage-specific animations (both old hero mode and new game mode)
+  if (document.body.classList.contains('has-hero') || document.body.classList.contains('game-mode')) {
+    // Only init hero parallax and scroll indicator for has-hero class
+    if (document.body.classList.contains('has-hero')) {
+      initInitialWarningOverlay();
+      initRobotWarningSystem();
+      initHeroParallax();
+      initScrollIndicator();
+    }
+    
     initAboutMeAnimations();
     initHomepageContactAnimations();
     initRobotArms();
