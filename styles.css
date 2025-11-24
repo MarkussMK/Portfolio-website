@@ -1684,8 +1684,11 @@ body.warning-active {
 
 /* Animated warning text on hero */
 .animated-warning {
-  color: #ff3333 !important;
-  text-shadow: none !important;
+  color: #ff6b6b !important;
+  text-shadow: 
+    0 0 10px rgba(255, 107, 107, 0.8),
+    0 0 20px rgba(255, 107, 107, 0.6),
+    0 0 30px rgba(255, 107, 107, 0.4) !important;
   font-weight: 900;
 }
 
