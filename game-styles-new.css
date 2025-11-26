@@ -1,3 +1,26 @@
+@media (max-width: 768px) {
+  img, .about-photo, .project-image, .artifact-card img {
+    max-width: 96vw !important;
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+    border-radius: 10px !important;
+    margin: 0 auto 12px auto !important;
+    display: block !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18) !important;
+    overflow: hidden !important;
+  }
+  .about-text-centered, .read-section, .timeline-content, .artifact-description, .project-card p {
+    word-break: break-word !important;
+    font-size: 1.08em !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    box-sizing: border-box !important;
+    overflow-wrap: anywhere !important;
+    max-width: 98vw !important;
+    overflow-x: auto !important;
+  }
+}
 /* Mobile adjustments for System Origins block */
 @media (max-width: 768px) {
   .quest-area[data-quest="explore-story"] .story-content {
@@ -741,7 +764,7 @@ footer {
     border-color: #00f7ff;
   }
 }
-}
+
 
 /* Unlock reveal animation - lock icon fades and button becomes visible */
 @keyframes unlockReveal {
