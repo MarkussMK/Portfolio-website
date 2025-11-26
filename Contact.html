@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<!-- Guild Hall - Natural Game Theme Integration -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communication Hub - Markuss Šube</title>
+    
+    <!-- External stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="game-styles-new.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Floating Character Progress Tracker -->
+    <div id="character-tracker" class="character-tracker mobile-footer-xp">
+        <div class="character-avatar-display">
+            <div class="character-sprite" id="character-sprite"><img src="linkedin.jpg" alt="Markuss Šube" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></div>
+        </div>
+        <div class="character-info-display">
+            <h4 id="character-title">Intern</h4>
+            <div class="xp-progress">
+                <div class="xp-bar-fill" id="xp-bar-fill" style="width: 0%"></div>
+            </div>
+            <p class="xp-text"><span id="current-xp">0</span> / <span id="needed-xp">100</span> XP</p>
+        </div>
+    </div>
+
+    <!-- Guild Hall Header -->
+    <header class="site-header" role="banner">
+        <h1>Markuss Šube <span class="role">Automation Engineer</span></h1>
+    </header>
+
+    <!-- Quest Navigation -->
+    <nav class="quest-navigation">
+        <div class="container">
+            <ul class="quest-menu">
+                <li><a href="index.html" class="nav-link">🖥️ Main Terminal</a></li>
+                <li><a href="Experience.html" class="nav-link">🧬 System Specs</a></li>
+                <li><a href="Projects.html" class="nav-link">🛰️ Data Archives</a></li>
+                <li><a href="Contact.html" class="nav-link active">📡 Communication Hub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Guild Hall Main -->
+    <main class="guild-hall">
+        <div class="container">
+            <!-- Welcome Chamber -->
+            <div class="quest-area guild-welcome read-section" data-section="contact-welcome" data-xp="15">
+                <h2>🛰️ Collaboration Intake Panel</h2>
+                <p class="quest-description">Submit project intent, integration needs, or exploratory engagement details. This hub facilitates rapid alignment and structured solution planning.</p>
+            </div>
+            
+            <!-- Communication Crystal (Contact Form) -->
+            <div class="quest-area communication-crystal read-section" data-section="contact-form" data-xp="15">
+                <h2>🔐 Secure Communication Channel</h2>
+                <p class="quest-description">Let's connect! Fill out the form below to get in touch, discuss a project, or explore collaboration opportunities.</p>
+                
+                <form class="guild-contact-form" action="#" method="post">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div class="form-group" style="margin: 0;">
+                            <label for="adventurer-name">👤 Your Name:</label>
+                            <input type="text" id="adventurer-name" name="name" required placeholder="Your name" style="width: 100%;">
+                        </div>
+                        
+                        <div class="form-group" style="margin: 0;">
+                            <label for="crystal-address">📧 Email Address:</label>
+                            <input type="email" id="crystal-address" name="email" required placeholder="your@domain.com" style="width: 100%;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">📋 Subject (optional):</label>
+                        <input type="text" id="subject" name="subject" placeholder="Subject (optional)" style="width: 100%;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quest-description">💬 Your Message:</label>
+                        <textarea id="quest-description" name="message" required placeholder="Write your message here..." rows="8" style="width: 100%;"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="rpg-button submit-quest">
+                        Send message
+                    </button>
+                </form>
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(0,247,255,0.05); border-radius: 8px; border-left: 4px solid #00f7ff;">
+                    <p style="margin: 0; color: #00f7ff; font-size: 0.95em;">
+                        <strong>⚡ Quick Response:</strong> I typically respond within 24-48 hours. For urgent matters, please mention it in your message.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Direct Contact Options -->
+            <div class="quest-area direct-contact">
+                <h2>🌐 Connect With Me</h2>
+                <p class="quest-description">Follow me on social media and connect professionally:</p>
+                
+                <div class="contact-options" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <a href="https://www.linkedin.com/in/markuss-šube-90816b23a" target="_blank" class="rpg-button" style="display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
+                        <i class="fab fa-linkedin" style="font-size: 1.5em;"></i> LinkedIn
+                    </a>
+                    
+                    <a href="https://open.spotify.com/artist/4uIBBmr7idW92I0KmrGq6w?si=X-8Nc7CESiywU-ZxzZMnOA" target="_blank" class="rpg-button" style="display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
+                        <i class="fab fa-spotify" style="font-size: 1.5em;"></i> Spotify
+                    </a>
+                    
+                    <a href="https://www.instagram.com/" target="_blank" class="rpg-button" style="display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
+                        <i class="fab fa-instagram" style="font-size: 1.5em;"></i> Instagram
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Journey Completion -->
+            <div class="quest-area journey-completion">
+                <h2>🏆 Exploration Summary: Portfolio Systems</h2>
+                <p class="quest-description">You have traversed all modules—capabilities, delivered solutions, and collaboration channels—mapping the complete engineering profile.</p>
+                
+                <div class="completion-stats">
+                    <div class="completion-badge">
+                        <div class="badge-icon">🏆</div>
+                        <h4>Portfolio Navigator</h4>
+                        <p>Completed full multi-module traversal</p>
+                    </div>
+                    
+                    <div class="completion-badge">
+                        <div class="badge-icon">⭐</div>
+                        <h4>Capability Analyst</h4>
+                        <p>Reviewed system specifications</p>
+                    </div>
+                    
+                    <div class="completion-badge">
+                        <div class="badge-icon">💎</div>
+                        <h4>Archive Reviewer</h4>
+                        <p>Examined deployed solution records</p>
+                    </div>
+                    
+                    <div class="completion-badge">
+                        <div class="badge-icon">🤝</div>
+                        <h4>Collaboration Ready</h4>
+                        <p>Prepared for engagement</p>
+                    </div>
+                </div>
+                
+                <div class="restart-journey">
+                    <p>Want to experience the adventure again or share it with others?</p>
+                    <button id="restart-journey" class="rpg-button">
+                        🔄 Restart Experience
+                    </button>
+                </div>
+            </div>
+            <div class="quest-progress">
+                <p><strong>Interaction Logged:</strong></p>
+                <div class="progress-container">
+                    <div class="progress-bar" id="reading-progress" style="width: 0%"></div>
+                </div>
+                <p class="progress-text">Review all hub modules! (<span id="sections-read">0</span>/2 sections analyzed)</p>
+            </div>
+
+        </div>
+        
+        <!-- Achievement Showcase -->
+        <div class="achievement-showcase">
+            <h2>🏆 System Achievements</h2>
+            <p>Track your access progress through the network:</p>
+            <div class="achievement-grid">
+                <div class="achievement-card unlocked">
+                    <div class="achievement-icon">📡</div>
+                    <h4>Data Explorer</h4>
+                    <p>Processed origin data blocks</p>
+                    <div class="achievement-status">✅ Unlocked</div>
+                </div>
+                <div class="achievement-card unlocked">
+                    <div class="achievement-icon">⚡</div>
+                    <h4>System Analyst</h4>
+                    <p>Analyze technical specifications</p>
+                    <div class="achievement-status">✅ Unlocked</div>
+                </div>
+                <div class="achievement-card unlocked">
+                    <div class="achievement-icon">💾</div>
+                    <h4>Database Scanner</h4>
+                    <p>Scan project archives</p>
+                    <div class="achievement-status">✅ Unlocked</div>
+                </div>
+                <div class="achievement-card unlocked">
+                    <div class="achievement-icon">📡</div>
+                    <h4>Network Connected</h4>
+                    <p>Establish communication link</p>
+                    <div class="achievement-status">✅ Unlocked</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Game Footer -->
+    <footer class="game-footer">
+        <div class="container">
+            <p style="font-size: 0.9em; margin: 15px 0;">© designed by MŠ</p>
+        </div>
+    </footer>
+
+    <!-- Game Engine -->
+    <script src="game-engine.js"></script>
+    <script src="mini-games.js"></script>
+    <script src="progression.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize game
+            if (window.PortfolioRPG) {
+                window.portfolioGame = new PortfolioRPG();
+                
+                // Mark that user has reached the guild hall
+                window.portfolioGame.completeQuest('guild-visit', {
+                    title: 'Hub Visitor',
+                    description: 'Accessed the communication hub and completed portfolio exploration',
+                    xpReward: 50
+                });
+            }
+            
+            // Handle form submission
+            initializeContactForm();
+            
+            // Handle restart button
+            const restartBtn = document.getElementById('restart-journey');
+            if (restartBtn) {
+                restartBtn.addEventListener('click', function() {
+                    if (window.portfolioGame) {
+                        window.portfolioGame.resetGame();
+                    }
+                    window.location.href = 'index.html';
+                });
+            }
+        });
+        
+        function initializeContactForm() {
+            const form = document.querySelector('.guild-contact-form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Show success message
+                    showRequestSubmittedNotification();
+                    
+                    // In a real implementation, you would send the form data to a server
+                    console.log('Quest commission submitted!');
+                    
+                    // Reset form
+                    this.reset();
+                });
+            }
+        }
+        
+        function showRequestSubmittedNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'quest-complete-notification';
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <h3>🎉 Engagement Request Sent!</h3>
+                    <p>Your submission has been received by the Automation Architect.</p>
+                    <p>A response will follow based on selected priority level.</p>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

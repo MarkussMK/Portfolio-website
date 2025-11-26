@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<!-- Character Stats - Natural Game Theme Integration -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Specs - Markuss Šube</title>
+    
+    <!-- External stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="game-styles-new.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating Character Progress Tracker -->
+    <div id="character-tracker" class="character-tracker mobile-footer-xp">
+        <div class="character-avatar-display">
+            <div class="character-sprite" id="character-sprite"><img src="linkedin.jpg" alt="Markuss Šube" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></div>
+        </div>
+        <div class="character-info-display">
+            <h4 id="character-title">Intern</h4>
+            <div class="xp-progress">
+                <div class="xp-bar-fill" id="xp-bar-fill" style="width: 0%"></div>
+            </div>
+            <p class="xp-text"><span id="current-xp">0</span> / <span id="needed-xp">100</span> XP</p>
+        </div>
+    </div>
+
+    <!-- Character Header -->
+    <header class="site-header" role="banner">
+        <h1>Markuss Šube <span class="role">Automation Engineer</span></h1>
+    </header>
+
+    <!-- Quest Navigation -->
+    <nav class="quest-navigation">
+        <div class="container">
+            <ul class="quest-menu">
+                <li><a href="index.html" class="nav-link">🖥️ Main Terminal</a></li>
+                <li><a href="Experience.html" class="nav-link active">🧬 System Specs</a></li>
+                <li><a href="Projects.html" class="nav-link">🛰️ Data Archives</a></li>
+                <li><a href="Contact.html" class="nav-link">📡 Communication Hub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Character Stats Main -->
+    <main class="character-stats">
+        <div class="container">
+            <!-- Character Overview -->
+            <div class="quest-area character-overview">
+                <h2>🧑‍🚀 Identity Profile</h2>
+                <div class="character-info">
+                    <div class="character-avatar">
+                        <div class="avatar-display"><img src="pfp.jpg" alt="Markuss Šube" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>
+                        <h3>Markuss Šube</h3>
+                        <p class="character-class">Automation Engineer • Programming enjoyer</p>
+                    </div>
+                    <div class="character-description">
+                        <p>Engineer with a focus on resilient automation, scalable test design, and optimizing delivery through meaningful data analysis. Skilled in multiple programming languages and dedicated to advancing reliable, efficient continuous integration pipelines.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Core Skills Spellbook -->
+            <div class="quest-area skill-spellbook">
+                <h2>🗂️ Capability Repository</h2>
+                <p class="quest-description">Core engineering domains and operational proficiency indicators:</p>
+                
+                <div class="story-content">
+                    <!-- Programming Spells -->
+                    <div class="read-section" data-section="programming" data-xp="15">
+                        <div class="skill-card spell-category">
+                            <h3>💻 Core Programming Domains</h3>
+                            <div class="spell-list">
+                                <div class="spell-item">
+                                    <span class="spell-icon">🐍</span>
+                                    <span class="spell-name">Python Mastery</span>
+                                    <div class="skill-level">
+                                        <div class="skill-bar" style="width: 95%"></div>
+                                        <span class="level-text">Expert</span>
+                                    </div>
+                                </div>
+                                <div class="spell-item">
+                                    <span class="spell-icon">🌐</span>
+                                    <span class="spell-name">JavaScript Enchantment</span>
+                                    <div class="skill-level">
+                                        <div class="skill-bar" style="width: 90%"></div>
+                                        <span class="level-text">Advanced</span>
+                                    </div>
+                                </div>
+                                <div class="spell-item">
+                                    <span class="spell-icon">🔧</span>
+                                    <span class="spell-name">C++ Conjuring</span>
+                                    <div class="skill-level">
+                                        <div class="skill-bar" style="width: 85%"></div>
+                                        <span class="level-text">Advanced</span>
+                                    </div>
+                                </div>
+                                <div class="spell-item">
+                                    <span class="spell-icon">📊</span>
+                                    <span class="spell-name">SQL Sorcery</span>
+                                    <div class="skill-level">
+                                        <div class="skill-bar" style="width: 88%"></div>
+                                        <span class="level-text">Advanced</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p style="margin-top: 40px;">These programming languages form the foundation of my technical expertise. Python serves as my primary tool for automation scripting, data processing, and backend development. Its versatility and extensive library ecosystem make it ideal for rapid prototyping and production-grade solutions.</p>
+                            <p style="margin-top: 40px;">JavaScript powers my frontend and full-stack capabilities, enabling me to build responsive web applications and interactive user interfaces. Combined with modern frameworks, it provides seamless user experiences across platforms.</p>
+                        </div>
+                        <div class="xp-indicator">⚡ +15 XP</div>
+                    </div>
+
+                    <!-- Automation Abilities -->
+                    <div class="read-section" data-section="automation" data-xp="15" style="margin-top: 120px;">
+                        <div class="skill-card spell-category">
+                            <h3>⚙️ Automation & Delivery</h3>
+                            <div class="spell-list">
+                                <div class="spell-item">
+                                    <span class="spell-icon">🤖</span>
+                                    <span class="spell-name">Test Automation</span>
+                                    <div class="skill-level">
+                                        <div class="skill-bar" style="width: 95%"></div>
+                                        <span class="level-text">Master</span>
+                                    </div>
+                                </div>
+                                <div class="spell-item">
+                                    <span class="spell-icon">🔄</span>
+                                    <span class="spell-name">CI/CD Pipeline Creation</span>
+                                    <div class="skill-level">
+                                        <div class="skill-bar" style="width: 90%"></div>
+                                        <span class="level-text">Expert</span>
+                                    </div>
+                                </div>
+                                <div class="spell-item">
+                                    <span class="spell-icon">📊</span>
+                                    <span class="spell-name">Process Optimization</span>
+                                    <div class="skill-level">
+                                        <div class="skill-bar" style="width: 92%"></div>
+                                        <span class="level-text">Expert</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p style="margin-top: 40px;">Test automation is where strategy meets execution. I design comprehensive test suites that cover unit, integration, and end-to-end scenarios, ensuring robust quality gates throughout the development lifecycle. My frameworks are built for maintainability, scalability, and parallel execution.</p>
+                            <p style="margin-top: 40px;">CI/CD pipelines transform code commits into production-ready deployments. I architect automated workflows that include testing, security scanning, artifact management, and progressive deployment strategies, reducing deployment time from hours to minutes while maintaining reliability.</p>
+                        </div>
+                        <div class="xp-indicator">⚡ +15 XP</div>
+                    </div>
+
+
+                </div>
+            </div>
+            
+            <!-- Experience Timeline -->
+            <div class="quest-area experience-timeline">
+                <h2>📡 Evolution Pathway</h2>
+                <p class="quest-description">Career progression phases and impact metrics:</p>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-icon">🏢</div>
+                        <div class="timeline-content">
+                            <h4>Automation Engineer</h4>
+                            <p class="timeline-location">SIA ELIGENT • 2025.06 - 2025.07</p>
+                            <p>Deviced a comprehensive automation solution for NordPool, sending their electricity market data to a PLC in real-time.</p>
+                            <div class="achievement-tags">
+                                <span class="tag">Team Work</span>
+                                <span class="tag">TwinCAT STL</span>
+                                <span class="tag">HMI Programming</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-icon">⚙️</div>
+                        <div class="timeline-content">
+                            <h4>Cofounder</h4>
+                            <p class="timeline-location">CozyHoney.lv • 2021 - 2023</p>
+                            <p>A cofounder of CozyHoney.lv a student company that thought us about the food industry and ways to evolve.</p>
+                            <div class="achievement-tags">
+                                <span class="tag">Leadership</span>
+                                <span class="tag">Networking</span>
+                                <span class="tag">Quality Assurance</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-icon">🚀</div>
+                        <div class="timeline-content">
+                            <h4>Junior Tester</h4>
+                            <p class="timeline-location">SIA TEVALE • 2024.05 - 2025.06</p>
+                            <p>Part-time Junior Tester for 1 year and 2 months at SIA TEVALE, assisting with Web development testing.</p>
+                            <div class="achievement-tags">
+                                <span class="tag">Web Development</span>
+                                <span class="tag">Learning</span>
+                                <span class="tag">Foundation Building</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="xp-indicator">⚡ +10 XP</div>
+                
+                <div class="quest-progress">
+                    <p><strong>Skills Reviewed:</strong></p>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="reading-progress" style="width: 0%"></div>
+                    </div>
+                    <p class="progress-text">Scan all capability domains! (<span id="sections-read">0</span>/2 sections analyzed)</p>
+                </div>
+                </div>
+
+                <div style="height: 60px;"></div>
+
+                <!-- Achievement Showcase -->
+                <div class="achievement-showcase">
+                <h2>🏆 System Achievements</h2>
+                <p>Track your access progress through the network:</p>
+                <div class="achievement-grid">
+                    <div class="achievement-card unlocked">
+                        <div class="achievement-icon">📡</div>
+                        <h4>Data Explorer</h4>
+                        <p>Processed origin data blocks</p>
+                        <div class="achievement-status">✅ Unlocked</div>
+                    </div>
+                    <div class="achievement-card unlocked">
+                        <div class="achievement-icon">⚡</div>
+                        <h4>System Analyst</h4>
+                        <p>Analyze technical specifications</p>
+                        <div class="achievement-status">✅ Unlocked</div>
+                    </div>
+                    <div class="achievement-card locked">
+                        <div class="achievement-icon">💾</div>
+                        <h4>Database Scanner</h4>
+                        <p>Scan project archives</p>
+                        <div class="achievement-status">🔒 Locked</div>
+                    </div>
+                    <div class="achievement-card locked">
+                        <div class="achievement-icon">📡</div>
+                        <h4>Network Connected</h4>
+                        <p>Establish communication link</p>
+                        <div class="achievement-status">🔒 Locked</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Game Footer -->
+    <footer class="game-footer">
+        <div class="container">
+            <p style="font-size: 0.9em; margin: 15px 0;">© designed by MŠ</p>
+        </div>
+    </footer>
+
+    <!-- Game Engine -->
+    <script src="game-engine.js"></script>
+    <script src="mini-games.js"></script>
+    <script src="progression.js"></script>
+</body>
+</html>

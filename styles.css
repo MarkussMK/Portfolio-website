@@ -1,0 +1,1252 @@
+/* styles.css — theme variables & layout */
+:root{
+  /* Updated body color to #fefae0 */
+  --bg: #fefae0;
+  --surface:#07101a;
+  /* Updated text color to black for better contrast on cream background */
+  --text:#000000;
+  /* header/content left offset — used to align header text, nav and main content */
+  --header-text-offset: 18px;
+  --masthead-offset:1rem;
+  --subheader-overlay:0.35rem; /* vertical gap between header and nav when overlaying the hero (positive keeps them stacked) */
+  --muted-border:rgba(255,255,255,0.04);
+  --accent:#7dd3fc;
+  --accent-strong:#5cc0f0;
+  /* Button shadow matching the spotify-style shadow used on social bubble */
+  --btn-shadow: 0 6px 18px rgba(2,6,23,0.45);
+  --btn-shadow-hover: 0 8px 24px rgba(2,6,23,0.6);
+  /* small nudge for the pill row so its visual left edge lines up with header text */
+  --pill-nudge: 14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  /* Prefer Monaco; fall back to Menlo, Courier New, then generic monospace */
+  font-family: Monaco, Menlo, "Courier New", monospace;
+  background:var(--bg);
+  background-attachment:fixed; /* ensure gradient stays in place */
+  background-size:100% 100%; /* stretch gradient to full body */
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.6;
+  /* padding-bottom kept minimal because footer is now part of the flow */
+  padding-bottom:0;
+}
+
+/* Header */
+header{
+  background:transparent; /* make header transparent so hero shows through */
+  color:#ffffff; /* header letters remain white */
+  position:relative; /* positioned so z-index works inside the masthead */
+  z-index:61; /* ensure header sits above masthead's stacking context */
+  /* left-align header container; header text offset from the viewport left edge */
+  text-align:left;
+  /* thinner header: keep same vertical spacing but offset text 60px from the left wall */
+  padding:1.05rem 1rem 1.05rem var(--header-text-offset); /* top right bottom left */
+  border-bottom:none; /* remove visible line so photo shows cleanly behind header */
+}
+
+/* Non-home masthead (gradient header for Experience, Contact, Projects) */
+body:not(.has-hero) .masthead{
+  background: linear-gradient(180deg, 
+    #260701 0%,
+    #2f0e07 10%,
+    #38160d 20%,
+    #411d13 30%,
+    #4a2419 40%,
+    #532c1e 50%,
+    #5c3324 60%,
+    #653a2a 70%,
+    #6e4230 85%,
+    #774936 100%
+  ); /* Rich dark-to-light brown gradient (top to bottom) from Coolors palette */
+  position:relative;
+  z-index:65;
+}
+body:not(.has-hero) header,
+body:not(.has-hero) .subheader{
+  background:transparent; /* keep header elements visually part of masthead */
+  /* draw a subtle separation line against the body gradient if present */
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  box-shadow:none;
+  color: #ffffff; /* Ensure white text for good contrast on brown gradient */
+}
+
+/* Make header text slightly smaller to match reduced padding */
+header h1{font-size:1.6rem;line-height:1.15;margin-bottom:0.25rem}
+header p{font-size:0.95rem;margin-top:0}
+
+/* Sub-header (navigation row) */
+.subheader{
+  /* keep the subheader transparent; it will now flow under the header (stacked) */
+  background: transparent;
+  border-top: none;
+  border-bottom: none;
+  /* spacing for the stacked nav; add left padding to align under the header text */
+  padding:0.25rem 0 0.25rem var(--header-text-offset); /* top right bottom left */
+  box-shadow: none;
+  /* align items to the left so nav lines up with header text */
+  justify-content:flex-start;
+}
+.hero-bg{
+  /* Hero: full-viewport image */
+  position:relative;
+  overflow:hidden;
+  width:100%;
+  height:100vh; /* cover the full viewport initially */
+  display:block;
+  border-bottom:1px solid rgba(255,255,255,0.03);
+}
+
+/* Reduce top gap after hero */
+.hero-bg + main{margin-top:0.75rem}
+
+/* Extra gap when no hero */
+.masthead + main{margin-top:2rem}
+
+/* Hero image styles */
+.hero-img{
+  position:relative;
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:none;
+  object-fit:cover; /* fill hero area — crops where necessary */
+  transform:translate3d(0,0,0);will-change:transform;
+}
+
+/* Hero text */
+.hero-quote{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  z-index:20; /* above the image but beneath the overlayed nav (.subheader has z-index:40) */
+  color:#ffffff; /* white hero letters */
+  text-align:center;
+  padding:0 1rem;
+  width:100%;
+  max-width:1100px;
+  font-weight:800;
+  /* responsive sizing: larger and clamped for legibility */
+  font-size:clamp(1.75rem, 6vw, 4rem);
+  line-height:1.02;
+  text-transform:uppercase; /* all caps */
+  letter-spacing:0.06em;
+  text-shadow: 0 8px 20px rgba(0,0,0,0.65); /* keep subtle shadow for contrast */
+  pointer-events:none; /* clicks pass through to underlying controls */
+  
+  /* Initial animation state */
+  opacity: 0;
+  transform: translate(-50%, -50%) translateY(30px);
+  animation: heroTextFadeIn 1.5s ease-out 0.5s forwards;
+}
+
+/* Hero text animation */
+@keyframes heroTextFadeIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0);
+  }
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  color: #ffffff;
+  text-align: center;
+  opacity: 0;
+  transform: translateX(-50%) translateY(10px);
+  animation: scrollIndicatorFadeIn 1s ease-out 2s forwards;
+}
+
+.scroll-indicator.fade-out {
+  animation: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px);
+  transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+}
+
+.scroll-indicator::before {
+  content: "";
+  display: block;
+  width: 2px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.6);
+  margin: 0 auto 8px;
+  animation: scrollLine 2s ease-in-out infinite;
+}
+
+.scroll-indicator::after {
+  content: "⌄";
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 300;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+.scroll-text {
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 5px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+/* Scroll indicator animations */
+@keyframes scrollIndicatorFadeIn {
+  0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes scrollLine {
+  0%, 100% { height: 30px; opacity: 0.6; }
+  50% { height: 20px; opacity: 1; }
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+/* Masthead layout & overlay behavior */
+.masthead{
+  /* Default: masthead is in the normal document flow so pages without a hero
+     show the header and nav at the top above the main content. When a page
+     needs the overlay effect the body will receive `.has-hero` and the
+     masthead will be absolutely positioned there. */
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  /* align header and subheader to the left edge by default; header text
+     will be offset with padding so it sits 60px from the viewport wall */
+  align-items:flex-start;
+  width:100%;
+  pointer-events:auto;
+}
+
+/* .has-hero: overlay masthead on hero */
+.has-hero .masthead{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:60; /* above hero but allow header/subheader to set own child z-indexes */
+}
+.subheader{
+  /* Subheader (nav) overlay */
+  position:relative;
+  left:0;
+  right:0;
+  top:auto;
+  transform:none;
+  z-index:62; /* ensure nav sits above the hero image */
+  /* small positive gap beneath the header (use variable) */
+  margin-top:var(--subheader-overlay);
+  display:flex;
+  /* align the nav items under the left-aligned header text and match the
+    header offset so they line up visually with header content */
+  justify-content:flex-start;
+  padding-left:var(--header-text-offset);
+  width:100%;
+  padding:0.6rem 0;
+}
+.hero-bg{padding-top:0; z-index:10} /* hero sits beneath the overlayed nav */
+/* Layout flex rules */
+.hero-bg{flex:0 0 auto}
+main{flex:1 0 auto}
+
+/* Ensure the main container (Experience, Projects, Contact) sits above the hero image
+  so the photo never visually overlaps those sections. */
+.container{position:relative;z-index:30}
+/* Legacy alias kept but neutralized: avoid boxed appearance when `.container` is still present in markup */
+.container{max-width:none;background:transparent;border:none;border-radius:0;padding:0;margin:0}
+main{position:relative;z-index:30}
+
+/* On small screens avoid overlap and parallax (lighter weight) */
+@media (max-width:720px){
+  /* Smaller font size for mobile devices */
+  body {
+    font-size: 14px;
+  }
+  
+  /* Mobile adjustments */
+  .subheader{
+    position:relative;
+    left:0;
+    right:0;
+    top:auto;
+    transform:none;
+    padding:0.45rem 0;
+    justify-content:center;
+    /* reduce the overlay on small screens so nav doesn't overlap too much */
+    margin-top:0.2rem;
+  }
+  .hero-bg{padding-top:0}
+  /* smaller upward offset on narrow screens to avoid overlapping too much */
+  .hero-bg{margin-top: -2rem}
+  /* Allow nav links to wrap on narrow screens so they stay usable */
+  nav ul{flex-wrap:wrap;gap:0.6rem}
+
+  /* On narrow screens restore centered header layout and remove the 60px
+     left padding so the header remains flush and avoids horizontal overflow */
+  .masthead{ align-items:center }
+  header{ padding-left:1rem; text-align:center }
+  /* restore centered nav on small screens and remove the extra left padding */
+  .subheader{ justify-content:center; padding-left:0 }
+  /* ensure the nav list is centered on small screens as well */
+  nav{ justify-content:center; padding:0.25rem 0.5rem }
+  nav ul{ justify-content:center }
+  /* reset pill-row left margin on small screens */
+  .subheader nav ul{ margin-left: 0 }
+  /* remove the first-child nudge on narrow viewports so centered nav is exact */
+  .subheader nav a:first-child{ margin-left: 0 }
+  /* reset main left padding on small screens so content has usable gutters */
+  main{ padding-left:0.75rem }
+}
+.subheader nav ul{ margin:0 0 0 var(--pill-nudge) }
+
+/* Navigation: layout & pill styles */
+nav{background:transparent;padding:0.25rem 0;display:flex;justify-content:flex-start;gap:1rem;align-items:center}
+nav ul{list-style:none;display:flex;justify-content:flex-start;gap:1.25rem;margin:0;padding-left:0}
+/* Pill-style navigation buttons: centered, subtle background, rounded */
+nav a{
+  color: #ffffff; /* make nav button letters pure white */
+  text-decoration: none;
+  display: inline-block;
+  /* slightly smaller pill buttons */
+  padding: 0.35rem 0.85rem;
+  font-size:0.95rem;
+  border-radius: 9999px; /* pill */
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  transition: background .18s ease, transform .08s ease, color .12s, box-shadow .12s ease;
+  /* apply spotify-style outer shadow while keeping the subtle inset for depth */
+  box-shadow: var(--btn-shadow), 0 1px 0 rgba(0,0,0,0.18) inset;
+}
+nav a:hover{
+  background: linear-gradient(90deg, rgba(125,211,252,0.08), rgba(125,211,252,0.06));
+  color: #ffffff; /* remain white on hover */
+  transform: translateY(-1px);
+  box-shadow: var(--btn-shadow-hover), 0 1px 0 rgba(0,0,0,0.18) inset;
+}
+nav a:focus{
+  outline: 3px solid rgba(125,211,252,0.12);
+  outline-offset: 3px;
+  color: #ffffff; /* remain white on focus */
+}
+
+/* Align first nav item */
+.subheader nav a:first-child{ margin-left: 0 }
+
+/* Container */
+.container{ /* neutralized: legacy alias - no box styling */
+  max-width:none;
+  margin:0;
+  padding:0;
+  background:transparent;
+  color:inherit;
+  border:none;
+  border-radius:0;
+}
+
+/* Main content layout */
+main{
+  width:100%;
+  max-width:none;
+  margin:0;
+  /* use the same left offset as the header so main content aligns with header text */
+  padding:1.25rem 1.25rem 0 var(--header-text-offset); /* top right bottom left - removed bottom padding */
+  /* Increase base font-size for main content for better readability */
+  font-size:1.125rem; /* ~18px */
+  background:transparent; /* let the page gradient show through */
+  color:inherit;
+  border:none;
+  border-radius:0;
+}
+
+@media (min-width:1000px){
+  /* Slightly larger type on wide screens */
+  main{ font-size:1.1875rem; /* ~19px */ }
+}
+
+/* Sections */
+.about-section{margin:1.5rem 0}
+
+/* Robot Arm Styling */
+.robot-arm {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.arm-base {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 25px;
+  background: linear-gradient(135deg, #2c2c2c, #444);
+  border: 2px solid #1a1a1a;
+  border-radius: 8px 8px 4px 4px;
+  z-index: 4;
+  overflow: hidden; /* Hide any part of the segment that extends beyond the base */
+}
+
+.arm-base::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  background: #1a1a1a;
+  border: 1px solid #555;
+  border-radius: 50%;
+}
+
+.arm-segment-1 {
+  position: absolute;
+  bottom: 20px; /* Match the base positioning in JS */
+  left: 50%;
+  transform-origin: bottom center;
+  width: 10px;
+  height: 60px;
+  background: linear-gradient(90deg, #3a3a3a, #555);
+  border: 1px solid #1a1a1a;
+  border-radius: 5px;
+  transform: translateX(-50%) rotate(0deg);
+  transition: none; /* Remove CSS transition for smoother JS animation */
+  z-index: 1; /* Lower z-index so it appears behind the base */
+}
+
+.arm-segment-1::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: #2c2c2c;
+  border: 1px solid #1a1a1a;
+  border-radius: 50%;
+}
+
+.arm-segment-1::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: #2c2c2c;
+  border: 1px solid #1a1a1a;
+  border-radius: 50%;
+}
+
+.arm-segment-2 {
+  position: absolute;
+  bottom: 85px;
+  left: 50%;
+  transform-origin: bottom center;
+  width: 8px;
+  height: 45px;
+  background: linear-gradient(90deg, #3a3a3a, #555);
+  border: 1px solid #1a1a1a;
+  border-radius: 4px;
+  transform: translateX(-50%) rotate(0deg);
+  transition: none; /* Remove CSS transition for smoother JS animation */
+  z-index: 2;
+}
+
+.arm-segment-2::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background: #2c2c2c;
+  border: 1px solid #1a1a1a;
+  border-radius: 50%;
+}
+
+.arm-segment-2::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background: #2c2c2c;
+  border: 1px solid #1a1a1a;
+  border-radius: 50%;
+}
+
+.arm-segment-3 {
+  position: absolute;
+  bottom: 130px;
+  left: 50%;
+  transform-origin: bottom center;
+  width: 6px;
+  height: 35px;
+  background: linear-gradient(90deg, #3a3a3a, #555);
+  border: 1px solid #1a1a1a;
+  border-radius: 3px;
+  transform: translateX(-50%) rotate(0deg);
+  transition: none;
+  z-index: 1;
+}
+
+.arm-segment-3::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: #2c2c2c;
+  border: 1px solid #1a1a1a;
+  border-radius: 50%;
+}
+
+.arm-segment-3::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: #2c2c2c;
+  border: 1px solid #1a1a1a;
+  border-radius: 50%;
+}
+
+.arm-end {
+  position: absolute;
+  bottom: 130px;
+  left: 50%;
+  width: 6px;
+  height: 8px;
+  background: linear-gradient(45deg, #4a4a4a, #666);
+  border: 1px solid #1a1a1a;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  transition: none;
+  z-index: 1;
+}
+
+.arm-end::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 1px;
+  width: 15px;
+  height: 3px;
+  background: linear-gradient(90deg, #555, #777);
+  border: 0.5px solid #333;
+  border-radius: 1px;
+  transform: rotate(-60deg);
+  transform-origin: left top;
+}
+
+.arm-end::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 1px;
+  width: 15px;
+  height: 3px;
+  background: linear-gradient(90deg, #555, #777);
+  border: 0.5px solid #333;
+  border-radius: 1px;
+  transform: rotate(60deg);
+  transform-origin: right top;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* About Me section layout */
+.about-row {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  margin: 3rem auto;
+  max-width: 1200px;
+  justify-content: center;
+}
+
+.about-row.centered-only {
+  justify-content: center;
+}
+
+.about-text-centered {
+  flex: 1;
+  text-align: center;
+  max-width: 600px;
+  padding: 0 1rem;
+}
+
+.about-text-centered.full-width {
+  max-width: 800px;
+}
+
+.about-image {
+  flex: 0 0 300px;
+  text-align: center;
+}
+
+.about-photo {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.about-text-centered p {
+  font-size: 1.3rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Responsive: stack on smaller screens */
+@media (max-width: 768px) {
+  .about-row,
+  .about-row.reverse {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  
+  .about-image {
+    flex: none;
+  }
+  
+  .about-photo {
+    max-width: 250px;
+  }
+  
+  .about-text-centered.full-width {
+    max-width: 100%;
+  }
+}
+
+/* Experience page bullet point animations */
+.bullet-point {
+  opacity: 0;
+  transform: translate3d(-30px, 0, 0);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: transform, opacity;
+  margin-top: 2rem; /* Add space above bullet points */
+  font-size: 1.2rem; /* Larger font for bullet points */
+}
+
+.bullet-point.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* Skills section styling */
+.skills-section {
+  margin: 3rem 0;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.skill-item {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+  background: #272123;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--muted-border);
+}
+
+.skill-item.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+.skill-item h3 {
+  color: #e6f7ff;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.skill-tag {
+  background: linear-gradient(135deg, rgba(125,211,252,0.2), rgba(124,58,237,0.2));
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid rgba(125,211,252,0.3);
+  transition: all 0.3s ease;
+}
+
+.skill-tag:hover {
+  background: linear-gradient(135deg, rgba(125,211,252,0.3), rgba(124,58,237,0.3));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(125,211,252,0.2);
+}
+
+/* Staggered animation for skill items */
+.skill-item:nth-child(1).animate-in { transition-delay: 0.1s; }
+.skill-item:nth-child(2).animate-in { transition-delay: 0.2s; }
+.skill-item:nth-child(3).animate-in { transition-delay: 0.3s; }
+
+/* Center the third skill item when it's alone on its row */
+.skill-item:nth-child(3) {
+  grid-column: 1 / -1;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Make the main experience paragraph larger */
+.about-section .center-block p:not(.bullet-point) {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin-bottom: 2.5rem; /* More space before bullet points */
+}
+
+/* Stagger animation delays for bullet points */
+.bullet-point:nth-of-type(2).animate-in { transition-delay: 0.2s; }
+.bullet-point:nth-of-type(3).animate-in { transition-delay: 0.4s; }
+.bullet-point:nth-of-type(4).animate-in { transition-delay: 0.6s; }
+
+/* Scroll animation for About Me section - ONLY on homepage with hero */
+body.has-hero .about-section {
+  isolation: isolate; /* Create new stacking context to prevent conflicts with hero */
+  transform-style: preserve-3d; /* Ensure proper 3D rendering */
+}
+
+/* Individual About Me row animations */
+body.has-hero .about-row {
+  opacity: 0;
+  transform: translate3d(0, 40px, 0);
+  transition: opacity 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero .about-row.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* Staggered delays for each About Me row */
+body.has-hero .about-row:nth-child(2).animate-in { transition-delay: 0.2s; } /* First paragraph */
+body.has-hero .about-row:nth-child(3).animate-in { transition-delay: 0.4s; } /* Second paragraph */
+body.has-hero .about-row:nth-child(4).animate-in { transition-delay: 0.6s; } /* Third paragraph */
+
+/* About Me title animation */
+body.has-hero .about-section h2 {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero .about-section h2.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* Remove bottom margin from contact section to prevent brown band */
+section#contact{margin-bottom:0}
+.contact-center{margin-bottom:0}
+
+/* Homepage contact section scroll animations - ONLY on homepage with hero */
+body.has-hero #contact h2 {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact h2.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+body.has-hero #contact .profile-image {
+  opacity: 0;
+  transform: translate3d(-40px, 0, 0) scale(0.9);
+  transition: opacity 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact .profile-image.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+body.has-hero #contact .contact-info {
+  opacity: 0;
+  transform: translate3d(40px, 0, 0);
+  transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact .contact-info.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+body.has-hero #contact .social-buttons {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact .social-buttons.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* Staggered animation for homepage contact social buttons */
+body.has-hero #contact .social-bubble {
+  opacity: 0;
+  transform: translate3d(0, 15px, 0) scale(0.8);
+  transition: opacity 0.5s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact .social-bubble.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+body.has-hero #contact .social-bubble:nth-child(1).animate-in { transition-delay: 0.1s; }
+body.has-hero #contact .social-bubble:nth-child(2).animate-in { transition-delay: 0.2s; }
+body.has-hero #contact .social-bubble:nth-child(3).animate-in { transition-delay: 0.3s; }
+
+/* Projects grid and cards */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;margin:2rem 0}
+.project-card{background:#272123;border:1px solid var(--muted-border);padding:1.5rem;border-radius:8px}
+.project-card h3{color:#e6f7ff; margin-bottom:1rem}
+.project-card p{color:#ffffff}
+.project-image{width:100%;height:200px;object-fit:cover;border-radius:6px;margin-bottom:1rem}
+
+/* Scroll animation for project cards - ONLY on homepage with hero */
+body.has-hero .project-card {
+  opacity: 0;
+  transform: translate3d(0, 40px, 0) scale(0.95);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: transform, opacity;
+}
+
+body.has-hero .project-card.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+/* All project cards appear together - no staggered delays on homepage */
+
+/* Scroll animation for project cards - ONLY on Projects page (no has-hero class) */
+body:not(.has-hero) .project-card {
+  opacity: 0;
+  transform: translate3d(0, 50px, 0) scale(0.95);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  will-change: transform, opacity;
+}
+
+body:not(.has-hero) .project-card.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+/* Stagger animation delay for Projects page */
+body:not(.has-hero) .project-card:nth-child(1).animate-in { transition-delay: 0.1s; }
+body:not(.has-hero) .project-card:nth-child(2).animate-in { transition-delay: 0.3s; }
+body:not(.has-hero) .project-card:nth-child(3).animate-in { transition-delay: 0.5s; }
+body:not(.has-hero) .project-card:nth-child(4).animate-in { transition-delay: 0.7s; }
+
+/* Links */
+a{color:var(--accent)}
+a:hover{color:var(--accent-strong)}
+
+/* Footer */
+/* Footer matches the last color stop of the page gradient for a cohesive edge */
+footer{background:transparent;color:var(--text);text-align:center;padding:1rem 0;border-top:1px solid rgba(255,255,255,0.04);position:static;margin-top:3rem}
+
+/* Utility */
+p small{color:rgba(230,238,248,0.7)}
+
+/* Responsive tweaks */
+@media (max-width:480px){
+  nav ul{gap:0.5rem;flex-wrap:wrap;justify-content:center}
+  /* reduce mobile nav button padding too */
+  nav{padding:0.2rem 0.5rem;justify-content:center}
+  nav a{padding:0.3rem 0.6rem;font-size:0.92rem}
+  .container{padding:0.75rem}
+  main{padding:0.75rem 0.75rem 0 0.75rem} /* removed bottom padding to prevent brown band */
+  
+  /* Center navigation on mobile */
+  .subheader nav ul{ margin:0;justify-content:center }
+}
+
+/* Utility: center short text blocks */
+.center-text{ text-align:center }
+
+/* Centered content block with justified text and even edges */
+.center-block{
+  max-width:920px; /* limit line length for readability */
+  margin:1.25rem auto; /* center block horizontally */
+  padding:0 1rem;
+  text-align:justify; /* even left and right edges */
+  -webkit-hyphens:auto;
+  -ms-hyphens:auto;
+  hyphens:auto;
+  color:inherit; /* inherit from .container so text is readable on white */
+}
+.center-block p{margin-bottom:0.9rem}
+/* Center the last line for a nicer visual balance on short final lines */
+.center-block p:last-child{ text-align:center; text-align-last:center }
+
+/* Contact page: profile image and layout */
+.contact-grid{
+  display:flex;
+  gap:2.5rem; /* increase space between image and text */
+  align-items:flex-start; /* align to top so tall text doesn't vertically center/cut the image */
+  margin-top:0.45rem; /* tighten space below the section heading on Contact page */
+  overflow:visible; /* ensure image isn't clipped by parent */
+  margin-bottom:4rem; /* ensure larger space before footer so image isn't near fixed footer */
+}
+/* Contact page: transparent background */
+.contact-page{
+  background: transparent; /* let the body gradient show through */
+  color: #ffffff; /* white text across contact area */
+  border: none; /* keep no border */
+  border-bottom: none; /* ensure no bottom border */
+  box-shadow: none;
+  padding-bottom: 0; /* remove any bottom padding that might create space */
+}
+
+/* .contact-center: homepage contact layout */
+.contact-center .contact-grid{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:1rem;
+  margin-top:0.6rem;
+  margin-bottom:0; /* remove bottom margin to eliminate brown band */
+}
+.contact-center .contact-info{
+  max-width:100%;
+  margin:0;
+}
+.contact-center .profile-image{
+  margin:1rem auto 0; /* nudge the profile photo lower on the homepage contact block */
+  box-shadow: 0 6px 18px rgba(2,6,23,0.5);
+}
+
+/* contact-page.contact-center: constrain width */
+.contact-page.contact-center h2{ text-align:center }
+.contact-page.contact-center .contact-info{ max-width:700px; margin:0 auto }
+.contact-page.contact-center .contact-form{ margin:0 auto }
+
+/* Contact page scroll animations */
+.contact-page h2 {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page h2.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+.contact-page .profile-image {
+  opacity: 0;
+  transform: translate3d(-40px, 0, 0) scale(0.9);
+  transition: opacity 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page .profile-image.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+.contact-page .contact-form {
+  opacity: 0;
+  transform: translate3d(40px, 0, 0);
+  transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page .contact-form.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+.contact-page .social-buttons {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page .social-buttons.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* Staggered animation for social buttons */
+.contact-page .social-bubble {
+  opacity: 0;
+  transform: translate3d(0, 15px, 0) scale(0.8);
+  transition: opacity 0.5s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page .social-bubble.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+.contact-page .social-bubble:nth-child(1).animate-in { transition-delay: 0.1s; }
+.contact-page .social-bubble:nth-child(2).animate-in { transition-delay: 0.2s; }
+.contact-page .social-bubble:nth-child(3).animate-in { transition-delay: 0.3s; }
+
+/* Contact page text in black for cream background */
+.contact-page h2,
+.contact-page p,
+.contact-page .contact-info,
+.contact-page .form-note,
+.contact-page label{ color: #000000 }
+.contact-page a{ color: #000000 }
+
+/* Form inputs */
+.contact-page .contact-form input[type="text"],
+.contact-page .contact-form input[type="email"],
+.contact-page .contact-form input[type="url"],
+.contact-page .contact-form textarea{
+  background: rgba(255,255,255,0.9);
+  color: #041526; /* dark text for legibility inside inputs */
+  border: 1px solid rgba(0,0,0,0.12);
+}
+
+/* Adjust button appearance on contact page for visibility */
+.contact-page .btn-primary{
+  /* make the contact page "Send message" button a dark brown with white text */
+  background: #523726; /* dark brown matching footer/gradient end */
+  color: #ffffff; /* white label for contrast */
+  border: none;
+  box-shadow: var(--btn-shadow);
+}
+.contact-page .btn-primary:hover{ /* ensure label stays white on hover and shadow intensifies */
+  color: #ffffff;
+  box-shadow: var(--btn-shadow-hover);
+}
+.contact-info{
+  /* push text further to the right and limit width */
+  max-width: calc(100% - 220px);
+}
+.profile-image{
+  width:200px; /* preferred display width */
+  height:auto; /* preserve aspect ratio and avoid cropping */
+  max-height:220px; /* keep image from becoming too tall */
+  border-radius:12px;
+  object-fit:cover;
+  border:1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+}
+
+@media (max-width:600px){
+  .contact-grid{flex-direction:column;align-items:flex-start;gap:1rem}
+  .profile-image{width:160px;height:auto;max-height:180px}
+  .contact-info{max-width:100%}
+}
+
+/* Contact form styles */
+.contact-form{margin-top:1.25rem;display:flex;flex-direction:column;gap:0.75rem;max-width:700px}
+.contact-form label{font-size:0.95rem;color:rgba(230,238,248,0.9)}
+.contact-form input[type="text"],.contact-form input[type="email"],.contact-form input[type="url"],.contact-form textarea{
+  width:100%;padding:0.65rem 0.75rem;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:var(--text);resize:vertical;font-size:0.95rem
+}
+.contact-form textarea{min-height:140px}
+.contact-form .form-row{display:flex;gap:0.75rem}
+.contact-form .form-row > *{flex:1}
+.contact-form .btn-primary{ /* center the Send button inside the contact form */
+  align-self:center;
+  margin-top:0.5rem;
+}
+.btn-primary{display:inline-block;padding:0.6rem 1.1rem;border-radius:9999px;background:linear-gradient(90deg,var(--accent),var(--accent-strong));color:#041526;border:none;cursor:pointer;font-weight:600}
+.btn-primary{box-shadow:var(--btn-shadow)}
+.btn-primary:hover{opacity:0.95;transform:translate3d(0, -1px, 0);box-shadow:var(--btn-shadow-hover)}
+.form-note{font-size:0.9rem;color:rgba(230,238,248,0.8);margin-bottom:1.5rem}
+.form-success{margin-top:0.5rem;padding:0.6rem 0.8rem;background:rgba(125,211,252,0.08);border:1px solid rgba(125,211,252,0.12);color:var(--accent);border-radius:6px;display:none}
+.form-submit-row{display:flex;gap:0.75rem;align-items:center;margin-top:0.5rem}
+
+@media (max-width:600px){
+  .contact-form .form-row{flex-direction:column}
+}
+
+/* Center the Contact page heading */
+.contact-page h2{ text-align:center; margin-bottom:0.35rem }
+
+.social-bubble{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:linear-gradient(135deg, rgba(125,211,252,0.08), rgba(124,58,237,0.08));
+  border:1px solid rgba(255,255,255,0.04);
+  color:var(--accent);
+  text-decoration:none;
+  transition:transform .12s ease, box-shadow .12s ease, background .12s;
+  /* give social bubbles the same base shadow as other buttons */
+  box-shadow: var(--btn-shadow);
+}
+.social-bubble:hover{transform:translate3d(0, -3px, 0);box-shadow:var(--btn-shadow-hover);background:linear-gradient(135deg, rgba(125,211,252,0.12), rgba(124,58,237,0.12));}
+.social-bubble svg{width:20px;height:20px;fill:currentColor}
+
+@media (max-width:600px){
+  .social-bubble{width:40px;height:40px}
+}
+
+/* Social buttons container: align multiple circular icons with spacing */
+.social-buttons{display:flex;gap:0.5rem;align-items:center;justify-content:center}
+
+/* Remove margin from paragraph containing social buttons to prevent brown band */
+p:has(.social-buttons){margin:0}
+.contact-info p:last-child{margin-bottom:0}
+
+/* Allow icons inside the bubble to size consistently (SVG or IMG) */
+.social-bubble img,.social-bubble .social-icon{width:20px;height:20px;display:block}
+@media (max-width:600px){
+  .social-bubble img,.social-bubble .social-icon{width:18px;height:18px}
+}
+
+/* Brand color variants for social bubbles */
+.social-bubble.instagram{ /* keep subtle gradient but ensure white icon */
+  background: radial-gradient(circle at 30% 20%, #feda75 0%, #fa7e1e 30%, #d62976 60%, #962fbf 85%);
+  color:#fff;
+  border-color: rgba(255,255,255,0.06);
+}
+.social-bubble.instagram:hover{box-shadow:0 8px 24px rgba(214,41,118,0.18)}
+
+.social-bubble.linkedin{
+  background: #0A66C2; /* LinkedIn brand blue */
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.06);
+}
+.social-bubble.linkedin:hover{box-shadow:0 8px 24px rgba(10,102,194,0.18)}
+
+.social-bubble.spotify{
+  background: #1DB954; /* Spotify green */
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.06);
+}
+/* Force small bitmap logo to be visible on green background by inverting/brightening */
+.social-bubble.spotify img{filter:brightness(0) invert(1);width:20px;height:20px;display:block}
+@media (max-width:600px){
+  .social-bubble.spotify img{width:18px;height:18px}
+}
+
+/* Small Instagram photo next to the bubble (not currently used) */
+/* Removed unused .insta-photo styles to keep stylesheet lean. */
+
+/* Responsive video styling for mobile devices */
+.scroll-video {
+    display: none; /* Hidden by default on desktop */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+/* Media query for tablet and mobile devices */
+@media (max-width: 768px) {
+    .robot-arm {
+        display: none; /* Hide robot arms on smaller screens */
+    }
+    
+    /* Show only the first video on mobile */
+    .scroll-video {
+        display: none; /* Hide all videos by default */
+    }
+    
+    /* Show only the first video (in the first about-row) */
+    .about-row:first-of-type .scroll-video {
+        display: block;
+    }
+    
+    .about-image {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Hide the entire about-image containers for 2nd and 3rd sections on mobile */
+    .about-row:not(:first-of-type) .about-image {
+        display: none;
+    }
+}

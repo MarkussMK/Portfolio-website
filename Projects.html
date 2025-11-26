@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<!-- Artifact Vault - Natural Game Theme Integration -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Archives - Markuss Šube</title>
+    
+    <!-- External stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="game-styles-new.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating Character Progress Tracker -->
+    <div id="character-tracker" class="character-tracker mobile-footer-xp">
+        <div class="character-avatar-display">
+            <div class="character-sprite" id="character-sprite"><img src="linkedin.jpg" alt="Markuss Šube" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></div>
+        </div>
+        <div class="character-info-display">
+            <h4 id="character-title">Intern</h4>
+            <div class="xp-progress">
+                <div class="xp-bar-fill" id="xp-bar-fill" style="width: 0%"></div>
+            </div>
+            <p class="xp-text"><span id="current-xp">0</span> / <span id="needed-xp">100</span> XP</p>
+        </div>
+    </div>
+
+    <!-- Artifact Vault Header -->
+    <header class="site-header" role="banner">
+        <h1>Markuss Šube <span class="role">Automation Engineer</span></h1>
+    </header>
+
+    <!-- Quest Navigation -->
+    <nav class="quest-navigation">
+        <div class="container">
+            <ul class="quest-menu">
+                <li><a href="index.html" class="nav-link">🖥️ Main Terminal</a></li>
+                <li><a href="Experience.html" class="nav-link">🧬 System Specs</a></li>
+                <li><a href="Projects.html" class="nav-link active">🛰️ Data Archives</a></li>
+                <li><a href="Contact.html" class="nav-link">📡 Communication Hub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Artifact Vault Main -->
+    <main class="artifact-vault">
+        <div class="container">
+            <!-- Vault Introduction -->
+            <div class="quest-area vault-intro">
+                <h2>🧪 Welcome to the Data Archives</h2>
+                <p class="quest-description">Each record represents an implemented solution, optimization cycle, or innovation milestone. Explore the archive that chronicles system evolution and engineering impact.</p>
+                
+                <!-- Rarity Filter -->
+                <div class="rarity-filters">
+                    <h3>Filter by Tier:</h3>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-rarity="all">🔍 All Artifacts</button>
+                        <button class="filter-btn" data-rarity="legendary">🟡 Legendary</button>
+                        <button class="filter-btn" data-rarity="epic">🟠 Epic</button>
+                        <button class="filter-btn" data-rarity="rare">🟣 Rare</button>
+                        <button class="filter-btn" data-rarity="common">🟢 Common</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Artifact Collection -->
+            <div class="artifact-collection">
+                
+                <!-- Project 1: Electricity Price Forecasting -->
+                <div class="read-section" data-section="project1" data-xp="15">
+                <div class="artifact-card rarity-legendary" data-rarity="legendary">
+                    <div class="artifact-header">
+                        <h3>⚡ Electricity Price Forecasting in Real Time for Solar Panels</h3>
+                        <span class="rarity-badge legendary">Legendary</span>
+                    </div>
+                    <div class="artifact-content">
+                        <div class="artifact-icon">🔋</div>
+                        <p class="artifact-description">Deviced a comprehensive automation solution for NordPool, sending their electricity market data to a PLC in real-time.</p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">TwinCAT 3</span>
+                            <span class="tech-tag">PLC Programming</span>
+                            <span class="tech-tag">Real-time Data</span>
+                            <span class="tech-tag">API Integration</span>
+                        </div>
+                        <div class="artifact-stats">
+                            <span class="stat">⚡ Innovation: 95%</span>
+                            <span class="stat">🎯 Accuracy: 90%</span>
+                            <span class="stat">🔄 Real-time: 100%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="xp-indicator">⚡ +15 XP</div>
+                </div>
+
+                <!-- Project 2: Scientific Research -->
+                <div class="read-section" data-section="project2" data-xp="15">
+                <div class="artifact-card rarity-epic" data-rarity="epic">
+                    <div class="artifact-header">
+                        <h3>📚 Scientific Research regarding Young Entrepreneurs in Latvia</h3>
+                        <span class="rarity-badge epic">Epic</span>
+                    </div>
+                    <div class="artifact-content">
+                        <div class="artifact-icon">🔬</div>
+                        <p class="artifact-description">Authored a scientific research paper on the types of commercial activities and advertising of young entrepreneurs, tools, and their use for more effective operation in the food industry in Latvia.</p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Research</span>
+                            <span class="tech-tag">Data Analysis</span>
+                            <span class="tech-tag">Documentation</span>
+                            <span class="tech-tag">Food Industry</span>
+                        </div>
+                        <div class="artifact-stats">
+                            <span class="stat">📊 Research Depth: 90%</span>
+                            <span class="stat">🎯 Insights: 85%</span>
+                            <span class="stat">📖 Documentation: 95%</span>
+                        </div>
+                        <a href="https://www.rkg.lv/lv/zi%C5%86as/sirsnigi-apsveicam-latvijas-skolenu-47-zinatniskas-petniecibas-darbu-konferences-2-posma-uzvaretajus/" target="_blank" class="artifact-link">View Research Recognition From Rīgas Valsts klasiskās ģimnāzijas</a>
+                    </div>
+                </div>
+                <div class="xp-indicator">⚡ +15 XP</div>
+                </div>
+
+                <!-- Project 3: Junior Tester -->
+                <div class="read-section" data-section="project3" data-xp="10">
+                <div class="artifact-card rarity-rare" data-rarity="rare">
+                    <div class="artifact-header">
+                        <h3>🧪 Worked as a Junior Tester for Web Applications</h3>
+                        <span class="rarity-badge rare">Rare</span>
+                    </div>
+                    <div class="artifact-content">
+                        <div class="artifact-icon">🔍</div>
+                        <p class="artifact-description">Implemented performance testing using JMeter, ensuring optimal load handling and response times.</p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">JMeter</span>
+                            <span class="tech-tag">Performance Testing</span>
+                            <span class="tech-tag">Web Applications</span>
+                            <span class="tech-tag">QA</span>
+                        </div>
+                        <div class="artifact-stats">
+                            <span class="stat">⚡ Performance: 85%</span>
+                            <span class="stat">🎯 Test Coverage: 80%</span>
+                            <span class="stat">🔄 Optimization: 75%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="xp-indicator">⚡ +10 XP</div>
+                </div>
+
+                <!-- Project 4: Portfolio Website -->
+                <div class="read-section" data-section="project4" data-xp="10">
+                <div class="artifact-card rarity-common" data-rarity="common">
+                    <div class="artifact-header">
+                        <h3>🌐 Web Design and Development</h3>
+                        <span class="rarity-badge common">Common</span>
+                    </div>
+                    <div class="artifact-content">
+                        <div class="artifact-icon">💻</div>
+                        <p class="artifact-description">Currently working on this portfolio website to showcase my skills and projects. I designed and developed it using HTML, CSS, and JavaScript with new plans to remake it fully in a more creative and challenging way.</p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">HTML5</span>
+                            <span class="tech-tag">CSS3</span>
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">Web Design</span>
+                        </div>
+                        <div class="artifact-stats">
+                            <span class="stat">🎨 Design: 85%</span>
+                            <span class="stat">⚡ Performance: 80%</span>
+                            <span class="stat">🔄 Progress: 75%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="xp-indicator">⚡ +10 XP</div>
+                </div>
+            </div>
+            
+            <div class="quest-progress">
+                <p><strong>Projects Reviewed:</strong></p>
+                <div class="progress-container">
+                    <div class="progress-bar" id="reading-progress" style="width: 0%"></div>
+                </div>
+                <p class="progress-text">Explore all project tiers! (<span id="sections-read">0</span>/4 sections analyzed)</p>
+            </div>
+            
+                <div style="height: 180px;"></div>
+
+                <!-- Achievement Showcase -->
+                <div class="achievement-showcase">
+                <h2>🏆 System Achievements</h2>
+                <p>Track your access progress through the network:</p>
+                <div class="achievement-grid">
+                    <div class="achievement-card unlocked">
+                        <div class="achievement-icon">📡</div>
+                        <h4>Data Explorer</h4>
+                        <p>Processed origin data blocks</p>
+                        <div class="achievement-status">✅ Unlocked</div>
+                    </div>
+                    <div class="achievement-card unlocked">
+                        <div class="achievement-icon">⚡</div>
+                        <h4>System Analyst</h4>
+                        <p>Analyze technical specifications</p>
+                        <div class="achievement-status">✅ Unlocked</div>
+                    </div>
+                    <div class="achievement-card unlocked">
+                        <div class="achievement-icon">💾</div>
+                        <h4>Database Scanner</h4>
+                        <p>Scan project archives</p>
+                        <div class="achievement-status">✅ Unlocked</div>
+                    </div>
+                    <div class="achievement-card locked">
+                        <div class="achievement-icon">📡</div>
+                        <h4>Network Connected</h4>
+                        <p>Establish communication link</p>
+                        <div class="achievement-status">🔒 Locked</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Game Footer -->
+    <footer class="game-footer">
+        <div class="container">
+            <p style="font-size: 0.9em; margin: 15px 0;">© designed by MŠ</p>
+        </div>
+    </footer>
+
+    <!-- Game Engine -->
+    <script src="game-engine.js"></script>
+    <script src="mini-games.js"></script>
+    <script src="progression.js"></script>
+    <script>
+        function initializeArtifactFiltering() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const artifacts = document.querySelectorAll('.artifact-card');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const rarity = this.getAttribute('data-rarity');
+                    
+                    // Update active button
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Filter artifacts
+                    artifacts.forEach(artifact => {
+                        if (rarity === 'all' || artifact.getAttribute('data-rarity') === rarity) {
+                            artifact.style.display = 'block';
+                        } else {
+                            artifact.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeArtifactFiltering();
+        });
+    </script>
+</body>
+</html>

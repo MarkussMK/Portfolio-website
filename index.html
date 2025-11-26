@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<!-- Markuss Šube — Portfolio Quest. Natural Game Theme Integration -->
+<html lang="en">
+<head>
+    <!-- Required meta tags for correct rendering and mobile scaling -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markuss Šube - Portfolio Quest</title>
+
+    <!-- External stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="game-styles-new.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+        <!-- Minimalistic Black Screen Intro Animation -->
+        <div id="site-intro-overlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;z-index:99999;display:flex;align-items:center;justify-content:center;transition:opacity 0.7s;">
+            <span id="site-intro-text" style="color:#fff;font-size:1.25rem;font-family:'Orbitron',monospace;letter-spacing:1px;opacity:0;transition:opacity 1.2s;">Let's create something extraordinary.</span>
+        </div>
+        <script>
+            document.body.style.overflow = 'hidden';
+            window.addEventListener('DOMContentLoaded', function() {
+                var text = document.getElementById('site-intro-text');
+                setTimeout(function() {
+                    if (text) text.style.opacity = '0.92';
+                }, 200); // Fade in after 0.2s
+                setTimeout(function() {
+                    var overlay = document.getElementById('site-intro-overlay');
+                    if (overlay) {
+                        overlay.style.opacity = '0';
+                        setTimeout(function() {
+                            overlay.remove();
+                            document.body.style.overflow = '';
+                        }, 700);
+                    }
+                    }, 2500); // Fade out after 2.5s
+            });
+        </script>
+    <div id="character-tracker" class="character-tracker mobile-footer-xp">
+        <div class="character-avatar-display">
+            <div class="character-sprite" id="character-sprite"><img src="linkedin.jpg" alt="Markuss Šube" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></div>
+        </div>
+        <div class="character-info-display">
+            <h4 id="character-title">Intern</h4>
+            <div class="xp-progress">
+                <div class="xp-bar-fill" id="xp-bar-fill" style="width: 0%"></div>
+            </div>
+            <p class="xp-text"><span id="current-xp">0</span> / <span id="needed-xp">100</span> XP</p>
+        </div>
+    </div>
+
+    <!-- Minimal Header -->
+    <header class="site-header" role="banner">
+        <h1>Markuss Šube <span class="role">Automation Engineer</span></h1>
+    </header>
+
+    <!-- System Navigation -->
+    <nav class="quest-navigation">
+        <div class="container">
+            <ul class="quest-menu">
+                <li><a href="index.html" class="nav-link active">🏠 Main Terminal</a></li>
+                <li><a href="Experience.html" class="nav-link">⚡ System Specs</a></li>
+                <li><a href="Projects.html" class="nav-link">💾 Data Archives</a></li>
+                <li><a href="Contact.html" class="nav-link">📡 Communication Hub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Terminal -->
+    <main class="quest-hub">
+        <div class="container">
+            <!-- System Initialization -->
+            <div class="quest-area active-quest" data-quest="explore-story">
+                <h2>📡 Protocol 1: System Origins</h2>
+                <p class="quest-description">Initialize the core data stream to learn about the Code Architect. Each data block unlocks processing power!</p>
+                
+                <div class="story-content">
+                    <div class="read-section" data-section="chapter1" data-xp="15">
+                        <h3>💠 Data Block 1: System Boot</h3>
+                        <div style="display: flex; gap: 30px; align-items: flex-start;">
+                            <img src="aboutmesection.jpg" alt="Markuss Šube - Automation Engineer" style="width: 350px; height: auto; border-radius: 8px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,247,255,0.3);">
+                            <div>
+                                <p>I'm an Automation Engineer with a deep passion for technology, innovation, and building things that work smarter. I love bringing complex systems to life — from designing efficient automation workflows to writing clean, powerful code that makes ideas run seamlessly.</p>
+                                <p style="margin-top: 40px;">My journey in automation began with a curiosity about how systems communicate and process information. Over time, this curiosity evolved into a comprehensive skill set that combines technical expertise with creative problem-solving.</p>
+                                <p style="margin-top: 40px;">I believe that the best solutions are those that not only solve immediate problems but also anticipate future needs. Every line of code, every automated process, is an opportunity to create something that lasts.</p>
+                            </div>
+                        </div>
+                        <div class="xp-indicator">⚡ +15 XP</div>
+                    </div>
+                    
+                    <div class="read-section" data-section="chapter2" data-xp="15" style="margin-top: 120px;">
+                        <h3>⚙️ Data Block 2: Engineering Protocols</h3>
+                        <div style="display: flex; gap: 30px; align-items: stretch;">
+                            <div>
+                                <p>Whether it's streamlining processes, developing custom tools, or integrating systems that make work effortless, I focus on turning challenges into elegant, reliable solutions. I work closely with teams and creators to understand every detail and ensure that every project functions flawlessly.</p>
+                                <p style="margin-top: 40px;">Collaboration is at the heart of what I do. By working alongside talented professionals from diverse backgrounds, I've learned that the most innovative solutions come from bringing different perspectives together.</p>
+                                <p style="margin-top: 40px;">My approach is methodical yet flexible — understanding requirements deeply, architecting robust solutions, and iterating based on real-world feedback to deliver systems that exceed expectations.</p>
+                            </div>
+                            <img src="aboutmesection1.jpg" alt="Engineering Protocols" style="width: 350px; height: auto; align-self: stretch; object-fit: cover; border-radius: 8px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,247,255,0.3);">
+                        </div>
+                        <div class="xp-indicator">⚡ +15 XP</div>
+                    </div>
+                    
+                    <div class="read-section" data-section="chapter3" data-xp="20" style="margin-top: 120px;">
+                        <h3>⚡ Data Block 3: Advanced Systems</h3>
+                        <div style="display: flex; gap: 30px; align-items: stretch;">
+                            <img src="aboutmesection2.jpg" alt="Advanced Systems" style="width: 350px; height: auto; align-self: stretch; object-fit: cover; border-radius: 8px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,247,255,0.3);">
+                            <div>
+                                <p>With experience in automation frameworks, scripting, and modern programming tools, I combine technical precision with creative problem-solving to deliver results that make an impact. If you're looking for someone who can turn technical vision into reality — efficient, scalable, and built to last.</p>
+                                <p style="margin-top: 40px;">My technical arsenal includes expertise in Python, JavaScript, workflow automation, API integration, and cloud-based solutions. Each tool is carefully selected and applied to create systems that are not just functional, but exceptional.</p>
+                                <p style="margin-top: 40px;">The future of automation is about intelligent systems that learn, adapt, and improve. I'm committed to staying at the forefront of this evolution, continuously learning and applying cutting-edge technologies to solve tomorrow's challenges today.</p>
+                            </div>
+                        </div>
+                        <div class="xp-indicator">⚡ +20 XP</div>
+                    </div>
+                </div>
+                
+                <div class="quest-progress">
+                    <p><strong>Data Processing:</strong></p>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="reading-progress" style="width: 0%"></div>
+                    </div>
+                    <p class="progress-text">Continue processing to unlock new systems! (<span id="sections-read">0</span>/3 blocks analyzed)</p>
+                </div>
+                </div>
+
+                <div style="height: 60px;"></div>
+
+                <!-- Achievement Showcase -->
+                <div class="achievement-showcase">
+                <h2>🏆 System Achievements</h2>
+                <p>Track your access progress through the network:</p>
+                <div class="achievement-grid">
+                    <div class="achievement-card unlocked">
+                        <div class="achievement-icon">📡</div>
+                        <h4>Data Explorer</h4>
+                        <p>Processed origin data blocks</p>
+                        <div class="achievement-status">✅ Unlocked</div>
+                    </div>
+                    <div class="achievement-card locked">
+                        <div class="achievement-icon">⚡</div>
+                        <h4>System Analyst</h4>
+                        <p>Analyze technical specifications</p>
+                        <div class="achievement-status">🔒 Locked</div>
+                    </div>
+                    <div class="achievement-card locked">
+                        <div class="achievement-icon">💾</div>
+                        <h4>Database Scanner</h4>
+                        <p>Scan project archives</p>
+                        <div class="achievement-status">🔒 Locked</div>
+                    </div>
+                    <div class="achievement-card locked">
+                        <div class="achievement-icon">📡</div>
+                        <h4>Network Connected</h4>
+                        <p>Establish communication link</p>
+                        <div class="achievement-status">🔒 Locked</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- System Footer -->
+    <footer class="game-footer">
+        <div class="container">
+            <p style="font-size: 0.9em; margin: 15px 0;">© designed by MŠ</p>
+        </div>
+    </footer>
+
+    <!-- Game Engine -->
+    <script src="game-engine.js"></script>
+    <script src="mini-games.js"></script>
+    <script src="animations.js"></script>
+    <script src="progression.js"></script>
+</body>
+</html>
