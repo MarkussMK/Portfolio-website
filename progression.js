@@ -420,7 +420,6 @@ function setupScrollTracking() {
             if (entry.isIntersecting) {
                 entry.target.classList.add('in-view');
             }
-            
             // Award XP when section leaves viewport (scrolled past)
             if (!entry.isIntersecting && entry.target.classList.contains('in-view') && entry.target.classList.contains('read-section')) {
                 const sectionId = entry.target.getAttribute('data-section');
@@ -431,27 +430,33 @@ function setupScrollTracking() {
                         state.visitedSections[currentPage].push(sectionId);
                         const xpValue = parseInt(entry.target.getAttribute('data-xp'), 10) || 10;
                         state = gainXP(xpValue, state);
-                        updateReadingProgress(readSections.length, state.visitedSections[currentPage].length);
+                        // Always update progress after XP and completion
                         if (state.visitedSections[currentPage].length >= readSections.length) {
-                            // Persist before completion bonus logic
                             saveProgressionState(state);
                             completeCurrentPage();
                             // Reload state after completion adjustments
                             state = getProgressionState();
+                            updateReadingProgress(readSections.length, readSections.length);
                         } else {
                             saveProgressionState(state);
+                            updateReadingProgress(readSections.length, state.visitedSections[currentPage].length);
                         }
                     }
                 }
             }
         });
     }, { threshold: 0 });
-    
+
     revealTargets.forEach(el => observer.observe(el));
 
     saveProgressionState(state);
     updateCharacterDisplay(state);
-    updateReadingProgress(readSections.length, state.visitedSections[currentPage].length);
+    // If page is completed, always show full progress
+    if (state.visitedSections[currentPage].length >= readSections.length) {
+        updateReadingProgress(readSections.length, readSections.length);
+    } else {
+        updateReadingProgress(readSections.length, state.visitedSections[currentPage].length);
+    }
 
     // Fallback manual visibility evaluation (in case IntersectionObserver fails)
     let fallbackScheduled = false;
@@ -480,7 +485,12 @@ function setupScrollTracking() {
             });
             if (awarded) {
                 saveProgressionState(s);
-                updateReadingProgress(sections.length, s.visitedSections[page].length);
+                // Always show full progress after completion
+                if (s.visitedSections[page].length >= sections.length) {
+                    updateReadingProgress(sections.length, sections.length);
+                } else {
+                    updateReadingProgress(sections.length, s.visitedSections[page].length);
+                }
                 if (s.visitedSections[page].length >= sections.length) {
                     completeCurrentPage();
                 }
@@ -574,8 +584,74 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     // Always attach manual reset button (global availability)
     createManualResetControl();
+    // Setup mobile XP tracker toggle
+    setupMobileXPToggle();
     // Start the portfolio RPG if available
     if (window.PortfolioRPG) {
         window.portfolioGame = new PortfolioRPG();
     }
 });
+
+// Mobile XP Tracker Toggle Function
+function setupMobileXPToggle() {
+    // Check if already initialized
+    if (document.querySelector('.mobile-xp-toggle')) {
+        return;
+    }
+    
+    const tracker = document.querySelector('.character-tracker') || document.getElementById('character-tracker');
+    if (!tracker) {
+        console.log('No character tracker found');
+        return;
+    }
+    
+    // Create toggle button
+    const toggleBtn = document.createElement('div');
+    toggleBtn.className = 'mobile-xp-toggle';
+    toggleBtn.innerHTML = '📊';
+    toggleBtn.setAttribute('aria-label', 'Toggle XP Tracker');
+    
+    document.body.appendChild(toggleBtn);
+    
+    // Toggle functionality
+    toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        tracker.classList.toggle('expanded');
+        toggleBtn.classList.toggle('active');
+        
+        // Change icon based on state
+        if (tracker.classList.contains('expanded')) {
+            toggleBtn.innerHTML = '✖️';
+        } else {
+            toggleBtn.innerHTML = '📊';
+        }
+    });
+    
+    // Close when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+        if (tracker.classList.contains('expanded') && 
+            !tracker.contains(e.target) && 
+            !toggleBtn.contains(e.target)) {
+            tracker.classList.remove('expanded');
+            toggleBtn.classList.remove('active');
+            toggleBtn.innerHTML = '📊';
+        }
+    });
+    
+    // Handle window resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            if (window.innerWidth > 768) {
+                tracker.classList.remove('expanded');
+                tracker.style.bottom = '';
+                if (toggleBtn && toggleBtn.parentNode) {
+                    toggleBtn.remove();
+                }
+            } else if (!document.querySelector('.mobile-xp-toggle')) {
+                setupMobileXPToggle();
+            }
+        }, 250);
+    });
+}
