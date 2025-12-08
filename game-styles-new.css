@@ -73,6 +73,9 @@
       align-items: center !important;
       gap: 18px !important;
     }
+    .read-section > div[style*="display: flex"] {
+      flex-direction: column !important;
+    }
     .quest-area[data-quest="explore-story"] img {
       width: 80vw !important;
       max-width: 320px !important;
@@ -81,6 +84,7 @@
       display: block !important;
       border-radius: 8px !important;
       box-shadow: 0 2px 8px rgba(0,247,255,0.18) !important;
+      order: -1 !important;
     }
     .quest-area[data-quest="explore-story"] h3,
     .quest-area[data-quest="explore-story"] p {
