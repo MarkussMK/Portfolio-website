@@ -34,20 +34,17 @@
 
     <!-- Quest Navigation -->
     <nav class="quest-navigation">
-        <div class="container">
-            <ul class="quest-menu">
-                <li><a href="index.html" class="nav-link">🖥️ Main Terminal</a></li>
-                <li><a href="Experience.html" class="nav-link">🧬 System Specs</a></li>
-                <li><a href="Projects.html" class="nav-link">🛰️ Data Archives</a></li>
-                <li><a href="Contact.html" class="nav-link active">📡 Communication Hub</a></li>
-            </ul>
-        </div>
+        <ul class="quest-menu">
+            <li><a href="index.html" class="nav-link">🖥️ Main Terminal</a></li>
+            <li><a href="Experience.html" class="nav-link">🧬 System Specs</a></li>
+            <li><a href="Projects.html" class="nav-link">🛰️ Data Archives</a></li>
+            <li><a href="Contact.html" class="nav-link active">📡 Communication Hub</a></li>
+        </ul>
     </nav>
 
     <!-- Guild Hall Main -->
     <main class="guild-hall">
-        <div class="container">
-            <!-- Welcome Chamber -->
+        <!-- Welcome Chamber -->
             <div class="quest-area guild-welcome read-section" data-section="contact-welcome" data-xp="15">
                 <h2>🛰️ Collaboration Intake Panel</h2>
                 <p class="quest-description">Submit project intent, integration needs, or exploratory engagement details. This hub facilitates rapid alignment and structured solution planning.</p>
@@ -145,10 +142,7 @@
                 </div>
                 
                 <div class="restart-journey">
-                    <p>Want to experience the adventure again or share it with others?</p>
-                    <button id="restart-journey" class="rpg-button">
-                        🔄 Restart Experience
-                    </button>
+                    <!-- Reset button removed as requested -->
                 </div>
             </div>
             <div class="quest-progress">
@@ -196,9 +190,7 @@
 
     <!-- Game Footer -->
     <footer class="game-footer">
-        <div class="container">
-            <p style="font-size: 0.9em; margin: 15px 0;">© designed by MŠ</p>
-        </div>
+        <p style="font-size: 0.9em; margin: 15px 0;">© designed by MŠ</p>
     </footer>
 
     <!-- Game Engine -->
@@ -223,15 +215,7 @@
             initializeContactForm();
             
             // Handle restart button
-            const restartBtn = document.getElementById('restart-journey');
-            if (restartBtn) {
-                restartBtn.addEventListener('click', function() {
-                    if (window.portfolioGame) {
-                        window.portfolioGame.resetGame();
-                    }
-                    window.location.href = 'index.html';
-                });
-            }
+            // Reset button logic removed as requested
         });
         
         function initializeContactForm() {
