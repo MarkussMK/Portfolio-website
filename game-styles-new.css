@@ -357,7 +357,8 @@
     border: 1px solid #222;
     border-radius: 4px;
     padding: 20px;
-    margin: 20px 0;
+    margin: 20px auto;
+    max-width: 1200px;
     box-shadow: none;
     position: relative;
     overflow: hidden;
@@ -749,6 +750,9 @@
     background: #0a0a0a;
     border-bottom: 1px solid #222;
     padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .quest-menu {
