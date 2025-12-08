@@ -51,6 +51,12 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.18) !important;
       overflow: hidden !important;
     }
+    .avatar-display img {
+      border-radius: 50% !important;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+    }
     .about-text-centered, .read-section, .timeline-content, .artifact-description, .project-card p {
       word-break: break-word !important;
       font-size: 1.08em !important;
