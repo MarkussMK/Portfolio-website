@@ -177,6 +177,14 @@
       width: 100%;
       box-sizing: border-box;
     }
+    .character-tracker .character-info-display h4 {
+      text-align: center;
+      margin: 5px auto;
+      width: 100%;
+    }
+    .character-tracker .character-sprite {
+      margin: 0 auto;
+    }
     .character-tracker .xp-progress {
       width: 85%;
       max-width: 350px;
@@ -186,9 +194,11 @@
     .character-tracker .xp-text {
       font-size: 1em;
       color: #00f7ff;
-      margin: 8px 0 0 0;
+      margin: 8px auto 0 auto;
       font-weight: bold;
       text-align: center;
+      display: block;
+      width: 100%;
     }
   }
   /* RPG Game Styling - Natural Integration */
