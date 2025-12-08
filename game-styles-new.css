@@ -6,9 +6,9 @@
   .reset-progress-btn {
     position: fixed !important;
     left: 50% !important;
-    bottom: 70px !important;
+    bottom: 55px !important;
     transform: translateX(-50%) !important;
-    z-index: 10001 !important;
+    z-index: 9998 !important;
     width: auto !important;
     min-width: 100px !important;
     font-size: 0.85em !important;
