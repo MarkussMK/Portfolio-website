@@ -6,19 +6,19 @@
   .reset-progress-btn {
     position: fixed !important;
     left: 50% !important;
-    bottom: 60px !important;
+    bottom: 70px !important;
     transform: translateX(-50%) !important;
     z-index: 10001 !important;
     width: auto !important;
-    min-width: 120px !important;
-    font-size: 1.1em !important;
+    min-width: 100px !important;
+    font-size: 0.85em !important;
     background: #222 !important;
     color: #fff !important;
     border: 2px solid #00f7ff !important;
-    border-radius: 8px !important;
+    border-radius: 6px !important;
     box-shadow: 0 2px 12px rgba(0,247,255,0.18) !important;
-    padding: 10px 18px !important;
-    margin-bottom: 12px !important;
+    padding: 8px 14px !important;
+    margin-bottom: 0 !important;
   }
 }
 #site-intro-overlay {
