@@ -134,6 +134,10 @@
       transform: scale(0.95);
     }
     .mobile-xp-toggle.active {
+      position: absolute;
+      bottom: auto;
+      top: 10px;
+      right: 10px;
       background: linear-gradient(135deg, #000, #111);
       border-color: #000;
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
@@ -1136,7 +1140,7 @@
   .character-tracker {
     position: fixed;
     top: 50%;
-    right: 20px;
+    right: -200px;
     transform: translateY(-50%);
     background: #0a0a0a;
     border: 1px solid #222;
@@ -1146,7 +1150,15 @@
     z-index: 1000;
     min-width: 150px;
     text-align: center;
-    transition: all 0.3s ease;
+    transition: right 0.3s ease, border-color 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .character-tracker.expanded {
+    right: 20px;
+    opacity: 1;
+    visibility: visible;
   }
 
   .character-tracker:hover {
@@ -1657,3 +1669,55 @@
       font-size: 1em;
     }
   }
+
+/* Desktop XP Toggle Button */
+.desktop-xp-toggle {
+  position: fixed;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: rgba(10, 10, 10, 0.9);
+  border: 1px solid #333;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1001;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.desktop-xp-toggle:hover {
+  background: rgba(20, 20, 20, 0.95);
+  border-color: #555;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.desktop-xp-toggle.active {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  transform: none;
+  background: rgba(30, 30, 30, 1);
+  border-color: #fff;
+  z-index: 1002;
+}
+
+.desktop-xp-toggle.active:hover {
+  transform: scale(1.1);
+}
+
+.desktop-xp-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Hide desktop toggle on mobile */
+@media (max-width: 768px) {
+  .desktop-xp-toggle {
+    display: none !important;
+  }
+}
