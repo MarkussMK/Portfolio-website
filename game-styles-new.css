@@ -363,8 +363,8 @@
 
   /* Futuristic Cards */
   .quest-area, .artifact-card, .skill-card, .commission-board {
-    background: #0a0a0a;
-    border: 1px solid #222;
+    background: none;
+    border: none;
     border-radius: 4px;
     padding: 20px;
     margin: 20px auto;
@@ -694,12 +694,12 @@
     text-align: center;
     padding: 16px 12px;
     margin-top: 24px;
-    background: linear-gradient(135deg, #070a13 90%, #11131a 100%);
+    background: none;
     color: #fff;
-    border-top: 2px solid #222;
+    border-top: none;
     position: relative;
     z-index: 2;
-    box-shadow: 0 -5px 24px rgba(0, 0, 0, 0.45);
+    box-shadow: none;
     font-size: 1.08em;
     letter-spacing: 0.5px;
     font-family: 'Orbitron', 'Roboto Mono', monospace;
@@ -762,8 +762,8 @@
 
   /* Quest navigation improvements */
   .quest-navigation {
-    background: #0a0a0a;
-    border-bottom: 1px solid #222;
+    background: none;
+    border-bottom: none;
     padding: 20px 0;
     display: flex;
     justify-content: center;
@@ -885,8 +885,8 @@
   }
 
   .path-card {
-    background: #0a0a0a;
-    border: 1px solid #222;
+    background: none;
+    border: none;
     border-radius: 4px;
     padding: 25px;
     text-align: center;
@@ -897,8 +897,8 @@
   }
 
   .path-card:hover {
-    border-color: #333;
-    background: #0d0d0d;
+    border-color: transparent;
+    background: none;
   }
 
   .path-card::before {
@@ -932,8 +932,8 @@
   .achievement-showcase {
     margin-top: 50px;
     padding: 30px;
-    background: #0a0a0a;
-    border: 1px solid #222;
+    background: none;
+    border: none;
     border-radius: 4px;
     position: relative;
   }
@@ -952,8 +952,8 @@
   }
 
   .achievement-card {
-    background: #0a0a0a;
-    border: 1px solid #222;
+    background: none;
+    border: none;
     border-radius: 4px;
     padding: 20px;
     text-align: center;
@@ -962,8 +962,8 @@
   }
 
   .achievement-card.unlocked {
-    border-color: #333;
-    background: #0d0d0d;
+    border-color: transparent;
+    background: none;
   }
 
   .achievement-card.locked {
@@ -972,12 +972,12 @@
   }
 
   .achievement-card:hover:not(.locked) {
-    border-color: #333;
-    background: #0d0d0d;
+    border-color: transparent;
+    background: none;
   }
 
   .achievement-card.unlocked:hover {
-    border-color: #444;
+    border-color: transparent;
   }
 
   .achievement-icon {
@@ -1051,8 +1051,8 @@
   }
 
   .read-section {
-    background: #0a0a0a;
-    border: 1px solid #222;
+    background: none;
+    border: none;
     border-radius: 4px;
     padding: 25px;
     margin: 20px 0;
@@ -1061,8 +1061,8 @@
   }
 
   .read-section:hover {
-    border-color: #333;
-    background: #0d0d0d;
+    border-color: transparent;
+    background: none;
   }
 
   .read-section h3 {
@@ -1639,5 +1639,21 @@
     
     .skill-bar {
       width: 100%;
+    }
+    
+    /* Make level-up notification smaller on mobile */
+    .level-up-notification {
+      padding: 20px 30px;
+      max-width: 85vw;
+      border: 3px solid #fff;
+    }
+    
+    .level-up-notification .notification-content h3 {
+      font-size: 1.3em;
+      margin: 0 0 8px 0;
+    }
+    
+    .level-up-notification .notification-content p {
+      font-size: 1em;
     }
   }
