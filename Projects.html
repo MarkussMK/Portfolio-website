@@ -514,6 +514,331 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Screenshot Window 1 -->
+        <div class="notepad-window screenshot-window screenshot1">
+            <div class="notepad-titlebar">
+                <span class="notepad-title">📷 screen1.png - Notepad</span>
+                <div class="notepad-controls">
+                    <button class="notepad-btn minimize">_</button>
+                    <button class="notepad-btn maximize">□</button>
+                    <button class="notepad-btn close">&times;</button>
+                </div>
+            </div>
+            <div class="notepad-menubar">
+                <span>File</span>
+                <span>Edit</span>
+                <span>View</span>
+            </div>
+            <div class="notepad-image-content">
+                <img src="screen1.png" alt="Screenshot 1" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22300%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22Arial%22 font-size=%2216%22 fill=%22%23666%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3Escreen1.png%3C/text%3E%3C/svg%3E'">
+            </div>
+        </div>
+        
+        <!-- Screenshot Window 2 -->
+        <div class="notepad-window screenshot-window screenshot2">
+            <div class="notepad-titlebar">
+                <span class="notepad-title">📷 screen2.png - Notepad</span>
+                <div class="notepad-controls">
+                    <button class="notepad-btn minimize">_</button>
+                    <button class="notepad-btn maximize">□</button>
+                    <button class="notepad-btn close">&times;</button>
+                </div>
+            </div>
+            <div class="notepad-menubar">
+                <span>File</span>
+                <span>Edit</span>
+                <span>View</span>
+            </div>
+            <div class="notepad-image-content">
+                <img src="screen2.png" alt="Screenshot 2" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22300%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22Arial%22 font-size=%2216%22 fill=%22%23666%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3Escreen2.png%3C/text%3E%3C/svg%3E'">
+            </div>
+        </div>
+        
+        <!-- Screenshot Window 3 -->
+        <div class="notepad-window screenshot-window screenshot3">
+            <div class="notepad-titlebar">
+                <span class="notepad-title">📷 screen3.png - Notepad</span>
+                <div class="notepad-controls">
+                    <button class="notepad-btn minimize">_</button>
+                    <button class="notepad-btn maximize">□</button>
+                    <button class="notepad-btn close">&times;</button>
+                </div>
+            </div>
+            <div class="notepad-menubar">
+                <span>File</span>
+                <span>Edit</span>
+                <span>View</span>
+            </div>
+            <div class="notepad-image-content">
+                <img src="screen3.png" alt="Screenshot 3" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22300%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22Arial%22 font-size=%2216%22 fill=%22%23666%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3Escreen3.png%3C/text%3E%3C/svg%3E'">
+            </div>
+        </div>
+        
+        <!-- Decorative Text -->
+        <div class="version-text">
+            Here are some of my previous versions of the website!
+        </div>
     </div>
+
+    <style>
+        /* Modal overlay for project4 with notepad windows */
+        #modal-project4 .notepad-window {
+            position: fixed;
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #dfdfdf #808080 #808080 #dfdfdf;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            opacity: 0;
+            transform: scale(0.8) translateY(-20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        
+        #modal-project4 .notepad-window.show {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+        
+        .notepad-titlebar {
+            background: linear-gradient(to right, #000080, #1084d0);
+            color: white;
+            padding: 3px 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        .notepad-title {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .notepad-controls {
+            display: flex;
+            gap: 2px;
+        }
+        
+        .notepad-btn {
+            width: 16px;
+            height: 14px;
+            border: 1px solid;
+            border-color: #dfdfdf #808080 #808080 #dfdfdf;
+            background: #c0c0c0;
+            color: black;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        .notepad-btn:active {
+            border-color: #808080 #dfdfdf #dfdfdf #808080;
+        }
+        
+        .notepad-menubar {
+            background: #c0c0c0;
+            padding: 2px 5px;
+            border-bottom: 1px solid #808080;
+            font-size: 11px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .notepad-menubar span {
+            cursor: pointer;
+        }
+        
+        .notepad-menubar span:hover {
+            text-decoration: underline;
+        }
+        
+        .notepad-content {
+            background: white;
+            padding: 15px;
+            height: calc(100% - 50px);
+            overflow-y: auto;
+            border: 2px solid;
+            border-color: #808080 #dfdfdf #dfdfdf #808080;
+            margin: 2px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .notepad-image-content {
+            background: white;
+            padding: 0;
+            height: calc(100% - 50px);
+            overflow: hidden;
+            border: 2px solid;
+            border-color: #808080 #dfdfdf #dfdfdf #808080;
+            margin: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .notepad-image-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            image-rendering: -webkit-optimize-contrast;
+        }
+        
+        /* Screenshot Windows Positions */
+        #modal-project4 .screenshot1 {
+            top: 20%;
+            left: 5%;
+            width: 350px;
+            height: 300px;
+            z-index: 10001;
+            transform: rotate(-8deg);
+        }
+        
+        #modal-project4 .screenshot1.show {
+            transform: rotate(-8deg) scale(1) translateY(0);
+        }
+        
+        #modal-project4 .screenshot2 {
+            top: 20%;
+            right: 5%;
+            width: 350px;
+            height: 300px;
+            z-index: 10002;
+            transform: rotate(5deg);
+        }
+        
+        #modal-project4 .screenshot2.show {
+            transform: rotate(5deg) scale(1) translateY(0);
+        }
+        
+        #modal-project4 .screenshot3 {
+            bottom: 8%;
+            right: 5%;
+            width: 350px;
+            height: 300px;
+            z-index: 10001;
+            transform: rotate(-5deg);
+        }
+        
+        #modal-project4 .screenshot3.show {
+            transform: rotate(-5deg) scale(1) translateY(0);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            #modal-project4 .screenshot1, #modal-project4 .screenshot2 {
+                display: none;
+            }
+            
+            #modal-project4 .screenshot3 {
+                width: 90%;
+                max-width: 350px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            #modal-project4 .screenshot1, #modal-project4 .screenshot2, #modal-project4 .screenshot3 {
+                display: none;
+            }
+            
+            #modal-project4 .version-text {
+                display: none;
+            }
+        }
+        
+        /* Version Text */
+        #modal-project4 .version-text {
+            position: fixed;
+            bottom: 10%;
+            left: 5%;
+            color: white;
+            font-family: Impact, 'Arial Black', sans-serif;
+            font-size: 32px;
+            font-weight: normal;
+            letter-spacing: -1px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            transform: rotate(-25deg);
+            transform-origin: center;
+            z-index: 10003;
+            max-width: 350px;
+            text-align: center;
+            line-height: 1.2;
+        }
+    </style>
+
+    <script>
+        // Staggered animation for notepad windows in modal-project4
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainModal = document.getElementById('modal-project4');
+            const screen1 = mainModal.querySelector('.screenshot1');
+            const screen2 = mainModal.querySelector('.screenshot2');
+            const screen3 = mainModal.querySelector('.screenshot3');
+            
+            // Watch for when modal opens
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.attributeName === 'class') {
+                        if (mainModal.classList.contains('active')) {
+                            // Modal opened - trigger staggered animation
+                            setTimeout(() => {
+                                if (screen1) screen1.classList.add('show');
+                            }, 300);
+                            
+                            setTimeout(() => {
+                                if (screen2) screen2.classList.add('show');
+                            }, 500);
+                            
+                            setTimeout(() => {
+                                if (screen3) screen3.classList.add('show');
+                            }, 700);
+                        } else {
+                            // Modal closed - remove show classes
+                            if (screen1) screen1.classList.remove('show');
+                            if (screen2) screen2.classList.remove('show');
+                            if (screen3) screen3.classList.remove('show');
+                        }
+                    }
+                });
+            });
+            
+            if (mainModal) {
+                observer.observe(mainModal, {
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
+            }
+        });
+    </script>
+    
+    <script src="background-shader.js"></script>
+    
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Scroll to top">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 4L12 20M12 4L6 10M12 4L18 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+    
+    <script>
+        const scrollBtn = document.getElementById('scrollToTop');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollBtn.classList.add('visible');
+            } else {
+                scrollBtn.classList.remove('visible');
+            }
+        });
+        scrollBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
 </body>
 </html>
