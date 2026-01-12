@@ -1,0 +1,1445 @@
+/* Real 3D Box Design */
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal Box Container */
+.modal-box {
+    position: relative;
+    max-width: 800px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: linear-gradient(135deg, #111, #000 80%);
+    border: 4px solid #fff;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 
+        0 30px 80px rgba(0, 0, 0, 0.95),
+        0 0 80px 20px rgba(0, 0, 0, 0.3),
+        0 0 60px 10px rgba(255, 255, 255, 0.2);
+    transform: scale(0.2);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-overlay.opening .modal-box {
+    animation: dramaticModalOpen 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.modal-overlay.active .modal-box {
+    transform: scale(1);
+    opacity: 1;
+}
+
+@keyframes dramaticModalOpen {
+    0% {
+        transform: scale(0.2);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Close Button */
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.modal-close:hover {
+    background: rgba(255, 59, 48, 0.8);
+    border-color: #ff3b30;
+    transform: rotate(90deg);
+}
+
+.artifact-collection {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 100px 50px;
+    padding: 60px 30px 100px;
+    max-width: 1500px;
+    margin: 0 auto;
+    justify-items: center;
+}
+
+.read-section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    perspective: 1500px;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 350px;
+    margin-bottom: 20px;
+}
+
+.read-section.hidden {
+    display: none;
+}
+
+/* 3D Box Container */
+.box-3d {
+    width: 100%;
+    max-width: 350px;
+    height: 300px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* 3D Scene Container */
+.box-scene {
+    width: 100%;
+    height: 300px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-style: preserve-3d;
+    transition: all 0.5s ease;
+}
+
+/* 3D Cube */
+.box-cube {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(-15deg) rotateY(15deg);
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Box Faces */
+.box-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #b0b0b0, #808080);
+    border: 2px solid #5a5a5a;
+    opacity: 1;
+    backface-visibility: hidden;
+}
+
+.box-front {
+    transform: rotateY(0deg) translateZ(150px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #c5c5c5, #909090);
+}
+
+.box-back {
+    transform: rotateY(180deg) translateZ(150px);
+}
+
+.box-right {
+    transform: rotateY(90deg) translateZ(150px);
+}
+
+.box-left {
+    transform: rotateY(-90deg) translateZ(150px);
+}
+
+.box-top {
+    transform: rotateX(90deg) translateZ(150px);
+    background: linear-gradient(145deg, #c5c5c5, #909090);
+}
+
+.box-bottom {
+    transform: rotateX(-90deg) translateZ(150px);
+    background: linear-gradient(145deg, #707070, #505050);
+}
+
+/* Rarity badge on box front */
+.box-front .rarity-badge {
+    padding: 10px 24px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    line-height: 1.3;
+}
+
+.box-3d[data-rarity="legendary"] .box-front .rarity-badge {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: #1a1a2e;
+}
+
+.box-3d[data-rarity="epic"] .box-front .rarity-badge {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: #ffffff;
+}
+
+.box-3d[data-rarity="rare"] .box-front .rarity-badge {
+    background: linear-gradient(135deg, #a855f7, #9333ea);
+    color: #ffffff;
+}
+
+.box-3d[data-rarity="common"] .box-front .rarity-badge {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #ffffff;
+}
+
+/* Box Content - Inside Modal */
+.modal-box .box-content {
+    position: relative;
+    width: 100%;
+    opacity: 1;
+    pointer-events: auto;
+    padding: 0;
+    z-index: 1;
+    transform-style: flat;
+    box-sizing: border-box;
+}
+
+
+/* Hover effect on box */
+.box-3d:hover .box-cube {
+    transform: rotateX(-10deg) rotateY(20deg) scale(1.05);
+}
+
+/* Content Styling */
+.box-content h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #ffffff;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    line-height: 1.3;
+}
+
+.box-content .rarity-badge {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
+}
+
+.box-3d[data-rarity="legendary"] .box-content .rarity-badge {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: #1a1a2e;
+    box-shadow: 0 6px 20px rgba(251, 191, 36, 0.6);
+}
+
+.box-3d[data-rarity="epic"] .box-content .rarity-badge {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: #ffffff;
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.6);
+}
+
+.box-3d[data-rarity="rare"] .box-content .rarity-badge {
+    background: linear-gradient(135deg, #a855f7, #9333ea);
+    color: #ffffff;
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
+}
+
+.box-3d[data-rarity="common"] .box-content .rarity-badge {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #ffffff;
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.6);
+}
+
+.artifact-icon {
+    font-size: 4rem;
+    text-align: center;
+    margin: 20px 0;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+}
+
+.artifact-description {
+    color: #d1d5db;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin: 20px 0;
+}
+
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.tech-tag {
+    background: rgba(125, 211, 252, 0.15);
+    border: 1px solid rgba(125, 211, 252, 0.4);
+    color: #7dd3fc;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.tech-tag:hover {
+    background: rgba(125, 211, 252, 0.25);
+    border-color: #7dd3fc;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(125, 211, 252, 0.4);
+}
+
+.artifact-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.stat {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #10b981;
+    padding: 10px 18px;
+    border-radius: 15px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.stat:hover {
+    background: rgba(16, 185, 129, 0.25);
+    border-color: #10b981;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+}
+
+.artifact-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #7dd3fc, #38bdf8);
+    color: #1a1a2e;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(125, 211, 252, 0.4);
+}
+
+.artifact-link:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 35px rgba(125, 211, 252, 0.6);
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+}
+
+/* XP Indicator */
+.xp-indicator {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: #1a1a2e;
+    padding: 12px 32px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 
+        0 10px 40px rgba(251, 191, 36, 0.6),
+        0 0 60px rgba(251, 191, 36, 0.4);
+    z-index: 5;
+    transition: all 0.4s ease;
+}
+
+.read-section.viewed .xp-indicator {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    color: #9ca3af;
+    box-shadow: 0 10px 30px rgba(107, 114, 128, 0.4);
+}
+
+/* Entrance animations */
+.read-section {
+    animation: boxAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.read-section:nth-child(1) { animation-delay: 0.1s; }
+.read-section:nth-child(2) { animation-delay: 0.2s; }
+.read-section:nth-child(3) { animation-delay: 0.3s; }
+.read-section:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes boxAppear {
+    0% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .artifact-collection {
+        grid-template-columns: 1fr;
+        gap: 100px 30px;
+        padding: 40px 20px 100px;
+    }
+    
+    .box-3d {
+        max-width: 100%;
+        height: 250px;
+    }
+    
+    .box-front, .box-back, .box-right, .box-left, .box-top, .box-bottom {
+        transform: scale(0.85);
+    }
+    
+    .box-3d.open {
+        min-height: 550px;
+    }
+    
+    .box-content {
+        padding: 20px;
+    }
+    
+    .box-content h3 {
+        font-size: 1.3rem;
+    }
+    
+    .artifact-icon {
+        font-size: 3rem;
+    }
+    
+    .xp-indicator {
+        bottom: -60px;
+        padding: 10px 24px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Read section wrapper for XP tracking */
+.read-section {
+    position: relative;
+    transform-style: preserve-3d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 3D Box Container */
+.artifact-card {
+    position: relative;
+    width: 100%;
+    max-width: 350px;
+    height: 350px;
+    transform-style: preserve-3d;
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Box Frame/Border */
+.artifact-card .artifact-header,
+.artifact-card .artifact-content {
+    display: none;
+}
+
+.artifact-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, #0a0a0a 0%, #1a1a1a 100%);
+    border: 2px solid #333;
+    border-radius: 8px;
+    z-index: 1;
+}
+
+/* The actual 3D box shape - trapezoid */
+.artifact-card .rarity-badge {
+    position: absolute;
+    width: 280px;
+    height: 180px;
+    background: linear-gradient(180deg, #c0c0c0 0%, #a0a0a0 30%, #808080 70%, #606060 100%);
+    clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 30px;
+    box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.5),
+        inset 0 -3px 15px rgba(0, 0, 0, 0.3),
+        inset 0 3px 15px rgba(255, 255, 255, 0.2);
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: 2;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #fff;
+    border-radius: 0;
+}
+
+/* Rarity specific colors for badges */
+.artifact-card.rarity-legendary .rarity-badge {
+    background: linear-gradient(180deg, #c0c0c0 0%, #a0a0a0 30%, #808080 70%, #606060 100%);
+}
+
+.artifact-card.rarity-legendary .rarity-badge::after {
+    content: 'LEGENDARY';
+    display: block;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: #1a1a2e;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    box-shadow: 0 4px 15px rgba(251, 191, 36, 0.6);
+}
+
+.artifact-card.rarity-epic .rarity-badge::after {
+    content: 'EPIC';
+    display: block;
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: #ffffff;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.6);
+}
+
+.artifact-card.rarity-rare .rarity-badge::after {
+    content: 'RARE';
+    display: block;
+    background: linear-gradient(135deg, #a855f7, #9333ea);
+    color: #ffffff;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.6);
+}
+
+.artifact-card.rarity-common .rarity-badge::after {
+    content: 'COMMON';
+    display: block;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #ffffff;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.6);
+}
+
+/* Hover effect for closed box */
+.artifact-card:not(.open):hover {
+    transform: translateY(-10px) scale(1.02);
+}
+
+.artifact-card:not(.open):hover .rarity-badge {
+    box-shadow: 
+        0 25px 60px rgba(0, 0, 0, 0.6),
+        inset 0 -3px 15px rgba(0, 0, 0, 0.4),
+        inset 0 3px 15px rgba(255, 255, 255, 0.3);
+}
+
+/* OPEN STATE */
+.artifact-card.open {
+    height: auto;
+    min-height: 600px;
+    cursor: default;
+}
+
+.artifact-card.open::before {
+    background: linear-gradient(145deg, #1a1a2e 0%, #0f1419 100%);
+    border: 2px solid rgba(125, 211, 252, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+.artifact-card.open .rarity-badge {
+    width: 280px;
+    height: 80px;
+    clip-path: polygon(15% 0%, 85% 0%, 95% 100%, 5% 100%);
+    background: linear-gradient(180deg, rgba(192, 192, 192, 0.3) 0%, rgba(160, 160, 160, 0.2) 100%);
+    transform: translateY(-300px) rotateX(-70deg);
+    opacity: 0.5;
+    padding-top: 15px;
+}
+
+.artifact-card.open .artifact-header,
+.artifact-card.open .artifact-content {
+    display: block;
+    animation: contentReveal 0.6s ease-out 0.3s backwards;
+    position: relative;
+    z-index: 3;
+    padding: 30px;
+    width: 100%;
+}
+
+.artifact-card.open .artifact-header {
+    padding-bottom: 10px;
+}
+
+@keyframes contentReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Open box badge - show at top */
+.artifact-card.open .artifact-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #ffffff;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    line-height: 1.3;
+}
+
+/* Icon */
+.artifact-icon {
+    font-size: 4rem;
+    text-align: center;
+    margin: 20px 0;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+}
+
+/* Description */
+.artifact-description {
+    color: #d1d5db;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin: 20px 0;
+}
+
+/* Tech stack */
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.tech-tag {
+    background: rgba(125, 211, 252, 0.15);
+    border: 1px solid rgba(125, 211, 252, 0.4);
+    color: #7dd3fc;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.tech-tag:hover {
+    background: rgba(125, 211, 252, 0.25);
+    border-color: #7dd3fc;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(125, 211, 252, 0.4);
+}
+
+/* Stats */
+.artifact-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.stat {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #10b981;
+    padding: 10px 18px;
+    border-radius: 15px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.stat:hover {
+    background: rgba(16, 185, 129, 0.25);
+    border-color: #10b981;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+}
+
+/* Artifact link */
+.artifact-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #7dd3fc, #38bdf8);
+    color: #1a1a2e;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(125, 211, 252, 0.4);
+}
+
+.artifact-link:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 35px rgba(125, 211, 252, 0.6);
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+}
+
+/* XP Indicator - positioned below box with glow */
+.xp-indicator {
+    position: absolute;
+    bottom: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: #1a1a2e;
+    padding: 12px 32px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 
+        0 10px 40px rgba(251, 191, 36, 0.6),
+        0 0 60px rgba(251, 191, 36, 0.4);
+    z-index: 10;
+    transition: all 0.4s ease;
+}
+
+.read-section.viewed .xp-indicator {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    color: #9ca3af;
+    box-shadow: 0 10px 30px rgba(107, 114, 128, 0.4);
+}
+
+/* Entrance animations */
+.read-section {
+    animation: boxAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.read-section:nth-child(1) { animation-delay: 0.1s; }
+.read-section:nth-child(2) { animation-delay: 0.2s; }
+.read-section:nth-child(3) { animation-delay: 0.3s; }
+.read-section:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes boxAppear {
+    0% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .artifact-collection {
+        grid-template-columns: 1fr;
+        gap: 100px 30px;
+        padding: 40px 20px 100px;
+    }
+    
+    .artifact-card {
+        max-width: 100%;
+        height: 300px;
+    }
+    
+    .artifact-card .rarity-badge {
+        width: 90%;
+        max-width: 280px;
+    }
+    
+    .artifact-card.open {
+        min-height: 550px;
+    }
+    
+    .artifact-card.open .artifact-header,
+    .artifact-card.open .artifact-content {
+        padding: 20px;
+    }
+    
+    .artifact-icon {
+        font-size: 3rem;
+    }
+    
+    .artifact-card.open .artifact-header h3 {
+        font-size: 1.3rem;
+    }
+    
+    .xp-indicator {
+        bottom: -60px;
+        padding: 10px 24px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Intro section styling */
+.vault-intro {
+    text-align: center;
+    padding: 40px 20px 30px;
+    margin-bottom: 20px;
+}
+
+.vault-intro h2 {
+    font-size: 2.5rem;
+    color: #ffffff;
+    margin-bottom: 20px;
+    text-shadow: 0 4px 20px rgba(125, 211, 252, 0.3);
+}
+
+.quest-description {
+    font-size: 1.1rem;
+    color: #d1d5db;
+    max-width: 800px;
+    margin: 0 auto 25px;
+    line-height: 1.8;
+}
+
+/* Click instruction */
+.vault-intro::after {
+    content: '📦 Click on any box to open and explore';
+    display: block;
+    margin-top: 25px;
+    font-size: 1.05rem;
+    color: #fbbf24;
+    font-weight: 600;
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+    animation: instructionPulse 2s ease-in-out infinite;
+}
+
+@keyframes instructionPulse {
+    0%, 100% { 
+        opacity: 0.8;
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 1;
+        transform: scale(1.02);
+    }
+}
+
+@media (max-width: 768px) {
+    .vault-intro h2 {
+        font-size: 2rem;
+    }
+    
+    .quest-description {
+        font-size: 1rem;
+    }
+    
+    .vault-intro::after {
+        font-size: 0.95rem;
+    }
+}
+
+/* Read section wrapper for XP tracking */
+.read-section {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 3D Box Styling - Closed State */
+.artifact-card {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    transform-style: preserve-3d;
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    margin-bottom: 60px;
+}
+
+/* Box container - main body */
+.artifact-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 5%;
+    width: 90%;
+    height: 60%;
+    background: linear-gradient(145deg, #4a4a4a 0%, #2a2a2a 100%);
+    border-radius: 4px;
+    box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.6),
+        inset 0 -3px 10px rgba(0, 0, 0, 0.4),
+        inset 0 3px 10px rgba(255, 255, 255, 0.1);
+    transform: rotateX(0deg);
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Box lid - angled top */
+.artifact-card::after {
+    content: '';
+    position: absolute;
+    bottom: 50%;
+    left: 5%;
+    width: 90%;
+    height: 55%;
+    background: linear-gradient(160deg, #b8b8b8 0%, #8a8a8a 50%, #5a5a5a 100%);
+    border-radius: 4px 4px 0 0;
+    box-shadow: 
+        0 -5px 20px rgba(0, 0, 0, 0.3),
+        inset 0 2px 15px rgba(255, 255, 255, 0.3),
+        inset 0 -2px 10px rgba(0, 0, 0, 0.2),
+        0 15px 40px rgba(0, 0, 0, 0.4);
+    transform: rotateX(-60deg);
+    transform-origin: bottom center;
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+}
+
+/* Rarity badge on the lid */
+.artifact-card .rarity-badge {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotateX(-60deg);
+    z-index: 5;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+}
+
+/* Hide all content when closed */
+.artifact-card .artifact-header h3,
+.artifact-card .artifact-content {
+    opacity: 0;
+    transform: scale(0.7) translateY(50px);
+    transition: all 0.6s ease;
+    pointer-events: none;
+    position: absolute;
+    width: 90%;
+    left: 5%;
+}
+
+.artifact-card .artifact-header {
+    top: 20px;
+}
+
+.artifact-card .artifact-content {
+    top: 80px;
+}
+
+/* Hover effect for closed box */
+.artifact-card:not(.open):hover::after {
+    transform: rotateX(-55deg) translateY(-5px);
+    box-shadow: 
+        0 -8px 25px rgba(0, 0, 0, 0.4),
+        inset 0 2px 20px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 15px rgba(0, 0, 0, 0.25),
+        0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.artifact-card:not(.open):hover::before {
+    box-shadow: 
+        0 25px 60px rgba(0, 0, 0, 0.7),
+        inset 0 -3px 10px rgba(0, 0, 0, 0.5),
+        inset 0 3px 10px rgba(255, 255, 255, 0.15);
+}
+
+/* OPEN STATE */
+.artifact-card.open {
+    height: auto;
+    min-height: 550px;
+    margin-bottom: 60px;
+}
+
+/* Open box - body expands */
+.artifact-card.open::before {
+    height: auto;
+    min-height: 550px;
+    background: linear-gradient(145deg, #1a1a2e 0%, #0f1419 100%);
+    border: 1px solid rgba(125, 211, 252, 0.2);
+    box-shadow: 
+        0 30px 70px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 0 50px rgba(125, 211, 252, 0.15);
+    transform: rotateX(0deg);
+}
+
+/* Open box - lid flips back */
+.artifact-card.open::after {
+    transform: rotateX(-140deg) translateY(-20px);
+    opacity: 0.6;
+    filter: brightness(0.7);
+}
+
+/* Open box - reposition and show badge */
+.artifact-card.open .rarity-badge {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+/* Show content when open */
+.artifact-card.open .artifact-header h3,
+.artifact-card.open .artifact-content {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
+    position: relative;
+    transition: all 0.6s ease 0.3s;
+    width: 100%;
+    left: 0;
+    padding: 0 30px;
+}
+
+.artifact-card.open .artifact-header {
+    padding: 30px 30px 0;
+}
+
+/* Rarity badge colors */
+.rarity-badge.legendary {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: #1a1a2e;
+    box-shadow: 0 6px 25px rgba(251, 191, 36, 0.6);
+}
+
+.rarity-badge.epic {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: #ffffff;
+    box-shadow: 0 6px 25px rgba(249, 115, 22, 0.6);
+}
+
+.rarity-badge.rare {
+    background: linear-gradient(135deg, #a855f7, #9333ea);
+    color: #ffffff;
+    box-shadow: 0 6px 25px rgba(168, 85, 247, 0.6);
+}
+
+.rarity-badge.common {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #ffffff;
+    box-shadow: 0 6px 25px rgba(34, 197, 94, 0.6);
+}
+
+/* Card header */
+.artifact-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #ffffff;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    line-height: 1.3;
+}
+
+/* Icon */
+.artifact-icon {
+    font-size: 4rem;
+    text-align: center;
+    margin: 25px 0;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+    transition: all 0.4s ease;
+}
+
+.artifact-card.open .artifact-icon {
+    animation: iconReveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s backwards;
+}
+
+@keyframes iconReveal {
+    0% {
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+/* Description */
+.artifact-description {
+    color: #d1d5db;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin: 20px 0;
+}
+
+/* Tech stack */
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.tech-tag {
+    background: rgba(125, 211, 252, 0.15);
+    border: 1px solid rgba(125, 211, 252, 0.4);
+    color: #7dd3fc;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.tech-tag:hover {
+    background: rgba(125, 211, 252, 0.25);
+    border-color: #7dd3fc;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 5px 15px rgba(125, 211, 252, 0.4);
+}
+
+/* Stats */
+.artifact-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.stat {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #10b981;
+    padding: 10px 18px;
+    border-radius: 15px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.stat:hover {
+    background: rgba(16, 185, 129, 0.25);
+    border-color: #10b981;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+}
+
+/* Artifact link */
+.artifact-link {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #7dd3fc, #38bdf8);
+    color: #1a1a2e;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(125, 211, 252, 0.4);
+}
+
+.artifact-link:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 35px rgba(125, 211, 252, 0.6);
+    background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+}
+
+/* XP Indicator - positioned below box with glow */
+.xp-indicator {
+    position: relative;
+    margin-top: 20px;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: #1a1a2e;
+    padding: 10px 28px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 
+        0 8px 30px rgba(251, 191, 36, 0.6),
+        0 0 40px rgba(251, 191, 36, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    z-index: 10;
+    transition: all 0.4s ease;
+}
+
+.read-section.viewed .xp-indicator {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    color: #d1d5db;
+    animation: none;
+    box-shadow: 0 8px 20px rgba(107, 114, 128, 0.4);
+}
+
+/* Entrance animations */
+.read-section {
+    animation: boxDrop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.read-section:nth-child(1) { animation-delay: 0.1s; }
+.read-section:nth-child(2) { animation-delay: 0.2s; }
+.read-section:nth-child(3) { animation-delay: 0.3s; }
+.read-section:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes boxDrop {
+    0% {
+        opacity: 0;
+        transform: translateY(-100px) rotateX(-30deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .artifact-collection {
+        grid-template-columns: 1fr;
+        gap: 100px 40px;
+        padding: 40px 15px 80px;
+    }
+    
+    .artifact-card {
+        height: 240px;
+    }
+    
+    .artifact-card.open {
+        min-height: 500px;
+    }
+    
+    .artifact-card .artifact-header h3,
+    .artifact-card .artifact-content {
+        width: 95%;
+        left: 2.5%;
+    }
+    
+    .artifact-card.open .artifact-header h3,
+    .artifact-card.open .artifact-content {
+        padding: 0 20px;
+    }
+    
+    .artifact-card.open .artifact-header {
+        padding: 20px 20px 0;
+    }
+    
+    .artifact-icon {
+        font-size: 3rem;
+    }
+    
+    .artifact-header h3 {
+        font-size: 1.25rem;
+    }
+}
+
+
+/* Intro section styling */
+.vault-intro {
+    text-align: center;
+    padding: 40px 20px 30px;
+    margin-bottom: 20px;
+}
+
+.vault-intro h2 {
+    font-size: 2.5rem;
+    color: #ffffff;
+    margin-bottom: 20px;
+    text-shadow: 0 4px 20px rgba(125, 211, 252, 0.3);
+}
+
+.quest-description {
+    font-size: 1.1rem;
+    color: #d1d5db;
+    max-width: 800px;
+    margin: 0 auto 25px;
+    line-height: 1.8;
+}
+
+/* Click instruction */
+.vault-intro::after {
+    content: '📦 Click on any box to open and explore';
+    display: block;
+    margin-top: 25px;
+    font-size: 1.05rem;
+    color: #fbbf24;
+    font-weight: 600;
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+    animation: instructionPulse 2s ease-in-out infinite;
+}
+
+@keyframes instructionPulse {
+    0%, 100% { 
+        opacity: 0.8;
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 1;
+        transform: scale(1.02);
+    }
+}
+
+@media (max-width: 768px) {
+    .vault-intro h2 {
+        font-size: 2rem;
+    }
+    
+    .quest-description {
+        font-size: 1rem;
+    }
+    
+    .vault-intro::after {
+        font-size: 0.95rem;
+    }
+}
+
+/* Filter Styling */
+.rarity-filters {
+    margin: 30px auto;
+    text-align: center;
+}
+
+.rarity-filters h3 {
+    font-size: 1.3rem;
+    color: #ffffff;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 12px 28px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    backdrop-filter: blur(10px);
+}
+
+.filter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #7dd3fc, #0ea5e9);
+    border-color: #0ea5e9;
+    box-shadow: 0 8px 25px rgba(14, 165, 233, 0.5);
+}
+
+.filter-btn.legendary-btn {
+    border-color: #fbbf24;
+}
+
+.filter-btn.legendary-btn:hover,
+.filter-btn.legendary-btn.active {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    border-color: #fbbf24;
+    color: #1a1a2e;
+    box-shadow: 0 8px 25px rgba(251, 191, 36, 0.5);
+}
+
+.filter-btn.epic-btn {
+    border-color: #f97316;
+}
+
+.filter-btn.epic-btn:hover,
+.filter-btn.epic-btn.active {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    border-color: #f97316;
+    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.5);
+}
+
+.filter-btn.rare-btn {
+    border-color: #a855f7;
+}
+
+.filter-btn.rare-btn:hover,
+.filter-btn.rare-btn.active {
+    background: linear-gradient(135deg, #a855f7, #9333ea);
+    border-color: #a855f7;
+    box-shadow: 0 8px 25px rgba(168, 85, 247, 0.5);
+}
+
+.filter-btn.common-btn {
+    border-color: #22c55e;
+}
+
+.filter-btn.common-btn:hover,
+.filter-btn.common-btn.active {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border-color: #22c55e;
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.5);
+}
+
+@media (max-width: 768px) {
+    .filter-buttons {
+        gap: 10px;
+    }
+    
+    .filter-btn {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+    }
+}
