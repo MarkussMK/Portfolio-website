@@ -15,9 +15,9 @@
       font-size: 0.85em !important;
       background: #222 !important;
       color: #fff !important;
-      border: 2px solid #00f7ff !important;
+      border: 2px solid #fff !important;
       border-radius: 6px !important;
-      box-shadow: 0 2px 12px rgba(0,247,255,0.18) !important;
+      box-shadow: 0 2px 12px rgba(255,255,255,0.18) !important;
       padding: 8px 14px !important;
       margin: 12px auto 0 auto !important;
       display: block !important;
@@ -89,7 +89,7 @@
       margin: 0 auto 12px auto !important;
       display: block !important;
       border-radius: 8px !important;
-      box-shadow: 0 2px 8px rgba(0,247,255,0.18) !important;
+      box-shadow: 0 2px 8px rgba(255,255,255,0.18) !important;
       order: -1 !important;
     }
     .quest-area[data-quest="explore-story"] h3,
@@ -117,14 +117,14 @@
       right: 10px;
       width: 50px;
       height: 50px;
-      background: linear-gradient(135deg, #0a0e27, #1a1a2e);
-      border: 2px solid #00f7ff;
+      background: linear-gradient(135deg, #111, #000);
+      border: 2px solid #fff;
       border-radius: 50%;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       z-index: 10000;
-      box-shadow: 0 4px 20px rgba(0,247,255,0.3);
+      box-shadow: 0 4px 20px rgba(255,255,255,0.3);
       transition: all 0.3s ease;
       font-size: 1.5em;
       user-select: none;
@@ -134,9 +134,9 @@
       transform: scale(0.95);
     }
     .mobile-xp-toggle.active {
-      background: linear-gradient(135deg, #1a1a2e, #0a0e27);
-      border-color: #ff2a6d;
-      box-shadow: 0 4px 20px rgba(255,42,109,0.3);
+      background: linear-gradient(135deg, #000, #111);
+      border-color: #000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
   }
 
@@ -162,8 +162,8 @@
       min-height: 200px;
       max-height: 300px;
       border-radius: 0 !important;
-      box-shadow: 0 -2px 18px rgba(0,247,255,0.12) !important;
-      background: linear-gradient(90deg, #0a0e27 80%, #1a1a2e 100%) !important;
+      box-shadow: 0 -2px 18px rgba(255,255,255,0.12) !important;
+      background: linear-gradient(90deg, #111 80%, #1a1a2e 100%) !important;
       z-index: 9999 !important;
       display: flex !important;
       flex-direction: column !important;
@@ -171,7 +171,7 @@
       justify-content: center !important;
       padding: 15px 20px 15px 20px !important;
       gap: 12px !important;
-      border-top: 2px solid #00f7ff !important;
+      border-top: 2px solid #fff !important;
       transition: bottom 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), 
                   visibility 0.5s ease,
                   opacity 0.5s ease;
@@ -220,7 +220,7 @@
     }
     .character-tracker .xp-text {
       font-size: 1em !important;
-      color: #00f7ff !important;
+      color: #fff !important;
       margin: 8px auto 0 auto !important;
       font-weight: bold !important;
       text-align: center !important;
@@ -300,11 +300,11 @@
     position: fixed;
     top: 20px;
     right: 20px;
-    background: linear-gradient(135deg, #0a0e27, #1a1a2e);
-    border: 2px solid #00f7ff;
+    background: linear-gradient(135deg, #111, #000);
+    border: 2px solid #fff;
     border-radius: 5px;
     padding: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 247, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.2);
     z-index: 1000;
     animation: slideInFromRight 0.5s ease-out, fadeOutAfter 4s ease-in;
     max-width: 300px;
@@ -313,26 +313,26 @@
   .quest-complete-notification .notification-content h3,
   .achievement-summary-notification .notification-content h3 {
     margin: 0 0 10px 0;
-    color: #00f7ff;
+    color: #fff;
     font-size: 1.2em;
-    text-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
   }
 
   .quest-complete-notification .notification-content p,
   .achievement-summary-notification .notification-content p {
     margin: 5px 0;
-    color: #00f7ff;
+    color: #fff;
   }
 
   .xp-reward {
-    background: linear-gradient(45deg, #ff2a6d, #d1f7ff);
+    background: linear-gradient(45deg, #000, #fff);
     color: #0a0e27;
     padding: 5px 15px;
     border-radius: 3px;
     text-align: center;
     font-weight: bold;
     margin-top: 10px;
-    box-shadow: 0 0 15px rgba(255, 42, 109, 0.5);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
   }
 
   @keyframes slideInFromRight {
@@ -445,17 +445,17 @@
   }
 
   /* Rarity System - Futuristic Tech Tiers */
-  .rarity-common { border-color: #00f7ff; }
+  .rarity-common { border-color: #fff; }
   .rarity-uncommon { border-color: #00d4ff; }
-  .rarity-rare { border-color: #ff2a6d; }
-  .rarity-epic { border-color: #9c27b0; }
-  .rarity-legendary { border-color: #ffea00; }
+  .rarity-rare { border-color: #000; }
+  .rarity-epic { border-color: #666; }
+  .rarity-legendary { border-color: #fff; }
 
-  .rarity-common::before { background: linear-gradient(90deg, transparent, rgba(0, 247, 255, 0.1), transparent); }
-  .rarity-uncommon::before { background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent); }
-  .rarity-rare::before { background: linear-gradient(90deg, transparent, rgba(255, 42, 109, 0.1), transparent); }
-  .rarity-epic::before { background: linear-gradient(90deg, transparent, rgba(156, 39, 176, 0.1), transparent); }
-  .rarity-legendary::before { background: linear-gradient(90deg, transparent, rgba(255, 234, 0, 0.1), transparent); }
+  .rarity-common::before { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent); }
+  .rarity-uncommon::before { background: linear-gradient(90deg, transparent, rgba(200, 200, 200, 0.1), transparent); }
+  .rarity-rare::before { background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.3), transparent); }
+  .rarity-epic::before { background: linear-gradient(90deg, transparent, rgba(136, 136, 136, 0.1), transparent); }
+  .rarity-legendary::before { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent); }
 
   /* Futuristic Links */
   a {
@@ -484,26 +484,26 @@
   }
 
   .read-section.reading {
-    border-left-color: #ff9800;
+    border-left-color: #888;
     background: rgba(255, 152, 0, 0.1);
   }
 
   .read-section.completed {
-    border-left-color: #00f7ff;
-    background: rgba(0, 247, 255, 0.1);
+    border-left-color: #fff;
+    background: rgba(255, 255, 255, 0.2);
   }
 
   /* Mini-game styles - Futuristic */
   .mini-game-container {
-    background: linear-gradient(135deg, #0a0e27, #1a1a2e);
-    border: 2px solid #00f7ff;
+    background: linear-gradient(135deg, #111, #000);
+    border: 2px solid #fff;
     border-radius: 5px;
     padding: 30px;
     margin: 20px 0;
     text-align: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 247, 255, 0.3);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 255, 255, 0.2);
   }
 
   .mini-game-container::before {
@@ -513,20 +513,20 @@
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(45deg, #00f7ff, #ff2a6d, #00f7ff);
+    background: linear-gradient(45deg, #fff, #000, #fff);
     z-index: -1;
     border-radius: 5px;
     animation: borderGlow 3s ease-in-out infinite;
   }
 
   @keyframes borderGlow {
-    0%, 100% { background: linear-gradient(45deg, #00f7ff, #ff2a6d, #00f7ff); }
-    50% { background: linear-gradient(45deg, #ff2a6d, #00f7ff, #ff2a6d); }
+    0%, 100% { background: linear-gradient(45deg, #fff, #000, #fff); }
+    50% { background: linear-gradient(45deg, #000, #fff, #000); }
   }
 
   .skill-item, .artifact-guess {
     background: linear-gradient(135deg, #0a0e27, #16213e);
-    border: 2px solid #00f7ff;
+    border: 2px solid #fff;
     border-radius: 5px;
     padding: 15px;
     margin: 10px;
@@ -540,8 +540,8 @@
 
   .skill-item:hover, .artifact-guess:hover {
     transform: scale(1.05);
-    box-shadow: 0 5px 20px rgba(0, 247, 255, 0.5);
-    border-color: #ff2a6d;
+    box-shadow: 0 5px 20px rgba(255, 255, 255, 0.2);
+    border-color: #000;
   }
 
   .skill-item.dragging {
@@ -550,7 +550,7 @@
   }
 
   .drop-zone {
-    border: 2px dashed rgba(0, 247, 255, 0.5);
+    border: 2px dashed rgba(255, 255, 255, 0.2);
     border-radius: 5px;
     padding: 20px;
     margin: 10px;
@@ -559,7 +559,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    color: #00f7ff;
+    color: #fff;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -567,11 +567,11 @@
   }
 
   .drop-zone.drag-over {
-    background: rgba(0, 247, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2);
     border-style: solid;
-    border-color: #ff2a6d;
+    border-color: #000;
     transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(255, 42, 109, 0.6);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   }
 
   /* Responsive Design - Futuristic */
@@ -634,7 +634,7 @@
 
   .floating-xp {
     position: absolute;
-    color: #ff2a6d;
+    color: #000;
     font-weight: bold;
     font-size: 1.2em;
     pointer-events: none;
@@ -676,7 +676,7 @@
   }
 
   nav ul li a {
-    background: linear-gradient(135deg, rgba(0, 247, 255, 0.2), rgba(255, 42, 109, 0.2));
+    background: transparent;
     padding: 10px 20px;
     border-radius: 5px;
     border: 2px solid transparent;
@@ -684,8 +684,8 @@
   }
 
   nav ul li a:hover {
-    border-color: #00f7ff;
-    background: linear-gradient(135deg, rgba(0, 247, 255, 0.3), rgba(255, 42, 109, 0.3));
+    border-color: #fff;
+    background: transparent;
     transform: translateY(-2px);
   }
 
@@ -709,13 +709,13 @@
 
   /* Hero section - Futuristic */
   .game-header {
-    background: linear-gradient(135deg, rgba(10, 14, 39, 0.95), rgba(26, 26, 46, 0.9));
-    border-bottom: 2px solid #00f7ff;
+    background: linear-gradient(135deg, #111, #000);
+    border-bottom: 2px solid #fff;
     padding: 60px 0;
     text-align: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 5px 30px rgba(0, 247, 255, 0.3);
+    box-shadow: 0 5px 30px rgba(255, 255, 255, 0.2);
   }
 
   .game-header::before {
@@ -725,7 +725,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at center, rgba(0, 247, 255, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
     animation: pulse 4s ease-in-out infinite;
   }
 
@@ -743,21 +743,21 @@
   }
 
   .player-level-badge {
-    background: linear-gradient(45deg, #00f7ff, #ff2a6d);
+    background: linear-gradient(45deg, #fff, #000);
     color: white;
     padding: 8px 20px;
     border-radius: 5px;
     font-weight: bold;
     display: inline-block;
-    box-shadow: 0 5px 15px rgba(0, 247, 255, 0.4);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
     animation: levelGlow 3s ease-in-out infinite alternate;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
 
   @keyframes levelGlow {
-    from { box-shadow: 0 5px 15px rgba(0, 247, 255, 0.4); }
-    to { box-shadow: 0 8px 25px rgba(255, 42, 109, 0.6); }
+    from { box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2); }
+    to { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); }
   }
 
   /* Quest navigation improvements */
@@ -802,35 +802,35 @@
 
   /* Unlock pulse animation for newly available navigation */
   @keyframes unlockPulse {
-    0% { box-shadow: 0 0 0 0 rgba(0,247,255,0.6); background:#111; }
-    40% { box-shadow: 0 0 12px 6px rgba(255,42,109,0.4); background:#141414; }
-    70% { box-shadow: 0 0 18px 10px rgba(0,247,255,0.5); background:#111; }
+    0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.6); background:#111; }
+    40% { box-shadow: 0 0 12px 6px rgba(0,0,0,0.4); background:#141414; }
+    70% { box-shadow: 0 0 18px 10px rgba(255,255,255,0.5); background:#111; }
     100% { box-shadow: 0 0 0 0 transparent; }
   }
   .nav-link.unlock-pulse {
     animation: unlockPulse 2s ease-out, dramaticButtonPulse 3.5s cubic-bezier(0.4,0,0.2,1) infinite alternate;
     position: relative;
-    box-shadow: 0 0 0 0 #00f7ff, 0 0 0 0 #ff2a6d;
+    box-shadow: 0 0 0 0 #fff, 0 0 0 0 #000;
     border-width: 3px;
-    border-image: linear-gradient(90deg, #00f7ff 0%, #ff2a6d 100%) 1;
+    border-image: linear-gradient(90deg, #fff 0%, #000 100%) 1;
     z-index: 10;
   }
 
   @keyframes dramaticButtonPulse {
     0% {
-      box-shadow: 0 0 0 0 #00f7ff, 0 0 0 0 #ff2a6d;
-      filter: brightness(1.1) drop-shadow(0 0 8px #00f7ff);
-      border-color: #00f7ff;
+      box-shadow: 0 0 0 0 #fff, 0 0 0 0 #000;
+      filter: brightness(1.1) drop-shadow(0 0 8px #fff);
+      border-color: #fff;
     }
     50% {
-      box-shadow: 0 0 24px 8px #ff2a6d, 0 0 16px 4px #00f7ff;
-      filter: brightness(1.3) drop-shadow(0 0 16px #ff2a6d);
-      border-color: #ff2a6d;
+      box-shadow: 0 0 24px 8px #000, 0 0 16px 4px #fff;
+      filter: brightness(1.3) drop-shadow(0 0 16px #000);
+      border-color: #000;
     }
     100% {
-      box-shadow: 0 0 0 0 #00f7ff, 0 0 0 0 #ff2a6d;
-      filter: brightness(1.1) drop-shadow(0 0 8px #00f7ff);
-      border-color: #00f7ff;
+      box-shadow: 0 0 0 0 #fff, 0 0 0 0 #000;
+      filter: brightness(1.1) drop-shadow(0 0 8px #fff);
+      border-color: #fff;
     }
   }
 
@@ -844,7 +844,7 @@
     50% {
       opacity: 0.7;
       filter: brightness(1.2);
-      box-shadow: 0 0 15px rgba(0,247,255,0.4);
+      box-shadow: 0 0 15px rgba(255,255,255,0.4);
     }
     100% { 
       opacity: 1;
@@ -1215,8 +1215,8 @@
   /* Level Up Animation - Futuristic */
   .character-tracker.level-up {
     animation: levelUpBounce 0.6s ease;
-    border-color: #ff2a6d;
-    box-shadow: 0 15px 60px rgba(255, 42, 109, 0.9), 0 0 50px rgba(0, 247, 255, 0.6);
+    border-color: #000;
+    box-shadow: 0 15px 60px rgba(0, 0, 0, 0.3), 0 0 50px rgba(255, 255, 255, 0.2);
   }
 
   @keyframes levelUpBounce {
@@ -1231,7 +1231,7 @@
   }
 
   @keyframes characterCelebrate {
-    0%, 100% { transform: rotate(0deg) scale(1); filter: drop-shadow(0 0 10px rgba(0, 247, 255, 0.8)); }
+    0%, 100% { transform: rotate(0deg) scale(1); filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2)); }
     25% { transform: rotate(-15deg) scale(1.3); filter: drop-shadow(0 0 20px rgba(255, 42, 109, 1)); }
     50% { transform: rotate(15deg) scale(1.3); filter: drop-shadow(0 0 20px rgba(0, 247, 255, 1)); }
     75% { transform: rotate(-10deg) scale(1.3); filter: drop-shadow(0 0 20px rgba(255, 42, 109, 1)); }
@@ -1243,19 +1243,19 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: linear-gradient(135deg, #0a0e27, #1a1a2e 80%);
-    border: 4px solid #00f7ff;
+    background: linear-gradient(135deg, #111, #000 80%);
+    border: 4px solid #fff;
     border-radius: 12px;
     padding: 40px 70px;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95), 0 0 80px 20px rgba(255, 42, 109, 0.7), 0 0 60px 10px rgba(0, 247, 255, 0.8);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95), 0 0 80px 20px rgba(0, 0, 0, 0.3), 0 0 60px 10px rgba(255, 255, 255, 0.2);
     z-index: 2000;
     animation: dramaticPopIn 1.2s cubic-bezier(0.4,0,0.2,1);
     text-align: center;
   }
 
   .level-up-notification.dramatic {
-    border: 4px solid #ff2a6d;
-    box-shadow: 0 0 80px 20px #ff2a6d, 0 0 60px 10px #00f7ff, 0 30px 80px rgba(0,0,0,0.95);
+    border: 4px solid #000;
+    box-shadow: 0 0 80px 20px #000, 0 0 60px 10px #fff, 0 30px 80px rgba(0,0,0,0.95);
   }
 
   @keyframes dramaticPopIn {
@@ -1276,9 +1276,9 @@
   }
 
   @keyframes dramaticPulse {
-    0% { color: #00f7ff; text-shadow: 0 0 20px #00f7ff; }
-    50% { color: #ff2a6d; text-shadow: 0 0 30px #ff2a6d; }
-    100% { color: #00f7ff; text-shadow: 0 0 20px #00f7ff; }
+    0% { color: #fff; text-shadow: 0 0 20px #fff; }
+    50% { color: #000; text-shadow: 0 0 30px #000; }
+    100% { color: #fff; text-shadow: 0 0 20px #fff; }
   }
 
   @keyframes levelUpPopIn {
@@ -1297,7 +1297,7 @@
 
   .level-up-notification .notification-content h3 {
     margin: 0 0 10px 0;
-    color: #00f7ff;
+    color: #fff;
     font-size: 2em;
     text-shadow: 0 0 15px rgba(0, 247, 255, 1);
     animation: textPulse 0.5s ease-in-out infinite alternate;
@@ -1311,17 +1311,17 @@
 
   .level-up-notification .notification-content p {
     margin: 0;
-    color: #ff2a6d;
+    color: #000;
     font-size: 1.3em;
     font-weight: bold;
-    text-shadow: 0 0 10px rgba(255, 42, 109, 0.8);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   }
 
   /* Floating XP Gain Animation - Futuristic */
   .floating-xp-gain {
     position: absolute;
     top: 20px;
-    color: #00f7ff;
+    color: #fff;
     font-weight: bold;
     font-size: 1.2em;
     pointer-events: none;
@@ -1361,7 +1361,7 @@
 
   .avatar-display {
     font-size: 6em;
-    background: linear-gradient(45deg, #00f7ff, #ff2a6d);
+    background: linear-gradient(45deg, #fff, #000);
     border-radius: 50%;
     width: 120px;
     height: 120px;
@@ -1369,33 +1369,33 @@
     align-items: center;
     justify-content: center;
     margin: 0 auto 15px;
-    box-shadow: 0 10px 30px rgba(0, 247, 255, 0.5);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
     animation: avatarGlow 4s ease-in-out infinite alternate;
   }
 
   @keyframes avatarGlow {
-    from { box-shadow: 0 10px 30px rgba(0, 247, 255, 0.5); }
-    to { box-shadow: 0 15px 40px rgba(255, 42, 109, 0.7); }
+    from { box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2); }
+    to { box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3); }
   }
 
   .character-avatar h3 {
-    color: #00f7ff;
+    color: #fff;
     margin-bottom: 5px;
     font-size: 1.5em;
     text-transform: uppercase;
     letter-spacing: 2px;
-    text-shadow: 0 0 10px rgba(0, 247, 255, 0.6);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
   }
 
   .character-class {
-    color: #ff2a6d;
+    color: #000;
     font-weight: bold;
-    background: rgba(255, 42, 109, 0.2);
+    background: rgba(0, 0, 0, 0.3);
     padding: 5px 15px;
     border-radius: 5px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      text-shadow: 0 0 8px rgba(255, 42, 109, 0.6);
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
     display: inline-block;
   }
 
@@ -1425,17 +1425,17 @@
 
   .spell-category {
     background: linear-gradient(135deg, rgba(40, 40, 60, 0.9), rgba(60, 60, 80, 0.8));
-    border: 2px solid #3498db;
+    border: 2px solid #888;
     border-radius: 15px;
     padding: 25px;
   }
 
   .spell-category h3 {
-    color: #3498db;
+    color: #888;
     text-align: center;
     margin-bottom: 20px;
     font-size: 1.3em;
-    border-bottom: 1px solid rgba(52, 152, 219, 0.3);
+    border-bottom: 1px solid rgba(136, 136, 136, 0.3);
     padding-bottom: 10px;
   }
 
@@ -1483,21 +1483,21 @@
 
   .skill-bar {
     height: 8px;
-    background: linear-gradient(90deg, #00f7ff, #ff2a6d);
+    background: linear-gradient(90deg, #fff, #000);
     border-radius: 2px;
     position: relative;
-    box-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     animation: skillGlow 3s ease-in-out infinite alternate;
   }
 
   @keyframes skillGlow {
-    from { box-shadow: 0 0 10px rgba(0, 247, 255, 0.5); }
-    to { box-shadow: 0 0 15px rgba(255, 42, 109, 0.7); }
+    from { box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
+    to { box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); }
   }
 
   .level-text {
-    color: #00f7ff;
-      text-shadow: 0 0 5px rgba(0, 247, 255, 0.4);
+    color: #fff;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
     font-size: 0.8em;
     font-weight: bold;
   }
@@ -1519,8 +1519,8 @@
     top: 0;
     bottom: 0;
     width: 2px;
-    background: linear-gradient(180deg, #00f7ff, #ff2a6d);
-      box-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+    background: linear-gradient(180deg, #fff, #000);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     border-radius: 2px;
   }
 
@@ -1533,25 +1533,25 @@
   }
 
   .timeline-icon {
-    background: linear-gradient(45deg, #00f7ff, #ff2a6d);
+    background: linear-gradient(45deg, #fff, #000);
     color: white;
     width: 60px;
     height: 60px;
-      box-shadow: 0 0 20px rgba(0, 247, 255, 0.6);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5em;
     font-weight: bold;
-    box-shadow: 0 5px 15px rgba(0, 247, 255, 0.6), 0 0 25px rgba(255, 42, 109, 0.4);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2), 0 0 25px rgba(0, 0, 0, 0.3);
     z-index: 2;
     position: relative;
   }
 
   .timeline-content {
     background: linear-gradient(135deg, rgba(40, 40, 40, 0.9), rgba(60, 60, 60, 0.8));
-    border: 1px solid rgba(0, 247, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 5px;
     padding: 20px;
     flex: 1;
@@ -1559,22 +1559,22 @@
   }
 
   .timeline-content:hover {
-    border-color: rgba(0, 247, 255, 0.6);
-      box-shadow: 0 5px 20px rgba(0, 247, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 5px 20px rgba(255, 255, 255, 0.2);
     transform: translateX(5px);
   }
 
   .timeline-content h4 {
-    color: #00f7ff;
+    color: #fff;
       text-transform: uppercase;
       letter-spacing: 1px;
-      text-shadow: 0 0 8px rgba(0, 247, 255, 0.5);
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
     margin-bottom: 5px;
     font-size: 1.2em;
   }
 
   .timeline-location {
-    color: #ff2a6d;
+    color: #000;
     font-weight: bold;
     margin-bottom: 10px;
     font-size: 0.9em;
@@ -1594,13 +1594,13 @@
   }
 
   .tag {
-    background: linear-gradient(45deg, #3498db, #2980b9);
+    background: linear-gradient(45deg, #555, #333);
     color: white;
     padding: 4px 12px;
     border-radius: 15px;
     font-size: 0.8em;
     font-weight: bold;
-    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+    box-shadow: 0 2px 8px rgba(136, 136, 136, 0.3);
   }
 
   /* Responsive adjustments for character stats */
