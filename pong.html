@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pong — Retro Arcade</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    html,body{height:100%;margin:0;font-family:'Press Start 2P',cursive;background:#000;color:#0f0}
+    .wrap{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px}
+    .topbar{width:100%;max-width:900px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .back-btn{background:#000;color:#0f0;border:3px solid #0f0;padding:10px 14px;text-decoration:none;box-shadow:0 0 10px #0f0}
+    .title{font-size:18px;color:#0f0;text-shadow:0 0 10px #0f0}
+    .game-area{background:radial-gradient(ellipse at center,#001100 0%,#000 70%);padding:20px;border-radius:8px;box-shadow:inset 0 0 60px rgba(0,255,0,0.06)}
+    .game-logo{display:flex;justify-content:center;margin-bottom:8px}
+    .game-logo .pong-logo{height:64px;max-width:220px;object-fit:contain;filter:drop-shadow(0 0 12px #fff)}
+    canvas{background:#000;border:6px solid #111;display:block;box-shadow:0 0 30px rgba(0,255,0,0.08)}
+    .hud{display:flex;gap:20px;align-items:center;justify-content:center;margin-top:12px}
+    .score{font-size:14px;color:#ffd700}
+    .controls{margin-top:14px;display:flex;gap:10px;justify-content:center}
+    .btn{background:#000;color:#0f0;border:2px solid #0f0;padding:8px 12px;cursor:pointer}
+    .instructions{font-size:12px;color:#0a0;margin-top:12px;text-align:center;max-width:900px}
+    @media (max-width:600px){canvas{width:320px;height:200px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <a href="retro-arcade.html" class="back-btn">← Back</a>
+      <div class="title">PONG</div>
+      <div style="width:86px"></div>
+    </div>
+
+    <div class="game-area">
+      <div class="game-logo"><img src="pong-logo-png_seeklogo-438122.png" alt="Pong Logo" class="pong-logo"></div>
+      <canvas id="pong" width="800" height="480"></canvas>
+      <div class="hud">
+        <div class="score"><span id="leftLabel">P1:</span> <span id="playerScore">0</span></div>
+        <div id="modeLabel" style="color:#0a0;font-size:12px">1P • First to 7 wins</div>
+        <div class="score"><span id="rightLabel">CPU:</span> <span id="cpuScore">0</span></div>
+      </div>
+      <div class="controls">
+        <button id="start" class="btn">START</button>
+        <button id="restart" class="btn">RESTART</button>
+        <button id="toggleMode" class="btn">1P</button>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <div>Controls: <strong>Player 1: W / S</strong> — <strong>Player 2: ↑ / ↓</strong>. Press <strong>Space</strong> or <strong>Enter</strong> to serve.</div>
+      <div style="margin-top:6px;color:#777;font-size:11px">Toggle <strong>1P / 2P</strong>. CPU adapts difficulty in 1P. Game auto-pauses on blur.</div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('pong');
+    const ctx = canvas.getContext('2d');
+    const P = {w:10,h:80,speed:6};
+    const ballRadius = 7;
+
+    let player = {x:20,y:canvas.height/2 - P.h/2,w:P.w,h:P.h,score:0};
+    let cpu = {x:canvas.width-20-P.w,y:canvas.height/2 - P.h/2,w:P.w,h:P.h,score:0};
+    let ball = {x:canvas.width/2,y:canvas.height/2,vx:6*(Math.random()>0.5?1:-1),vy:3*(Math.random()>0.5?1:-1),r:ballRadius};
+
+    // Input flags for two players
+    let p1Up=false,p1Down=false,p2Up=false,p2Down=false; 
+    let gameRunning=false,serving=true,req=null,winScore=7,mode='1P';
+
+    function resetBall(direction){
+      ball.x = canvas.width/2;
+      ball.y = canvas.height/2;
+      const angle = (Math.random()*0.6 - 0.3);
+      const speed = 6;
+      ball.vx = speed * (direction|| (Math.random()>0.5?1:-1));
+      ball.vy = speed * angle;
+      serving = true;
+    }
+
+    function drawRect(x,y,w,h,color){ ctx.fillStyle=color||'#0f0'; ctx.fillRect(x,y,w,h); }
+    function drawBall(){ ctx.fillStyle = '#ffd700'; ctx.beginPath(); ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2); ctx.fill(); }
+    function drawNet(){ for(let i=10;i<canvas.height;i+=22){ ctx.fillStyle='#0a0'; ctx.fillRect(canvas.width/2 -1, i, 2, 12);} }
+
+    function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
+
+    function update(){
+      // Player 1 (left)
+      if(p1Up) player.y -= P.speed;
+      if(p1Down) player.y += P.speed;
+      player.y = clamp(player.y,0,canvas.height - player.h);
+
+      // Player 2 or CPU (right)
+      if(mode === '1P'){
+        // CPU simple AI: follow ball with max speed influenced by difficulty
+        const cpuCenter = cpu.y + cpu.h/2;
+        const diff = ball.y - cpuCenter;
+        const cpuSpeed = 4 + Math.min(4, Math.abs(ball.vx)/2);
+        if(Math.abs(diff) > 10){ cpu.y += clamp(diff, -cpuSpeed, cpuSpeed); }
+      } else {
+        // Human player 2 controls
+        if(p2Up) cpu.y -= P.speed;
+        if(p2Down) cpu.y += P.speed;
+      }
+      cpu.y = clamp(cpu.y, 0, canvas.height - cpu.h);
+
+      // ball movement
+      if(!serving){
+        ball.x += ball.vx; ball.y += ball.vy;
+      }
+
+      // top/bottom collision
+      if(ball.y - ball.r <= 0){ ball.y = ball.r; ball.vy *= -1; }
+      if(ball.y + ball.r >= canvas.height){ ball.y = canvas.height - ball.r; ball.vy *= -1; }
+
+      // paddle collisions
+      // left paddle
+      if(ball.x - ball.r <= player.x + player.w){
+        if(ball.y > player.y && ball.y < player.y + player.h){
+          ball.x = player.x + player.w + ball.r;
+          const rel = (ball.y - (player.y + player.h/2)) / (player.h/2);
+          ball.vx = Math.abs(ball.vx) + 0.3;
+          ball.vy = rel * 6;
+        }
+      }
+
+      // right paddle
+      if(ball.x + ball.r >= cpu.x){
+        if(ball.y > cpu.y && ball.y < cpu.y + cpu.h){
+          ball.x = cpu.x - ball.r;
+          const rel = (ball.y - (cpu.y + cpu.h/2)) / (cpu.h/2);
+          ball.vx = -Math.abs(ball.vx) - 0.3;
+          ball.vy = rel * 6;
+        }
+      }
+
+      // score
+      if(ball.x + ball.r < 0){ cpu.score++; document.getElementById('cpuScore').textContent = cpu.score; resetBall(1); }
+      if(ball.x - ball.r > canvas.width){ player.score++; document.getElementById('playerScore').textContent = player.score; resetBall(-1); }
+
+      // check win
+      if(player.score >= winScore || cpu.score >= winScore){ gameRunning = false; serving = true; showGameOver(); }
+    }
+
+    function showGameOver(){
+      cancelAnimationFrame(req);
+      ctx.fillStyle='rgba(0,0,0,0.75)'; ctx.fillRect(0,canvas.height/2 - 40,canvas.width,80);
+      ctx.fillStyle='white'; ctx.font='28px monospace'; ctx.textAlign='center';
+      let msg = '';
+      if(player.score > cpu.score) msg = 'PLAYER 1 WINS!';
+      else msg = (mode === '1P') ? 'CPU WINS!' : 'PLAYER 2 WINS!';
+      ctx.fillText(msg, canvas.width/2, canvas.height/2);
+    }
+
+    function draw(){ ctx.clearRect(0,0,canvas.width,canvas.height); drawNet(); drawRect(player.x,player.y,player.w,player.h, '#fff'); drawRect(cpu.x,cpu.y,cpu.w,cpu.h, '#fff'); drawBall(); }
+
+    function loop(){ if(gameRunning){ update(); } draw(); req = requestAnimationFrame(loop); }
+
+    // input handlers for two players
+    document.addEventListener('keydown', e=>{
+      if(e.key === 'w' || e.key === 'W'){ p1Up=true; }
+      if(e.key === 's' || e.key === 'S'){ p1Down=true; }
+      if(e.key === 'ArrowUp'){ p2Up=true; }
+      if(e.key === 'ArrowDown'){ p2Down=true; }
+      if(e.code === 'Space'){ if(serving){ serving=false; gameRunning=true; } }
+      if(e.code === 'Enter'){ if(serving){ serving=false; gameRunning=true; } }
+    });
+    document.addEventListener('keyup', e=>{
+      if(e.key === 'w' || e.key === 'W'){ p1Up=false; }
+      if(e.key === 's' || e.key === 'S'){ p1Down=false; }
+      if(e.key === 'ArrowUp'){ p2Up=false; }
+      if(e.key === 'ArrowDown'){ p2Down=false; }
+    });
+
+    document.getElementById('start').addEventListener('click', ()=>{ if(!gameRunning){ serving=false; gameRunning=true; loop(); }});
+    document.getElementById('restart').addEventListener('click', ()=>{ player.score=0; cpu.score=0; document.getElementById('playerScore').textContent=0; document.getElementById('cpuScore').textContent=0; resetBall(); gameRunning=true; loop(); });
+
+    document.getElementById('toggleMode').addEventListener('click', ()=>{
+      mode = mode === '1P' ? '2P' : '1P';
+      document.getElementById('toggleMode').textContent = mode;
+      document.getElementById('modeLabel').textContent = mode + ' • First to ' + winScore + ' wins';
+      document.getElementById('rightLabel').textContent = mode === '1P' ? 'CPU:' : 'P2:';
+    });
+
+    // pause on blur
+    window.addEventListener('blur', ()=>{ gameRunning=false; });
+    window.addEventListener('focus', ()=>{ /* resume only if not game over */ });
+
+    // initialize
+    resetBall(); draw();
+  </script>
+</body>
+</html>

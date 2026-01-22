@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<!-- Character Stats - Natural Game Theme Integration -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Specs - Markuss Šube</title>
+    
+    <!-- External stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="game-styles-new.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        .character-tracker, .character-tracker * {
+            font-family: 'Courier New', Courier, monospace !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Character Progress Tracker -->
+    <div id="character-tracker" class="character-tracker mobile-footer-xp expanded">
+        <div class="character-avatar-display">
+            <div class="character-sprite" id="character-sprite"><img src="linkedin.jpg" alt="Markuss Šube" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></div>
+        </div>
+        <div class="character-info-display">
+            <h4 id="character-title">Intern</h4>
+            <div class="xp-progress">
+                <div class="xp-bar-fill" id="xp-bar-fill" style="width: 0%"></div>
+            </div>
+            <p class="xp-text"><span id="current-xp">0</span> / <span id="needed-xp">100</span> XP</p>
+        </div>
+    </div>
+
+    <!-- Character Header -->
+    <header class="site-header" role="banner">
+        <h1>Markuss Šube <span class="role">Automation Engineer</span></h1>
+        <button id="translate-btn" style="background:transparent;border:none;cursor:pointer;padding:10px;position:absolute;right:110px;top:50%;transform:translateY(-50%);transition:all 0.3s;" aria-label="Translate">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z" fill="#fff"/>
+            </svg>
+        </button>
+        <button id="retro-games-btn" onclick="window.location.href='retro-arcade.html'" style="background:transparent;border:none;cursor:pointer;padding:10px;position:absolute;right:65px;top:50%;transform:translateY(-50%);transition:all 0.3s;" aria-label="Retro Games" title="Retro Games">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path d="M7.1251 11.125C7.1251 11.6083 7.51685 12 8.0001 12C8.48335 12 8.8751 11.6083 8.8751 11.125V10.375H9.6251C10.1083 10.375 10.5001 9.98325 10.5001 9.5C10.5001 9.01675 10.1083 8.625 9.6251 8.625H8.8751V7.875C8.8751 7.39175 8.48335 7 8.0001 7C7.51685 7 7.1251 7.39175 7.1251 7.875V8.625H6.3751C5.89185 8.625 5.5001 9.01675 5.5001 9.5C5.5001 9.98325 5.89185 10.375 6.3751 10.375H7.1251V11.125Z" fill="#fff"/>
+<path d="M13.5001 9.5C13.5001 9.01675 13.8919 8.625 14.3751 8.625H17.6251C18.1083 8.625 18.5001 9.01675 18.5001 9.5C18.5001 9.98325 18.1083 10.375 17.6251 10.375H14.3751C13.8919 10.375 13.5001 9.98325 13.5001 9.5Z" fill="#fff"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1.61555 8.53002C1.86084 5.4082 4.46568 3 7.59712 3H16.403C19.5344 3 22.1393 5.4082 22.3846 8.53002L22.5001 10L23.1121 16.733C23.3205 19.0244 21.5163 21 19.2154 21C17.841 21 16.5674 20.2789 15.8603 19.1003L14.0001 16H10.0001L8.13986 19.1003C7.43273 20.2789 6.1591 21 4.78468 21C2.48384 21 0.679662 19.0244 0.88797 16.733L1.50006 10L1.61555 8.53002ZM3.49391 10.1567C3.49327 10.1648 3.49258 10.1729 3.49184 10.1811L2.87976 16.914C2.77792 18.0342 3.65991 19 4.78468 19C5.45657 19 6.07919 18.6475 6.42487 18.0713L8.28507 14.971C8.64652 14.3686 9.29753 14 10.0001 14H14.0001C14.7026 14 15.3536 14.3686 15.715 14.971L17.5752 18.0713C17.9209 18.6475 18.5435 19 19.2154 19C20.3402 19 21.2222 18.0342 21.1204 16.914L20.5083 10.1811C20.5075 10.1729 20.5068 10.1648 20.5062 10.1567L20.3907 8.68668C20.2272 6.60547 18.4906 5 16.403 5H7.59712C5.50949 5 3.77293 6.60547 3.60941 8.68668L3.49391 10.1567Z" fill="#fff"/>
+</svg>
+        </button>
+        <button id="settings-btn" style="background:transparent;border:none;cursor:pointer;padding:10px;position:absolute;right:20px;top:50%;transform:translateY(-50%);transition:all 0.3s;" aria-label="Settings">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0002 16C14.2094 16 16.0002 14.2091 16.0002 12C16.0002 9.79086 14.2094 8 12.0002 8C9.79109 8 8.00023 9.79086 8.00023 12C8.00023 14.2091 9.79109 16 12.0002 16ZM12.0002 14C13.1048 14 14.0002 13.1046 14.0002 12C14.0002 10.8954 13.1048 10 12.0002 10C10.8957 10 10.0002 10.8954 10.0002 12C10.0002 13.1046 10.8957 14 12.0002 14Z" fill="#fff"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.1182 1.86489L15.5203 4.81406C15.8475 4.97464 16.1621 5.1569 16.4623 5.35898L19.2185 4.23223C19.6814 4.043 20.2129 4.2248 20.463 4.65787L22.5901 8.34213C22.8401 8.77521 22.7318 9.3264 22.3365 9.63266L19.9821 11.4566C19.9941 11.6362 20.0002 11.8174 20.0002 12C20.0002 12.1826 19.9941 12.3638 19.9821 12.5434L22.3365 14.3673C22.7318 14.6736 22.8401 15.2248 22.5901 15.6579L20.463 19.3421C20.2129 19.7752 19.6814 19.957 19.2185 19.7678L16.4623 18.641C16.1621 18.8431 15.8475 19.0254 15.5203 19.1859L15.1182 22.1351C15.0506 22.6306 14.6274 23 14.1273 23H9.87313C9.37306 23 8.94987 22.6306 8.8823 22.1351L8.48014 19.1859C8.15296 19.0254 7.83835 18.8431 7.53818 18.641L4.78195 19.7678C4.31907 19.957 3.78756 19.7752 3.53752 19.3421L1.41042 15.6579C1.16038 15.2248 1.26869 14.6736 1.66401 14.3673L4.01841 12.5434C4.00636 12.3638 4.00025 12.1826 4.00025 12C4.00025 11.8174 4.00636 11.6362 4.01841 11.4566L1.66401 9.63266C1.26869 9.3264 1.16038 8.77521 1.41041 8.34213L3.53752 4.65787C3.78755 4.2248 4.31906 4.043 4.78195 4.23223L7.53818 5.35898C7.83835 5.1569 8.15296 4.97464 8.48014 4.81406L8.8823 1.86489C8.94987 1.3694 9.37306 1 9.87313 1H14.1273C14.6274 1 15.0506 1.3694 15.1182 1.86489ZM13.6826 6.14004L14.6392 6.60948C14.8842 6.72975 15.1201 6.86639 15.3454 7.01805L16.231 7.61423L19.1674 6.41382L20.4216 8.58619L17.9153 10.5278L17.9866 11.5905C17.9956 11.7255 18.0002 11.8621 18.0002 12C18.0002 12.1379 17.9956 12.2745 17.9866 12.4095L17.9153 13.4722L20.4216 15.4138L19.1674 17.5862L16.231 16.3858L15.3454 16.982C15.1201 17.1336 14.8842 17.2702 14.6392 17.3905L13.6826 17.86L13.2545 21H10.746L10.3178 17.86L9.36131 17.3905C9.11626 17.2702 8.88037 17.1336 8.6551 16.982L7.76954 16.3858L4.83313 17.5862L3.57891 15.4138L6.0852 13.4722L6.01392 12.4095C6.00487 12.2745 6.00024 12.1379 6.00024 12C6.00024 11.8621 6.00487 11.7255 6.01392 11.5905L6.0852 10.5278L3.57891 8.58619L4.83312 6.41382L7.76953 7.61423L8.6551 7.01805C8.88037 6.86639 9.11625 6.72976 9.36131 6.60949L10.3178 6.14004L10.746 3H13.2545L13.6826 6.14004Z" fill="#fff"/>
+            </svg>
+        </button>
+    </header>
+    
+    <!-- Settings Modal -->
+    <div id="settings-modal" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);z-index:99999;display:none;align-items:center;justify-content:center;">
+        <div style="background:linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);padding:40px;border-radius:15px;max-width:500px;text-align:center;border:2px solid #00f7ff;box-shadow:0 0 30px rgba(0,247,255,0.5);position:relative;">
+            <button id="close-settings" style="position:absolute;top:15px;right:15px;background:transparent;border:none;color:#fff;font-size:24px;cursor:pointer;padding:5px;line-height:1;">×</button>
+            <h2 style="color:#00f7ff;font-family:'Orbitron',sans-serif;font-size:1.8rem;margin-bottom:20px;">Settings</h2>
+            <div style="margin:30px 0;">
+                <h3 style="color:#fff;font-family:'Orbitron',sans-serif;font-size:1.2rem;margin-bottom:15px;">Leveling System</h3>
+                <p style="color:#aaa;font-size:0.95rem;margin-bottom:20px;line-height:1.5;">Toggle the interactive XP leveling system</p>
+                <div id="leveling-status" style="color:#00f7ff;font-weight:600;font-size:1.1rem;margin-bottom:20px;font-family:'Orbitron',sans-serif;">Status: Enabled</div>
+                <div style="display:flex;gap:15px;justify-content:center;">
+                    <button id="toggle-leveling-btn" style="background:#ff2a6d;color:#fff;border:none;padding:12px 24px;font-size:1rem;font-family:'Orbitron',sans-serif;border-radius:8px;cursor:pointer;transition:all 0.3s;font-weight:600;">Disable Leveling</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quest Navigation -->
+    <nav class="quest-navigation">
+        <ul class="quest-menu">
+            <li><a href="index.html" class="nav-link"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M3 11.8284C3 11.2979 3.21071 10.7892 3.58579 10.4142L10.5858 3.41416C11.3668 2.63311 12.6332 2.63311 13.4142 3.41416L20.4142 10.4142C20.7893 10.7892 21 11.2979 21 11.8284V20C21 20.5522 20.5523 21 20 21H14C13.4477 21 13 20.5522 13 20V15H11V20C11 20.5522 10.5523 21 10 21H4C3.44772 21 3 20.5522 3 20V11.8284ZM12 4.82837L5 11.8284V19H9V13.9999C9 13.4477 9.44772 12.9999 10 12.9999H14C14.5523 12.9999 15 13.4477 15 13.9999V19H19V11.8284L12 4.82837Z" fill="white"/>
+</svg> Main Terminal</a></li>
+            <li><a href="Experience.html" class="nav-link active"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path d="M9.25 8C9.25 8.69036 8.69036 9.25 8 9.25C7.30965 9.25 6.75 8.69036 6.75 8C6.75 7.30965 7.30965 6.75 8 6.75C8.69036 6.75 9.25 7.30965 9.25 8Z" fill="white"/>
+<path d="M8 17.25C8.69036 17.25 9.25 16.6904 9.25 16C9.25 15.3096 8.69036 14.75 8 14.75C7.30965 14.75 6.75 15.3096 6.75 16C6.75 16.6904 7.30965 17.25 8 17.25Z" fill="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M5 3C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3H5ZM5 11H19V5H5V11ZM5 13V19H19V13H5Z" fill="white"/>
+</svg> System Specs</a></li>
+            <li><a href="Projects.html" class="nav-link"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M3 19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V8.82843C21 8.298 20.7893 7.78929 20.4142 7.41421L16.5858 3.58579C16.2107 3.21071 15.702 3 15.1716 3H5C3.89543 3 3 3.89543 3 5V19ZM5 5L5 19H7V16C7 14.8954 7.89543 14 9 14H15C16.1046 14 17 14.8954 17 16V19H19V8.82843L16 5.82843V8C16 9.10457 15.1046 10 14 10H9C7.89543 10 7 9.10457 7 8V5L5 5ZM9 5V8H14V5H9ZM15 19V16H9V19H15Z" fill="white"/>
+</svg> Data Archives</a></li>
+            <li><a href="Contact.html" class="nav-link"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM20 12C20 12.6906 19.9125 13.3608 19.748 14H16.41C16.469 13.3538 16.5 12.6849 16.5 12C16.5 11.3151 16.469 10.6462 16.41 10H19.748C19.9125 10.6392 20 11.3094 20 12ZM16.1256 8H18.9297C18.046 6.47231 16.6716 5.26398 15.0221 4.59049C15.4904 5.53438 15.8689 6.69453 16.1256 8ZM8.97794 4.59049C7.32837 5.26398 5.95398 6.47231 5.07026 8H7.87444C8.13111 6.69453 8.50958 5.53438 8.97794 4.59049ZM7.59002 10H4.25204C4.08751 10.6392 4 11.3094 4 12C4 12.6906 4.08751 13.3608 4.25204 14H7.59002C7.53099 13.3538 7.5 12.6849 7.5 12C7.5 11.3151 7.53099 10.6462 7.59002 10ZM7.87444 16H5.07026C5.95398 17.5277 7.32837 18.736 8.97794 19.4095C8.50958 18.4656 8.13111 17.3055 7.87444 16ZM15.0221 19.4095C16.6716 18.736 18.046 17.5277 18.9297 16H16.1256C15.8689 17.3055 15.4904 18.4656 15.0221 19.4095ZM14.5 12C14.5 12.6943 14.4652 13.3635 14.4008 14H9.59918C9.53484 13.3635 9.5 12.6943 9.5 12C9.5 11.3057 9.53484 10.6365 9.59918 10H14.4008C14.4652 10.6365 14.5 11.3057 14.5 12ZM14.0822 8C13.8907 7.14167 13.6428 6.38215 13.3581 5.74966C13.0204 4.99913 12.6701 4.51413 12.3818 4.24316C12.2431 4.11273 12.1393 4.05118 12.079 4.02377C12.031 4.00192 12.008 4.00012 12.0017 4H11.9983C11.992 4.00012 11.969 4.00192 11.921 4.02377C11.8607 4.05118 11.7569 4.11273 11.6182 4.24316C11.3299 4.51413 10.9796 4.99913 10.6419 5.74966C10.3572 6.38215 10.1093 7.14167 9.91779 8H14.0822ZM9.91779 16C10.1093 16.8583 10.3572 17.6179 10.6419 18.2503C10.9796 19.0009 11.3299 19.4859 11.6182 19.7568C11.7569 19.8873 11.8607 19.9488 11.921 19.9762C11.9689 19.998 11.9919 19.9999 11.9983 20H12.0017C12.0081 19.9999 12.0311 19.998 12.079 19.9762C12.1393 19.9488 12.2431 19.8873 12.3818 19.7568C12.6701 19.4859 13.0204 19.0009 13.3581 18.2503C13.6428 17.6179 13.8907 16.8583 14.0822 16H9.91779Z" fill="white"/>
+</svg> Communication Hub</a></li>
+        </ul>
+    </nav>
+
+    <!-- Character Stats Main -->
+    <main class="character-stats">
+        <!-- Character Overview -->
+            <div class="quest-area character-overview">
+                <div class="character-info">
+                    <div class="character-avatar">
+                        <h2 style="text-align: center; margin-bottom: 20px;">Identity Profile</h2>
+                        <div class="avatar-display"><img src="pfp.jpg" alt="Markuss Šube" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>
+                        <h3>Markuss Šube</h3>
+                        <p class="character-class" style="background: #333; padding: 8px 12px; border-radius: 4px;">Automation Engineer • Programming enjoyer</p>
+                    </div>
+                    <div class="character-description" id="engineer-description">
+                        <p>Engineer with a focus on resilient automation, scalable test design, and optimizing delivery through meaningful data analysis. Skilled in multiple programming languages and dedicated to advancing reliable, efficient continuous integration pipelines. <button id="melt-btn" style="background: rgba(255, 165, 0, 0.2); color: #ffa500; border: 2px solid rgba(255, 165, 0, 0.5); padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; margin-left: 8px; transition: all 0.3s; font-family: 'Courier New', monospace;">melt?</button></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Core Skills Spellbook -->
+            <div class="quest-area skill-spellbook">
+                <h2><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M22 7.99998C22 6.89541 21.1045 5.99998 20 5.99998H12L10.5857 4.58576C10.2107 4.21069 9.70196 3.99998 9.17152 3.99998H3.99995C2.89538 3.99998 1.99995 4.89541 1.99995 5.99998V18C1.99995 19.1045 2.89538 20 3.99995 20H20C21.1045 20 22 19.1045 22 18V7.99998ZM10.5857 7.41419C10.9608 7.78926 11.4695 7.99998 12 7.99998H20V18H3.99995L3.99995 5.99998L9.17152 5.99998L10.5857 7.41419Z" fill="white"/>
+</svg> Capability Repository</h2>
+                <p class="quest-description">Core engineering domains and operational proficiency indicators:</p>
+                
+                <div class="story-content">
+                    <!-- Programming Spells -->
+                    <div class="read-section" data-section="programming" data-xp="15">
+                        <div class="skill-card spell-category">
+                            <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M3.5 3C2.39543 3 1.5 3.89543 1.5 5V15C1.5 16.1046 2.39543 17 3.5 17H11V19H8C7.44772 19 7 19.4477 7 20C7 20.5523 7.44772 21 8 21H16C16.5523 21 17 20.5523 17 20C17 19.4477 16.5523 19 16 19H13V17H20.5C21.6046 17 22.5 16.1046 22.5 15V5C22.5 3.89543 21.6046 3 20.5 3H3.5ZM3.5 5V15H20.5V5H3.5Z" fill="white"/>
+</svg> Core Programming Domains</h3>
+                            <div class="spell-list">
+                                <div class="spell-item">
+                                    <span class="spell-icon">🐍</span>
+                                    <span class="spell-name">Python Mastery</span>
+                                    <div class="skill-level">
+                                        <div class="skill-bar" style="width: 95%"></div>
+                                        <span class="level-text">Expert</span>
+                                    </div>
+                                </div>
+                                <div class="spell-item">
+                                    <span class="spell-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM11.921 19.9762C11.9689 19.998 11.9919 19.9999 11.9983 20H12.0017C12.0081 19.9999 12.0311 19.998 12.079 19.9762C12.1393 19.9488 12.2431 19.8873 12.3818 19.7568C12.6701 19.4859 13.0204 19.0009 13.3581 18.2503C13.9418 16.9533 14.3714 15.1221 14.4756 13H9.52439C9.62863 15.1221 10.0582 16.9533 10.6419 18.2503C10.9796 19.0009 11.3299 19.4859 11.6182 19.7568C11.7569 19.8873 11.8607 19.9488 11.921 19.9762ZM9.52439 11H14.4756C14.3714 8.87787 13.9418 7.04668 13.3581 5.74966C13.0204 4.99913 12.6701 4.51413 12.3818 4.24316C12.2431 4.11273 12.1393 4.05118 12.079 4.02377C12.031 4.00192 12.008 4.00012 12.0017 4H11.9983C11.992 4.00012 11.969 4.00192 11.921 4.02377C11.8607 4.05118 11.7569 4.11273 11.6182 4.24316C11.3299 4.51413 10.9796 4.99913 10.6419 5.74966C10.0582 7.04668 9.62863 8.87787 9.52439 11ZM15.0221 4.59049C15.8256 6.20987 16.3646 8.46578 16.4778 11H19.9381C19.575 8.08808 17.6469 5.66216 15.0221 4.59049ZM16.4778 13C16.3646 15.5342 15.8256 17.7901 15.0221 19.4095C17.6469 18.3378 19.575 15.9119 19.9381 13H16.4778ZM8.97794 19.4095C8.17442 17.7901 7.63545 15.5342 7.52222 13H4.06189C4.42501 15.9119 6.3531 18.3378 8.97794 19.4095ZM7.52222 11C7.63545 8.46578 8.17442 6.20987 8.97794 4.59049C6.3531 5.66216 4.42501 8.08808 4.06189 11H7.52222Z" fill="white"/>
+</svg></span>
+                                    <span class="spell-name">JavaScript Enchantment</span>
+                                    <div class="skill-level">
+                                        <div class="skill-bar" style="width: 90%"></div>
+                                        <span class="level-text">Advanced</span>
+                                    </div>
+                                </div>
+                                <div class="spell-item">
+                                    <span class="spell-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.08562 21.4142L12.8395 15.6603C13.5199 15.8808 14.246 16 14.9998 16C18.8658 16 21.9998 12.866 21.9998 9C21.9998 7.9172 21.754 6.89181 21.315 5.97663C21.0472 5.41812 20.3149 5.35656 19.8769 5.79456L16.4214 9.25007L14.9998 9.00007L14.7498 7.5785L18.2054 4.12296C18.6434 3.68497 18.5818 2.95271 18.0233 2.68484C17.1081 2.24587 16.0827 2 14.9998 2C11.1338 2 7.99983 5.13401 7.99983 9C7.99983 9.75387 8.119 10.4799 8.33953 11.1603L2.58562 16.9142C2.21054 17.2893 1.97859 17.8026 2.07513 18.3241C2.41281 20.1487 3.85118 21.587 5.6757 21.9247C6.19727 22.0212 6.71054 21.7893 7.08562 21.4142ZM12.9677 6.53218C12.7371 6.76277 12.6335 7.09131 12.6899 7.41249L13.1515 10.0368C13.2243 10.4511 13.5488 10.7756 13.9631 10.8484L16.5874 11.31C16.9086 11.3664 17.2371 11.2628 17.4677 11.0322L19.9775 8.52245C19.9923 8.67943 19.9998 8.83871 19.9998 9C19.9998 11.7614 17.7613 14 14.9998 14C14.4579 14 13.9398 13.9145 13.4562 13.7577C12.7413 13.526 11.9568 13.7147 11.4253 14.2461L5.777 19.8944C4.97862 19.6538 4.34608 19.0212 4.10542 18.2228L9.75375 12.5745C10.2852 12.0431 10.4738 11.2586 10.2421 10.5436C10.0853 10.06 9.99983 9.54195 9.99983 9C9.99983 6.23858 12.2384 4 14.9998 4C15.1612 4 15.3205 4.00758 15.4775 4.02239L12.9677 6.53218ZM5.66394 20.0067C5.66394 20.0067 5.66455 20.0061 5.66589 20.0052C5.66463 20.0063 5.66394 20.0067 5.66394 20.0067ZM3.99312 18.3359C3.99312 18.3359 3.99358 18.3352 3.99466 18.3339C3.99368 18.3353 3.99312 18.3359 3.99312 18.3359Z" fill="white"/>
+</svg></span>
+                                    <span class="spell-name">C++ Conjuring</span>
+                                    <div class="skill-level">
+                                        <div class="skill-bar" style="width: 85%"></div>
+                                        <span class="level-text">Advanced</span>
+                                    </div>
+                                </div>
+                                <div class="spell-item">
+                                    <span class="spell-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 5.35418C11.2671 4.52376 10.1947 4 9 4H3.5C2.39543 4 1.5 4.89543 1.5 6V18C1.5 19.1046 2.39543 20 3.5 20H9C9.7571 20 10.4159 20.4207 10.7555 21.041C11.0207 21.5255 11.4477 22 12 22C12.5523 22 12.9793 21.5255 13.2445 21.041C13.5841 20.4207 14.2429 20 15 20H20.5C21.6046 20 22.5 19.1046 22.5 18V6C22.5 4.89543 21.6046 4 20.5 4H15C13.8053 4 12.7329 4.52376 12 5.35418ZM15 6C13.8954 6 13 6.89543 13 8V18.5351C13.5883 18.1948 14.2714 18 15 18H20.5V6H15ZM9 18C9.72858 18 10.4117 18.1948 11 18.5351V8C11 6.89543 10.1046 6 9 6L3.5 6V18H9Z" fill="white"/>
+</svg></span>
+                                    <span class="spell-name">SQL Sorcery</span>
+                                    <div class="skill-level">
+                                        <div class="skill-bar" style="width: 88%"></div>
+                                        <span class="level-text">Advanced</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p style="margin-top: 40px;">These programming languages form the foundation of my technical expertise. Python serves as my primary tool for automation scripting, data processing, and backend development. Its versatility and extensive library ecosystem make it ideal for rapid prototyping and production-grade solutions.</p>
+                            <p style="margin-top: 40px;">JavaScript powers my frontend and full-stack capabilities, enabling me to build responsive web applications and interactive user interfaces. Combined with modern frameworks, it provides seamless user experiences across platforms.</p>
+                        </div>
+                        <div class="xp-indicator"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M9.7549 23.08C9.44197 23.2689 8.9998 23.0545 8.9998 22.6483V14H4.0869C3.65973 14 3.42927 13.4989 3.70728 13.1746L14.1202 1.02619C14.1579 0.982135 14.2 0.946924 14.2447 0.919942C14.5576 0.731067 14.9998 0.945409 14.9998 1.35159V9.99996H19.9127C20.3399 9.99996 20.5703 10.501 20.2923 10.8254L9.87943 22.9737C9.84167 23.0178 9.7996 23.053 9.7549 23.08ZM10.9946 12.8977C10.9434 12.3935 10.5176 12 9.9998 12H7.34824L12.9998 5.40648V11C12.9998 11.5522 13.4475 12 13.9998 12H16.6514L10.9998 18.5935V13C10.9998 12.9654 10.9981 12.9313 10.9946 12.8977Z" fill="white"/>
+</svg> +15 XP</div>
+                    </div>
+
+                    <!-- Automation Abilities -->
+                    <div class="read-section" data-section="automation" data-xp="15" style="margin-top: 120px;">
+                        <div class="skill-card spell-category">
+                            <h3>⚙️ Automation & Delivery</h3>
+                            <div class="spell-list">
+                                <div class="spell-item">
+                                    <span class="spell-icon">🤖</span>
+                                    <span class="spell-name">Test Automation</span>
+                                    <div class="skill-level">
+                                        <div class="skill-bar" style="width: 95%"></div>
+                                        <span class="level-text">Master</span>
+                                    </div>
+                                </div>
+                                <div class="spell-item">
+                                    <span class="spell-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path d="M15.2156 5.99994L14.0943 7.12126C13.7038 7.51178 13.7038 8.14495 14.0943 8.53547C14.4848 8.92599 15.118 8.92599 15.5085 8.53547L18.337 5.70704C18.5245 5.51951 18.6299 5.26515 18.6299 4.99994C18.6299 4.73472 18.5245 4.48037 18.337 4.29283L15.5085 1.4644C15.4597 1.41559 15.4071 1.37287 15.3517 1.33626C14.9635 1.07998 14.436 1.12269 14.0943 1.4644C13.7038 1.85493 13.7038 2.48809 14.0943 2.87862L15.2156 3.99994H10.0088C5.59051 3.99994 2.00879 7.58166 2.00879 11.9999C2.00879 13.3979 2.36734 14.712 2.9975 15.8555C3.29674 16.3985 4.02656 16.4466 4.46495 16.0082C4.81428 15.6589 4.85507 15.1135 4.63482 14.6713C4.23414 13.8668 4.00879 12.9597 4.00879 11.9999C4.00879 8.68623 6.69508 5.99994 10.0088 5.99994H15.2156Z" fill="white"/>
+<path d="M9.92326 21.1213L8.80194 19.9999H14.0088C18.4271 19.9999 22.0088 16.4182 22.0088 11.9999C22.0088 10.602 21.6502 9.28783 21.0201 8.14434C20.9827 8.07647 20.9385 8.01633 20.8891 7.9639C20.5429 7.59692 19.9362 7.60804 19.5526 7.99163C19.2033 8.34096 19.1625 8.88633 19.3828 9.32855C19.4328 9.42911 19.4802 9.53127 19.5247 9.63494C19.8363 10.3606 20.0088 11.1601 20.0088 11.9999C20.0088 15.3136 17.3225 17.9999 14.0088 17.9999H8.80194L9.92326 16.8786C10.3138 16.4881 10.3138 15.8549 9.92326 15.4644C9.53273 15.0739 8.89957 15.0739 8.50904 15.4644L5.68062 18.2928C5.49308 18.4804 5.38772 18.7347 5.38772 18.9999C5.38772 19.2652 5.49308 19.5195 5.68062 19.707L8.50904 22.5355C8.89957 22.926 9.53273 22.926 9.92326 22.5355C10.3138 22.1449 10.3138 21.5118 9.92326 21.1213Z" fill="white"/>
+</svg></span>
+                                    <span class="spell-name">CI/CD Pipeline Creation</span>
+                                    <div class="skill-level">
+                                        <div class="skill-bar" style="width: 90%"></div>
+                                        <span class="level-text">Expert</span>
+                                    </div>
+                                </div>
+                                <div class="spell-item">
+                                    <span class="spell-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 5.35418C11.2671 4.52376 10.1947 4 9 4H3.5C2.39543 4 1.5 4.89543 1.5 6V18C1.5 19.1046 2.39543 20 3.5 20H9C9.7571 20 10.4159 20.4207 10.7555 21.041C11.0207 21.5255 11.4477 22 12 22C12.5523 22 12.9793 21.5255 13.2445 21.041C13.5841 20.4207 14.2429 20 15 20H20.5C21.6046 20 22.5 19.1046 22.5 18V6C22.5 4.89543 21.6046 4 20.5 4H15C13.8053 4 12.7329 4.52376 12 5.35418ZM15 6C13.8954 6 13 6.89543 13 8V18.5351C13.5883 18.1948 14.2714 18 15 18H20.5V6H15ZM9 18C9.72858 18 10.4117 18.1948 11 18.5351V8C11 6.89543 10.1046 6 9 6L3.5 6V18H9Z" fill="white"/>
+</svg></span>
+                                    <span class="spell-name">Process Optimization</span>
+                                    <div class="skill-level">
+                                        <div class="skill-bar" style="width: 92%"></div>
+                                        <span class="level-text">Expert</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p style="margin-top: 40px;">Test automation is where strategy meets execution. I design comprehensive test suites that cover unit, integration, and end-to-end scenarios, ensuring robust quality gates throughout the development lifecycle. My frameworks are built for maintainability, scalability, and parallel execution.</p>
+                            <p style="margin-top: 40px;">CI/CD pipelines transform code commits into production-ready deployments. I architect automated workflows that include testing, security scanning, artifact management, and progressive deployment strategies, reducing deployment time from hours to minutes while maintaining reliability.</p>
+                        </div>
+                        <div class="xp-indicator"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M9.7549 23.08C9.44197 23.2689 8.9998 23.0545 8.9998 22.6483V14H4.0869C3.65973 14 3.42927 13.4989 3.70728 13.1746L14.1202 1.02619C14.1579 0.982135 14.2 0.946924 14.2447 0.919942C14.5576 0.731067 14.9998 0.945409 14.9998 1.35159V9.99996H19.9127C20.3399 9.99996 20.5703 10.501 20.2923 10.8254L9.87943 22.9737C9.84167 23.0178 9.7996 23.053 9.7549 23.08ZM10.9946 12.8977C10.9434 12.3935 10.5176 12 9.9998 12H7.34824L12.9998 5.40648V11C12.9998 11.5522 13.4475 12 13.9998 12H16.6514L10.9998 18.5935V13C10.9998 12.9654 10.9981 12.9313 10.9946 12.8977Z" fill="white"/>
+</svg> +15 XP</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Experience Timeline -->
+            <div class="quest-area experience-timeline">
+                <h2>📡 Evolution Pathway</h2>
+                <p class="quest-description">Career progression phases and impact metrics:</p>
+                
+                <div class="read-section" data-section="timeline" data-xp="10">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M14.9998 8C14.9998 9.65686 13.6567 11 11.9998 11C10.343 11 8.99981 9.65686 8.99981 8C8.99981 6.34315 10.343 5 11.9998 5C13.6567 5 14.9998 6.34315 14.9998 8ZM12.9998 8C12.9998 8.55229 12.5521 9 11.9998 9C11.4475 9 10.9998 8.55229 10.9998 8C10.9998 7.44772 11.4475 7 11.9998 7C12.5521 7 12.9998 7.44772 12.9998 8Z" fill="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M13.2408 17.8498C15.2518 15.8779 18.9998 11.7054 18.9998 8C18.9998 4.11 15.8658 1 11.9998 1C8.13381 1 4.9998 4.11 4.9998 8C4.9998 11.7054 8.74784 15.8779 10.7588 17.8498C11.4574 18.5349 12.5422 18.5349 13.2408 17.8498ZM15.219 12.4526C16.3395 10.7999 16.9998 9.24316 16.9998 8C16.9998 5.21904 14.7657 3 11.9998 3C9.23391 3 6.99981 5.21904 6.99981 8C6.99981 9.24316 7.66008 10.7999 8.78059 12.4526C9.80572 13.9646 11.0569 15.3267 11.9998 16.2645C12.9427 15.3267 14.1939 13.9646 15.219 12.4526Z" fill="white"/>
+<path d="M5.88816 15.3239C5.42322 14.8589 4.64379 14.9616 4.31503 15.531L1.30183 20.75C0.724483 21.75 1.44617 23 2.60087 23H21.4017C22.5564 23 23.2781 21.75 22.7008 20.75L19.6865 15.5291C19.3577 14.9597 18.5783 14.8571 18.1133 15.322C17.7933 15.642 17.7281 16.1371 17.9544 16.5291L20.5357 21H3.4669L6.04708 16.531C6.27338 16.139 6.2082 15.6439 5.88816 15.3239Z" fill="white"/>
+</svg></div>
+                        <div class="timeline-content">
+                            <h4>Automation Engineer</h4>
+                            <p class="timeline-location">SIA ELIGENT • 2025.06 - 2025.07</p>
+                            <p>Deviced a comprehensive automation solution for NordPool, sending their electricity market data to a PLC in real-time.</p>
+                            <div class="achievement-tags">
+                                <span class="tag">Team Work</span>
+                                <span class="tag">TwinCAT STL</span>
+                                <span class="tag">HMI Programming</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79082 9.79086 7.99996 12 7.99996C14.2091 7.99996 16 9.79082 16 12ZM14 12C14 13.1045 13.1046 14 12 14C10.8954 14 10 13.1045 10 12C10 10.8954 10.8954 9.99996 12 9.99996C13.1046 9.99996 14 10.8954 14 12Z" fill="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M13.0006 2.17806C12.3815 1.82037 11.6185 1.82037 10.9994 2.17806L3.99945 6.22251C3.38096 6.57986 3 7.23993 3 7.95424V16.0457C3 16.76 3.38095 17.4201 3.99944 17.7774L10.9994 21.8219C11.6185 22.1796 12.3815 22.1796 13.0006 21.8219L20.0006 17.7774C20.619 17.4201 21 16.76 21 16.0457V7.95424C21 7.23993 20.619 6.57986 20.0006 6.22251L13.0006 2.17806ZM19 7.95424L12 3.90979L5 7.95424L5 16.0457L12 20.0901L19 16.0457V7.95424Z" fill="white"/>
+</svg></div>
+                        <div class="timeline-content">
+                            <h4>Cofounder</h4>
+                            <p class="timeline-location">CozyHoney.lv • 2021 - 2023</p>
+                            <p>A cofounder of CozyHoney.lv a student company that thought us about the food industry and ways to evolve.</p>
+                            <div class="achievement-tags">
+                                <span class="tag">Leadership</span>
+                                <span class="tag">Networking</span>
+                                <span class="tag">Quality Assurance</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path d="M11 7C11 6.44772 11.4477 6 12 6C12.5523 6 13 6.44772 13 7V10C13 10.5523 12.5523 11 12 11C11.4477 11 11 10.5523 11 10V7Z" fill="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M5 7C5 4.23858 7.23858 2 10 2H14C16.7614 2 19 4.23858 19 7V15C19 18.866 15.866 22 12 22C8.13401 22 5 18.866 5 15V7ZM7 7C7 5.34315 8.34315 4 10 4H14C15.6569 4 17 5.34315 17 7V15C17 17.7614 14.7614 20 12 20C9.23858 20 7 17.7614 7 15V7Z" fill="white"/>
+</svg></div>
+                        <div class="timeline-content">
+                            <h4>Junior Tester</h4>
+                            <p class="timeline-location">SIA TEVALE • 2024.05 - 2025.06</p>
+                            <p>Part-time Junior Tester for 1 year and 2 months at SIA TEVALE, assisting with Web development testing.</p>
+                            <div class="achievement-tags">
+                                <span class="tag">Web Development</span>
+                                <span class="tag">Learning</span>
+                                <span class="tag">Foundation Building</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="xp-indicator"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M9.7549 23.08C9.44197 23.2689 8.9998 23.0545 8.9998 22.6483V14H4.0869C3.65973 14 3.42927 13.4989 3.70728 13.1746L14.1202 1.02619C14.1579 0.982135 14.2 0.946924 14.2447 0.919942C14.5576 0.731067 14.9998 0.945409 14.9998 1.35159V9.99996H19.9127C20.3399 9.99996 20.5703 10.501 20.2923 10.8254L9.87943 22.9737C9.84167 23.0178 9.7996 23.053 9.7549 23.08ZM10.9946 12.8977C10.9434 12.3935 10.5176 12 9.9998 12H7.34824L12.9998 5.40648V11C12.9998 11.5522 13.4475 12 13.9998 12H16.6514L10.9998 18.5935V13C10.9998 12.9654 10.9981 12.9313 10.9946 12.8977Z" fill="white"/>
+</svg> +10 XP</div>
+                
+                <div class="quest-progress">
+                    <p><strong>Skills Reviewed:</strong></p>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="reading-progress" style="width: 0%"></div>
+                    </div>
+                    <p class="progress-text">Scan all capability domains! (<span id="sections-read">0</span>/3 sections analyzed)</p>
+                </div>
+                </div>
+
+                <div style="height: 60px;"></div>
+
+                <!-- Achievement Showcase -->
+                <div class="achievement-showcase">
+                <h2><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M19 4H21C22.1046 4 23 4.89543 23 6V9C23 11.2091 21.2091 13 19 13H18.3264C17.3395 15.0774 15.3595 16.5916 13 16.9291V20H15C15.5523 20 16 20.4477 16 21C16 21.5523 15.5523 22 15 22H9C8.44772 22 8 21.5523 8 21C8 20.4477 8.44772 20 9 20H11V16.9291C8.64045 16.5916 6.6605 15.0774 5.67363 13H5C2.79086 13 1 11.2091 1 9V6C1 4.89543 1.89543 4 3 4H5V3.875C5 2.83947 5.83947 2 6.875 2H17.125C18.1605 2 19 2.83947 19 3.875V4ZM12 15C9.23858 15 7 12.7614 7 10V4H17V10C17 12.7614 14.7614 15 12 15ZM18.9291 11H19C20.1046 11 21 10.1046 21 9V6H19V10C19 10.3395 18.9758 10.6734 18.9291 11ZM5.07089 11C5.02417 10.6734 5 10.3395 5 10V6H3V9C3 10.1046 3.89543 11 5 11H5.07089Z" fill="white"/>
+</svg> System Achievements</h2>
+                <p>Track your access progress through the network:</p>
+                <div class="achievement-grid">
+                    <div class="achievement-card unlocked">
+                        <div class="achievement-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M19 4H21C22.1046 4 23 4.89543 23 6V9C23 11.2091 21.2091 13 19 13H18.3264C17.3395 15.0774 15.3595 16.5916 13 16.9291V20H15C15.5523 20 16 20.4477 16 21C16 21.5523 15.5523 22 15 22H9C8.44772 22 8 21.5523 8 21C8 20.4477 8.44772 20 9 20H11V16.9291C8.64045 16.5916 6.6605 15.0774 5.67363 13H5C2.79086 13 1 11.2091 1 9V6C1 4.89543 1.89543 4 3 4H5V3.875C5 2.83947 5.83947 2 6.875 2H17.125C18.1605 2 19 2.83947 19 3.875V4ZM12 15C9.23858 15 7 12.7614 7 10V4H17V10C17 12.7614 14.7614 15 12 15ZM18.9291 11H19C20.1046 11 21 10.1046 21 9V6H19V10C19 10.3395 18.9758 10.6734 18.9291 11ZM5.07089 11C5.02417 10.6734 5 10.3395 5 10V6H3V9C3 10.1046 3.89543 11 5 11H5.07089Z" fill="currentColor"/>
+</svg></div>
+                        <h4>Data Explorer</h4>
+                        <p>Processed origin data blocks</p>
+                        <div class="achievement-status"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path d="M16.5001 8.99998C16.8906 9.3905 16.8906 10.0237 16.5001 10.4142L11.7072 15.2071C11.3167 15.5976 10.6835 15.5976 10.293 15.2071L8.0001 12.9142C7.60958 12.5237 7.60958 11.8905 8.0001 11.5C8.39063 11.1095 9.02379 11.1095 9.41432 11.5L11.0001 13.0858L15.0859 8.99998C15.1347 8.95116 15.1873 8.90845 15.2428 8.87184C15.6309 8.61556 16.1584 8.65827 16.5001 8.99998Z" fill="currentColor"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12Z" fill="currentColor"/>
+</svg> Unlocked</div>
+                    </div>
+                    <div class="achievement-card unlocked">
+                        <div class="achievement-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M9.7549 23.08C9.44197 23.2689 8.9998 23.0545 8.9998 22.6483V14H4.0869C3.65973 14 3.42927 13.4989 3.70728 13.1746L14.1202 1.02619C14.1579 0.982135 14.2 0.946924 14.2447 0.919942C14.5576 0.731067 14.9998 0.945409 14.9998 1.35159V9.99996H19.9127C20.3399 9.99996 20.5703 10.501 20.2923 10.8254L9.87943 22.9737C9.84167 23.0178 9.7996 23.053 9.7549 23.08ZM10.9946 12.8977C10.9434 12.3935 10.5176 12 9.9998 12H7.34824L12.9998 5.40648V11C12.9998 11.5522 13.4475 12 13.9998 12H16.6514L10.9998 18.5935V13C10.9998 12.9654 10.9981 12.9313 10.9946 12.8977Z" fill="currentColor"/>
+</svg></div>
+                        <h4>System Analyst</h4>
+                        <p>Analyze technical specifications</p>
+                        <div class="achievement-status"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path d="M16.5001 8.99998C16.8906 9.3905 16.8906 10.0237 16.5001 10.4142L11.7072 15.2071C11.3167 15.5976 10.6835 15.5976 10.293 15.2071L8.0001 12.9142C7.60958 12.5237 7.60958 11.8905 8.0001 11.5C8.39063 11.1095 9.02379 11.1095 9.41432 11.5L11.0001 13.0858L15.0859 8.99998C15.1347 8.95116 15.1873 8.90845 15.2428 8.87184C15.6309 8.61556 16.1584 8.65827 16.5001 8.99998Z" fill="currentColor"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12Z" fill="currentColor"/>
+</svg> Unlocked</div>
+                    </div>
+                    <div class="achievement-card locked">
+                        <div class="achievement-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 2.5C16.9706 2.5 21 4.29086 21 6.5V17.5C21 19.7091 16.9706 21.5 12 21.5C7.02944 21.5 3 19.7091 3 17.5V6.5C3 4.29086 7.02944 2.5 12 2.5ZM19.006 6.4534C19.0063 6.45339 19.0057 6.45676 19.003 6.46355C19.0043 6.4568 19.0056 6.45341 19.006 6.4534ZM18.8439 6.32179C18.9219 6.40368 18.9634 6.46295 18.9848 6.5C18.9634 6.53706 18.9219 6.59632 18.8439 6.67821C18.6248 6.90844 18.2133 7.20677 17.5517 7.5008C16.2336 8.08664 14.2724 8.5 12 8.5C9.72757 8.5 7.76644 8.08664 6.44832 7.5008C5.78673 7.20677 5.37516 6.90844 5.15606 6.67821C5.07812 6.59632 5.03659 6.53706 5.01516 6.5C5.03659 6.46295 5.07812 6.40368 5.15606 6.32179C5.37516 6.09156 5.78673 5.79323 6.44832 5.4992C7.76644 4.91337 9.72757 4.5 12 4.5C14.2724 4.5 16.2336 4.91337 17.5517 5.4992C18.2133 5.79323 18.6248 6.09156 18.8439 6.32179ZM4.99403 6.4534C4.99436 6.4534 4.99567 6.4568 4.99699 6.46355C4.99435 6.45676 4.99369 6.45339 4.99403 6.4534ZM5 9.01437V11.9707C5.01331 12.0007 5.05262 12.0695 5.15606 12.1782C5.37516 12.4084 5.78673 12.7068 6.44832 13.0008C7.76644 13.5866 9.72757 14 12 14C14.2724 14 16.2336 13.5866 17.5517 13.0008C18.2133 12.7068 18.6248 12.4084 18.8439 12.1782C18.9474 12.0695 18.9867 12.0007 19 11.9707V9.01437C17.35 9.92059 14.8273 10.5 12 10.5C9.17274 10.5 6.64996 9.92059 5 9.01437ZM19 14.5144C17.35 15.4206 14.8273 16 12 16C9.17274 16 6.64996 15.4206 5 14.5144V17.4707C5.01331 17.5007 5.05262 17.5695 5.15606 17.6782C5.37516 17.9084 5.78673 18.2068 6.44832 18.5008C7.76644 19.0866 9.72757 19.5 12 19.5C14.2724 19.5 16.2336 19.0866 17.5517 18.5008C18.2133 18.2068 18.6248 17.9084 18.8439 17.6782C18.9474 17.5695 18.9867 17.5007 19 17.4707V14.5144Z" fill="currentColor"/>
+</svg></div>
+                        <h4>Database Scanner</h4>
+                        <p>Scan project archives</p>
+                        <div class="achievement-status"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path d="M12 16.5C12.8284 16.5 13.5 15.8284 13.5 15C13.5 14.1716 12.8284 13.5 12 13.5C11.1716 13.5 10.5 14.1716 10.5 15C10.5 15.8284 11.1716 16.5 12 16.5Z" fill="currentColor"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 1C9.23858 1 7 3.23858 7 6V9L5 9.00003C3.89543 9.00003 3 9.89546 3 11V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V11C21 9.89546 20.1046 9.00003 19 9.00003H17V6C17 3.23858 14.7614 1 12 1ZM12 3C10.3431 3 9 4.34315 9 6V9H15V6C15 4.34315 13.6569 3 12 3ZM5 11L5 19H19V11H5Z" fill="currentColor"/>
+</svg> Locked</div>
+                    </div>
+                    <div class="achievement-card locked">
+                        <div class="achievement-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM20 12C20 12.6906 19.9125 13.3608 19.748 14H16.41C16.469 13.3538 16.5 12.6849 16.5 12C16.5 11.3151 16.469 10.6462 16.41 10H19.748C19.9125 10.6392 20 11.3094 20 12ZM16.1256 8H18.9297C18.046 6.47231 16.6716 5.26398 15.0221 4.59049C15.4904 5.53438 15.8689 6.69453 16.1256 8ZM8.97794 4.59049C7.32837 5.26398 5.95398 6.47231 5.07026 8H7.87444C8.13111 6.69453 8.50958 5.53438 8.97794 4.59049ZM7.59002 10H4.25204C4.08751 10.6392 4 11.3094 4 12C4 12.6906 4.08751 13.3608 4.25204 14H7.59002C7.53099 13.3538 7.5 12.6849 7.5 12C7.5 11.3151 7.53099 10.6462 7.59002 10ZM7.87444 16H5.07026C5.95398 17.5277 7.32837 18.736 8.97794 19.4095C8.50958 18.4656 8.13111 17.3055 7.87444 16ZM15.0221 19.4095C16.6716 18.736 18.046 17.5277 18.9297 16H16.1256C15.8689 17.3055 15.4904 18.4656 15.0221 19.4095ZM14.5 12C14.5 12.6943 14.4652 13.3635 14.4008 14H9.59918C9.53484 13.3635 9.5 12.6943 9.5 12C9.5 11.3057 9.53484 10.6365 9.59918 10H14.4008C14.4652 10.6365 14.5 11.3057 14.5 12ZM14.0822 8C13.8907 7.14167 13.6428 6.38215 13.3581 5.74966C13.0204 4.99913 12.6701 4.51413 12.3818 4.24316C12.2431 4.11273 12.1393 4.05118 12.079 4.02377C12.031 4.00192 12.008 4.00012 12.0017 4H11.9983C11.992 4.00012 11.969 4.00192 11.921 4.02377C11.8607 4.05118 11.7569 4.11273 11.6182 4.24316C11.3299 4.51413 10.9796 4.99913 10.6419 5.74966C10.3572 6.38215 10.1093 7.14167 9.91779 8H14.0822ZM9.91779 16C10.1093 16.8583 10.3572 17.6179 10.6419 18.2503C10.9796 19.0009 11.3299 19.4859 11.6182 19.7568C11.7569 19.8873 11.8607 19.9488 11.921 19.9762C11.9689 19.998 11.9919 19.9999 11.9983 20H12.0017C12.0081 19.9999 12.0311 19.998 12.079 19.9762C12.1393 19.9488 12.2431 19.8873 12.3818 19.7568C12.6701 19.4859 13.0204 19.0009 13.3581 18.2503C13.6428 17.6179 13.8907 16.8583 14.0822 16H9.91779Z" fill="currentColor"/>
+</svg></div>
+                        <h4>Network Connected</h4>
+                        <p>Establish communication link</p>
+                        <div class="achievement-status"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path d="M12 16.5C12.8284 16.5 13.5 15.8284 13.5 15C13.5 14.1716 12.8284 13.5 12 13.5C11.1716 13.5 10.5 14.1716 10.5 15C10.5 15.8284 11.1716 16.5 12 16.5Z" fill="currentColor"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 1C9.23858 1 7 3.23858 7 6V9L5 9.00003C3.89543 9.00003 3 9.89546 3 11V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V11C21 9.89546 20.1046 9.00003 19 9.00003H17V6C17 3.23858 14.7614 1 12 1ZM12 3C10.3431 3 9 4.34315 9 6V9H15V6C15 4.34315 13.6569 3 12 3ZM5 11L5 19H19V11H5Z" fill="currentColor"/>
+</svg> Locked</div>
+                    </div>
+                </div>
+            </div>
+    </main>
+
+    <!-- Game Footer -->
+    <footer class="game-footer">
+        <p style="font-size: 0.9em; margin: 15px 0;">© designed by MŠ</p>
+    </footer>
+
+    <!-- Game Engine -->
+    <script src="progression.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="background-shader.js"></script>
+    
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Scroll to top">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 4L12 20M12 4L6 10M12 4L18 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+    
+    <script>
+        const scrollBtn = document.getElementById('scrollToTop');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollBtn.classList.add('visible');
+            } else {
+                scrollBtn.classList.remove('visible');
+            }
+        });
+        scrollBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Settings functionality
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsModal = document.getElementById('settings-modal');
+        const closeSettings = document.getElementById('close-settings');
+        const toggleLevelingBtn = document.getElementById('toggle-leveling-btn');
+        const levelingStatus = document.getElementById('leveling-status');
+        
+        function updateSettingsDisplay() {
+            const isEnabled = localStorage.getItem('levelingSystemChoice') !== 'disabled';
+            if (isEnabled) {
+                levelingStatus.innerHTML = '<span style="color:#fff;font-weight:700;">Status:</span> <span style="color:#fff;">Enabled</span>';
+                toggleLevelingBtn.textContent = 'Disable Leveling';
+                toggleLevelingBtn.style.background = '#ff2a6d';
+                toggleLevelingBtn.style.color = '#fff';
+            } else {
+                levelingStatus.innerHTML = '<span style="color:#fff;font-weight:700;">Status:</span> <span style="color:#ff0000;">Disabled</span>';
+                toggleLevelingBtn.textContent = 'Enable Leveling';
+                toggleLevelingBtn.style.background = '#00f7ff';
+                toggleLevelingBtn.style.color = '#000';
+            }
+        }
+        
+        settingsBtn.addEventListener('click', () => {
+            updateSettingsDisplay();
+            settingsModal.style.display = 'flex';
+        });
+        
+        closeSettings.addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+        });
+        
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.style.display = 'none';
+            }
+        });
+        
+        toggleLevelingBtn.addEventListener('click', () => {
+            const currentChoice = localStorage.getItem('levelingSystemChoice');
+            if (currentChoice === 'disabled') {
+                // Enabling XP - reset progress and go to main screen
+                localStorage.setItem('levelingSystemChoice', 'enabled');
+                localStorage.removeItem('portfolioProgression');
+                localStorage.removeItem('hasChosenLeveling');
+                window.name = '';
+                window.location.href = 'index.html';
+            } else {
+                // Disabling XP - just reload current page
+                localStorage.setItem('levelingSystemChoice', 'disabled');
+                location.reload();
+            }
+        });
+        
+        settingsBtn.addEventListener('mouseenter', () => {
+            settingsBtn.style.transform = 'translateY(-50%) scale(1.1)';
+        });
+        settingsBtn.addEventListener('mouseleave', () => {
+            settingsBtn.style.transform = 'translateY(-50%) scale(1)';
+        });
+    </script>
+
+    <!-- Melt Effect Script -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const meltBtn = document.getElementById('melt-btn');
+        const section = document.getElementById('engineer-description');
+        let savedSectionRect = null;
+        
+        if (meltBtn && section) {
+            meltBtn.addEventListener('click', function() {
+                meltBtn.style.background = 'rgba(255, 165, 0, 0.8)';
+                meltBtn.style.borderColor = '#ffa500';
+                meltBtn.textContent = 'MELTING...';
+                meltBtn.disabled = true;
+                
+                const sectionRect = section.getBoundingClientRect();
+                savedSectionRect = sectionRect; // Save for reverse animation
+                
+                // Create canvas for pixel melting effect
+                const canvas = document.createElement('canvas');
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                canvas.style.position = 'fixed';
+                canvas.style.top = '0';
+                canvas.style.left = '0';
+                canvas.style.zIndex = '9999';
+                canvas.style.pointerEvents = 'none';
+                document.body.appendChild(canvas);
+                
+                const ctx = canvas.getContext('2d');
+                const pixels = [];
+                const pixelSize = 5;
+                
+                // Create dense grid of pixels
+                const spacing = pixelSize;
+                for (let y = sectionRect.top; y < sectionRect.bottom; y += spacing) {
+                    for (let x = sectionRect.left; x < sectionRect.right; x += spacing) {
+                        const colIdx = (x - sectionRect.left) / spacing;
+                        const rowIdx = (y - sectionRect.top) / spacing;
+                        const distance = Math.sqrt(colIdx * colIdx + rowIdx * rowIdx);
+                        
+                        pixels.push({
+                            x: x,
+                            y: y,
+                            startX: x,
+                            startY: y,
+                            velocityX: (Math.random() - 0.5) * 150,
+                            velocityY: 0,
+                            gravity: 500,
+                            rotation: 0,
+                            rotationSpeed: (Math.random() - 0.5) * 20,
+                            delay: distance * 0.01,
+                            life: 1
+                        });
+                    }
+                }
+                
+                let startTime = null;
+                function animate(timestamp) {
+                    if (!startTime) startTime = timestamp;
+                    const elapsed = (timestamp - startTime) / 1000;
+                    
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    let stillActive = false;
+                    
+                    pixels.forEach(pixel => {
+                        const age = elapsed - pixel.delay;
+                        if (age > -0.1 && age < 2.5) {
+                            stillActive = true;
+                            
+                            if (age > 0) {
+                                // Update physics
+                                pixel.velocityY += pixel.gravity * 0.016;
+                                pixel.x += pixel.velocityX * 0.016;
+                                pixel.y += pixel.velocityY * 0.016;
+                                pixel.rotation += pixel.rotationSpeed * 0.016;
+                                pixel.velocityX *= 0.97;
+                                
+                                // Fade out
+                                pixel.life = Math.max(0, 1 - age / 2.5);
+                            }
+                            
+                            // Draw (white pixels to match text)
+                            ctx.save();
+                            ctx.translate(pixel.x, pixel.y);
+                            ctx.rotate(pixel.rotation);
+                            ctx.globalAlpha = pixel.life;
+                            ctx.fillStyle = '#ffffff';
+                            ctx.fillRect(-pixelSize/2, -pixelSize/2, pixelSize, pixelSize);
+                            ctx.restore();
+                        }
+                    });
+                    
+                    if (stillActive) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        canvas.remove();
+                    }
+                }
+                requestAnimationFrame(animate);
+                
+                // Hide section after brief delay so pixels can be seen
+                setTimeout(() => {
+                    section.style.transition = 'opacity 0.3s ease';
+                    section.style.opacity = '0';
+                }, 100);
+                
+                setTimeout(() => {
+                    section.style.display = 'none';
+                    
+                    // Show "bring back?" button
+                    const bringBackBtn = document.createElement('button');
+                    bringBackBtn.textContent = 'bring back?';
+                    bringBackBtn.style.cssText = `
+                        background: rgba(255, 165, 0, 0.2);
+                        color: #ffa500;
+                        border: 2px solid rgba(255, 165, 0, 0.5);
+                        padding: 8px 20px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 1rem;
+                        font-family: 'Courier New', monospace;
+                        transition: all 0.3s;
+                        margin: 20px 0;
+                        display: block;
+                    `;
+                    section.parentNode.insertBefore(bringBackBtn, section);
+                    
+                    // Bring back animation
+                    bringBackBtn.addEventListener('click', function() {
+                        bringBackBtn.textContent = 'RESTORING...';
+                        bringBackBtn.style.background = 'rgba(255, 165, 0, 0.6)';
+                        bringBackBtn.disabled = true;
+                        
+                        // Create canvas for reverse animation
+                        const canvas = document.createElement('canvas');
+                        canvas.width = window.innerWidth;
+                        canvas.height = window.innerHeight;
+                        canvas.style.position = 'fixed';
+                        canvas.style.top = '0';
+                        canvas.style.left = '0';
+                        canvas.style.zIndex = '9999';
+                        canvas.style.pointerEvents = 'none';
+                        document.body.appendChild(canvas);
+                        
+                        const ctx = canvas.getContext('2d');
+                        const reversePixels = [];
+                        const pixelSize = 5;
+                        const spacing = pixelSize;
+                        const sectionRect = savedSectionRect; // Use saved rect
+                        
+                        // Create pixels starting from random off-screen positions
+                        for (let y = sectionRect.top; y < sectionRect.bottom; y += spacing) {
+                            for (let x = sectionRect.left; x < sectionRect.right; x += spacing) {
+                                const colIdx = (x - sectionRect.left) / spacing;
+                                const rowIdx = (y - sectionRect.top) / spacing;
+                                const distance = Math.sqrt(colIdx * colIdx + rowIdx * rowIdx);
+                                
+                                // Start pixels off-screen at random positions
+                                const angle = Math.random() * Math.PI * 2;
+                                const startDistance = 500 + Math.random() * 300;
+                                
+                                reversePixels.push({
+                                    x: x + Math.cos(angle) * startDistance,
+                                    y: y + Math.sin(angle) * startDistance,
+                                    targetX: x,
+                                    targetY: y,
+                                    rotation: Math.random() * Math.PI * 2,
+                                    delay: distance * 0.01,
+                                    life: 0
+                                });
+                            }
+                        }
+                        
+                        let startTime = null;
+                        function animateReverse(timestamp) {
+                            if (!startTime) startTime = timestamp;
+                            const elapsed = (timestamp - startTime) / 1000;
+                            
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            
+                            let stillActive = false;
+                            
+                            reversePixels.forEach(pixel => {
+                                const age = elapsed - pixel.delay;
+                                if (age > -0.2 && age < 1.5) {
+                                    stillActive = true;
+                                    
+                                    if (age > 0) {
+                                        // Interpolate position towards target
+                                        const progress = Math.min(age / 1.5, 1);
+                                        const eased = 1 - Math.pow(1 - progress, 3); // ease out cubic
+                                        
+                                        pixel.x = pixel.x + (pixel.targetX - pixel.x) * 0.1;
+                                        pixel.y = pixel.y + (pixel.targetY - pixel.y) * 0.1;
+                                        pixel.life = Math.min(progress * 1.5, 1);
+                                        pixel.rotation *= 0.9;
+                                    } else {
+                                        pixel.life = 1;
+                                    }
+                                    
+                                    // Draw
+                                    ctx.save();
+                                    ctx.translate(pixel.x, pixel.y);
+                                    ctx.rotate(pixel.rotation);
+                                    ctx.globalAlpha = pixel.life;
+                                    ctx.fillStyle = '#ffffff';
+                                    ctx.fillRect(-pixelSize/2, -pixelSize/2, pixelSize, pixelSize);
+                                    ctx.restore();
+                                }
+                            });
+                            
+                            if (stillActive) {
+                                requestAnimationFrame(animateReverse);
+                            } else {
+                                canvas.remove();
+                                
+                                // Show actual section
+                                section.style.display = 'block';
+                                section.style.opacity = '1';
+                                
+                                bringBackBtn.remove();
+                                
+                                // Reset melt button
+                                meltBtn.style.background = 'rgba(255, 165, 0, 0.2)';
+                                meltBtn.style.borderColor = 'rgba(255, 165, 0, 0.5)';
+                                meltBtn.textContent = 'melt?';
+                                meltBtn.disabled = false;
+                            }
+                        }
+                        requestAnimationFrame(animateReverse);
+                    });
+                    
+                    // Hover effect for bring back button
+                    bringBackBtn.addEventListener('mouseenter', function() {
+                        if (!bringBackBtn.disabled) {
+                            bringBackBtn.style.background = 'rgba(255, 165, 0, 0.4)';
+                            bringBackBtn.style.transform = 'scale(1.05)';
+                        }
+                    });
+                    
+                    bringBackBtn.addEventListener('mouseleave', function() {
+                        if (!bringBackBtn.disabled) {
+                            bringBackBtn.style.background = 'rgba(255, 165, 0, 0.2)';
+                            bringBackBtn.style.transform = 'scale(1)';
+                        }
+                    });
+                }, 1000);
+            });
+            
+            // Hover effect
+            meltBtn.addEventListener('mouseenter', function() {
+                if (!meltBtn.disabled) {
+                    meltBtn.style.background = 'rgba(255, 165, 0, 0.4)';
+                    meltBtn.style.transform = 'scale(1.05)';
+                }
+            });
+            
+            meltBtn.addEventListener('mouseleave', function() {
+                if (!meltBtn.disabled) {
+                    meltBtn.style.background = 'rgba(255, 165, 0, 0.2)';
+                    meltBtn.style.transform = 'scale(1)';
+                }
+            });
+        }
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<!-- Guild Hall - Natural Game Theme Integration -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communication Hub - Markuss Šube</title>
+    
+    <!-- External stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="game-styles-new.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace !important;
+        }
+        .site-header, .quest-navigation {
+            font-family: 'Orbitron', sans-serif !important;
+        }
+        .character-tracker, .character-tracker * {
+            font-family: 'Courier New', Courier, monospace !important;
+        }
+
+        /* Conveyor removed — no contact form animations */
+        .conveyor-wrapper { display: none !important; }
+        .conveyor-belt { display: none !important; }
+        @keyframes beltRoll { 0% { transform: none; } 100% { transform: none; } }
+
+        /* Mystery box target removed — contact form restored to original behavior */
+        
+
+        .packing-area { position: relative; min-height: 240px; display:flex; align-items:center; justify-content:center; padding:22px; z-index:3 }
+        .packing-area.is-3d { perspective: 1500px; }
+
+        /* simple parcel (flat initially, matches project box size when 3D) */
+        .parcel { width: 100%; max-width: 350px; height: 300px; background: linear-gradient(180deg,#e8d3b0 0%, #dfc194 100%); border: 2px solid #b78d52; border-radius: 6px; box-shadow: 0 14px 40px rgba(0,0,0,0.45); position: relative; transform-origin: center center; transition: transform 0.8s cubic-bezier(.2,.8,.2,1), opacity 0.4s ease; overflow: visible; }
+
+        /* right face (pseudo 3D depth) implemented as element to match project box depth */
+        .parcel .face-right { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(180deg,#cfa56f,#a76731); border-radius:0 6px 6px 0; transform-origin: center center; transform: rotateY(90deg) translateZ(150px); box-shadow: inset 0 -12px 18px rgba(0,0,0,0.18); z-index:1; opacity:0; transition: opacity 0.35s ease, transform 0.45s ease; }
+
+        /* subtle bottom shadow for depth */
+        .parcel::after {
+            content: '';
+            position: absolute;
+            left: 10px;
+            bottom: -22px;
+            width: calc(100% - 20px);
+            height: 26px;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.18), rgba(0,0,0,0.28));
+            border-radius: 6px;
+            transform: skewX(-6deg);
+            z-index: 0;
+            opacity: 0.95;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .parcel .lid { position: absolute; left: 0; top: 0; right: 0; height: 36px; background: linear-gradient(180deg,#caa276,#b17948); transform-origin: top center; transform: translateZ(0) rotateX(0deg); transition: transform 0.5s cubic-bezier(.2,.8,.2,1), box-shadow 0.3s ease; z-index: 4; box-shadow: inset 0 -6px 12px rgba(0,0,0,0.36); }
+        .parcel .lid::before { content: ''; position:absolute; left: 6px; right:6px; bottom:-8px; height:8px; background: linear-gradient(180deg,#b98c58,#98632d); border-radius:3px; transform-origin: center; transition: transform 0.5s ease; }
+
+        /* collapse content while still flat */
+        .parcel.collapsing .guild-contact-form { transform: scaleY(0.02); opacity: 0; pointer-events: none; transition: transform 0.2s ease, opacity 0.2s ease; }
+        .guild-contact-form.collapsing { transform: scaleY(0.02); opacity: 0; pointer-events: none; transition: transform 0.2s ease, opacity 0.2s ease; }
+
+        /* Packed front content styling when injected into the box front */
+        .packed-front { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:12px; box-sizing:border-box; color: #111; font-weight:700; text-align:center; }
+        .packed-front .name { font-size: 1rem; margin-bottom: 6px; }
+        .packed-front .subject { font-size: 0.9rem; opacity: 0.9; }
+
+        /* when switching to 3D, reveal pseudo-face and apply perspective (match project box dimensions) */
+        .parcel.to-3d { transform-style: preserve-3d; transform: rotateX(-15deg) rotateY(15deg) translateZ(0) scale(1.01); perspective: 1500px; box-shadow: 0 30px 80px rgba(0,0,0,0.55); }
+        .parcel.to-3d .face-right { opacity: 1; transform: rotateY(90deg) translateZ(150px); }
+        .parcel.to-3d .lid { transform: translateZ(150px) rotateX(6deg); box-shadow: inset 0 -10px 18px rgba(0,0,0,0.42); }
+        /* bring content forward so it sits on the front face in 3D */
+        .parcel.to-3d .content-wrap { transform: translateZ(150px); transition: transform 0.45s ease; }
+
+        /* folded state: lid rotates and content remains collapsed */
+        .parcel.folded .lid { transform: translateZ(150px) rotateX(-130deg); box-shadow: none; }
+        .parcel.folded .lid::before { transform: translateZ(150px) rotateX(-130deg); }
+        .parcel.folded .guild-contact-form { transform: scaleY(0.02); opacity: 0; pointer-events: none; }
+
+        /* move on belt */
+        .packing-area.on-belt .parcel { transform: none !important; transition: none !important; opacity: 1 !important; }
+
+        .delivery-message { color:#0f0; font-weight:700; padding:10px 0; text-align:center }
+
+        /* small responsive tweaks */
+        @media (max-width:700px) {
+            .parcel { max-width: 100%; height: 260px; }
+            .parcel .lid { height: 28px; }
+            .parcel .face-right { left:0; width:100%; }
+            .parcel.to-3d .face-right { transform: rotateY(90deg) translateZ(80px); opacity:1; }
+            .parcel.to-3d .content-wrap { transform: translateZ(80px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Character Progress Tracker -->
+    <div id="character-tracker" class="character-tracker mobile-footer-xp expanded">
+        <div class="character-avatar-display">
+            <div class="character-sprite" id="character-sprite"><img src="linkedin.jpg" alt="Markuss Šube" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></div>
+        </div>
+        <div class="character-info-display">
+            <h4 id="character-title">Intern</h4>
+            <div class="xp-progress">
+                <div class="xp-bar-fill" id="xp-bar-fill" style="width: 0%"></div>
+            </div>
+            <p class="xp-text"><span id="current-xp">0</span> / <span id="needed-xp">100</span> XP</p>
+        </div>
+    </div>
+
+    <!-- Guild Hall Header -->
+    <header class="site-header" role="banner">
+        <h1>Markuss Šube <span class="role">Automation Engineer</span></h1>
+        <button id="translate-btn" style="background:transparent;border:none;cursor:pointer;padding:10px;position:absolute;right:110px;top:50%;transform:translateY(-50%);transition:all 0.3s;" aria-label="Translate">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z" fill="#fff"/>
+            </svg>
+        </button>
+        <button id="retro-games-btn" onclick="window.location.href='retro-arcade.html'" style="background:transparent;border:none;cursor:pointer;padding:10px;position:absolute;right:65px;top:50%;transform:translateY(-50%);transition:all 0.3s;" aria-label="Retro Games" title="Retro Games">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path d="M7.1251 11.125C7.1251 11.6083 7.51685 12 8.0001 12C8.48335 12 8.8751 11.6083 8.8751 11.125V10.375H9.6251C10.1083 10.375 10.5001 9.98325 10.5001 9.5C10.5001 9.01675 10.1083 8.625 9.6251 8.625H8.8751V7.875C8.8751 7.39175 8.48335 7 8.0001 7C7.51685 7 7.1251 7.39175 7.1251 7.875V8.625H6.3751C5.89185 8.625 5.5001 9.01675 5.5001 9.5C5.5001 9.98325 5.89185 10.375 6.3751 10.375H7.1251V11.125Z" fill="#fff"/>
+<path d="M13.5001 9.5C13.5001 9.01675 13.8919 8.625 14.3751 8.625H17.6251C18.1083 8.625 18.5001 9.01675 18.5001 9.5C18.5001 9.98325 18.1083 10.375 17.6251 10.375H14.3751C13.8919 10.375 13.5001 9.98325 13.5001 9.5Z" fill="#fff"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M1.61555 8.53002C1.86084 5.4082 4.46568 3 7.59712 3H16.403C19.5344 3 22.1393 5.4082 22.3846 8.53002L22.5001 10L23.1121 16.733C23.3205 19.0244 21.5163 21 19.2154 21C17.841 21 16.5674 20.2789 15.8603 19.1003L14.0001 16H10.0001L8.13986 19.1003C7.43273 20.2789 6.1591 21 4.78468 21C2.48384 21 0.679662 19.0244 0.88797 16.733L1.50006 10L1.61555 8.53002ZM3.49391 10.1567C3.49327 10.1648 3.49258 10.1729 3.49184 10.1811L2.87976 16.914C2.77792 18.0342 3.65991 19 4.78468 19C5.45657 19 6.07919 18.6475 6.42487 18.0713L8.28507 14.971C8.64652 14.3686 9.29753 14 10.0001 14H14.0001C14.7026 14 15.3536 14.3686 15.715 14.971L17.5752 18.0713C17.9209 18.6475 18.5435 19 19.2154 19C20.3402 19 21.2222 18.0342 21.1204 16.914L20.5083 10.1811C20.5075 10.1729 20.5068 10.1648 20.5062 10.1567L20.3907 8.68668C20.2272 6.60547 18.4906 5 16.403 5H7.59712C5.50949 5 3.77293 6.60547 3.60941 8.68668L3.49391 10.1567Z" fill="#fff"/>
+</svg>
+        </button>
+        <button id="settings-btn" style="background:transparent;border:none;cursor:pointer;padding:10px;position:absolute;right:20px;top:50%;transform:translateY(-50%);transition:all 0.3s;" aria-label="Settings">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0002 16C14.2094 16 16.0002 14.2091 16.0002 12C16.0002 9.79086 14.2094 8 12.0002 8C9.79109 8 8.00023 9.79086 8.00023 12C8.00023 14.2091 9.79109 16 12.0002 16ZM12.0002 14C13.1048 14 14.0002 13.1046 14.0002 12C14.0002 10.8954 13.1048 10 12.0002 10C10.8957 10 10.0002 10.8954 10.0002 12C10.0002 13.1046 10.8957 14 12.0002 14Z" fill="#fff"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.1182 1.86489L15.5203 4.81406C15.8475 4.97464 16.1621 5.1569 16.4623 5.35898L19.2185 4.23223C19.6814 4.043 20.2129 4.2248 20.463 4.65787L22.5901 8.34213C22.8401 8.77521 22.7318 9.3264 22.3365 9.63266L19.9821 11.4566C19.9941 11.6362 20.0002 11.8174 20.0002 12C20.0002 12.1826 19.9941 12.3638 19.9821 12.5434L22.3365 14.3673C22.7318 14.6736 22.8401 15.2248 22.5901 15.6579L20.463 19.3421C20.2129 19.7752 19.6814 19.957 19.2185 19.7678L16.4623 18.641C16.1621 18.8431 15.8475 19.0254 15.5203 19.1859L15.1182 22.1351C15.0506 22.6306 14.6274 23 14.1273 23H9.87313C9.37306 23 8.94987 22.6306 8.8823 22.1351L8.48014 19.1859C8.15296 19.0254 7.83835 18.8431 7.53818 18.641L4.78195 19.7678C4.31907 19.957 3.78756 19.7752 3.53752 19.3421L1.41042 15.6579C1.16038 15.2248 1.26869 14.6736 1.66401 14.3673L4.01841 12.5434C4.00636 12.3638 4.00025 12.1826 4.00025 12C4.00025 11.8174 4.00636 11.6362 4.01841 11.4566L1.66401 9.63266C1.26869 9.3264 1.16038 8.77521 1.41041 8.34213L3.53752 4.65787C3.78755 4.2248 4.31906 4.043 4.78195 4.23223L7.53818 5.35898C7.83835 5.1569 8.15296 4.97464 8.48014 4.81406L8.8823 1.86489C8.94987 1.3694 9.37306 1 9.87313 1H14.1273C14.6274 1 15.0506 1.3694 15.1182 1.86489ZM13.6826 6.14004L14.6392 6.60948C14.8842 6.72975 15.1201 6.86639 15.3454 7.01805L16.231 7.61423L19.1674 6.41382L20.4216 8.58619L17.9153 10.5278L17.9866 11.5905C17.9956 11.7255 18.0002 11.8621 18.0002 12C18.0002 12.1379 17.9956 12.2745 17.9866 12.4095L17.9153 13.4722L20.4216 15.4138L19.1674 17.5862L16.231 16.3858L15.3454 16.982C15.1201 17.1336 14.8842 17.2702 14.6392 17.3905L13.6826 17.86L13.2545 21H10.746L10.3178 17.86L9.36131 17.3905C9.11626 17.2702 8.88037 17.1336 8.6551 16.982L7.76954 16.3858L4.83313 17.5862L3.57891 15.4138L6.0852 13.4722L6.01392 12.4095C6.00487 12.2745 6.00024 12.1379 6.00024 12C6.00024 11.8621 6.00487 11.7255 6.01392 11.5905L6.0852 10.5278L3.57891 8.58619L4.83312 6.41382L7.76953 7.61423L8.6551 7.01805C8.88037 6.86639 9.11625 6.72976 9.36131 6.60949L10.3178 6.14004L10.746 3H13.2545L13.6826 6.14004Z" fill="#fff"/>
+            </svg>
+        </button>
+    </header>
+    
+    <!-- Settings Modal -->
+    <div id="settings-modal" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);z-index:99999;display:none;align-items:center;justify-content:center;">
+        <div style="background:linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);padding:40px;border-radius:15px;max-width:500px;text-align:center;border:2px solid #00f7ff;box-shadow:0 0 30px rgba(0,247,255,0.5);position:relative;">
+            <button id="close-settings" style="position:absolute;top:15px;right:15px;background:transparent;border:none;color:#fff;font-size:24px;cursor:pointer;padding:5px;line-height:1;">×</button>
+            <h2 style="color:#00f7ff;font-family:'Orbitron',sans-serif;font-size:1.8rem;margin-bottom:20px;">Settings</h2>
+            <div style="margin:30px 0;">
+                <h3 style="color:#fff;font-family:'Orbitron',sans-serif;font-size:1.2rem;margin-bottom:15px;">Leveling System</h3>
+                <p style="color:#aaa;font-size:0.95rem;margin-bottom:20px;line-height:1.5;">Toggle the interactive XP leveling system</p>
+                <div id="leveling-status" style="color:#00f7ff;font-weight:600;font-size:1.1rem;margin-bottom:20px;font-family:'Orbitron',sans-serif;">Status: Enabled</div>
+                <div style="display:flex;gap:15px;justify-content:center;">
+                    <button id="toggle-leveling-btn" style="background:#ff2a6d;color:#fff;border:none;padding:12px 24px;font-size:1rem;font-family:'Orbitron',sans-serif;border-radius:8px;cursor:pointer;transition:all 0.3s;font-weight:600;">Disable Leveling</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quest Navigation -->
+    <nav class="quest-navigation">
+        <ul class="quest-menu">
+            <li><a href="index.html" class="nav-link"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M3 11.8284C3 11.2979 3.21071 10.7892 3.58579 10.4142L10.5858 3.41416C11.3668 2.63311 12.6332 2.63311 13.4142 3.41416L20.4142 10.4142C20.7893 10.7892 21 11.2979 21 11.8284V20C21 20.5522 20.5523 21 20 21H14C13.4477 21 13 20.5522 13 20V15H11V20C11 20.5522 10.5523 21 10 21H4C3.44772 21 3 20.5522 3 20V11.8284ZM12 4.82837L5 11.8284V19H9V13.9999C9 13.4477 9.44772 12.9999 10 12.9999H14C14.5523 12.9999 15 13.4477 15 13.9999V19H19V11.8284L12 4.82837Z" fill="white"/>
+</svg> Main Terminal</a></li>
+            <li><a href="Experience.html" class="nav-link"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path d="M9.25 8C9.25 8.69036 8.69036 9.25 8 9.25C7.30965 9.25 6.75 8.69036 6.75 8C6.75 7.30965 7.30965 6.75 8 6.75C8.69036 6.75 9.25 7.30965 9.25 8Z" fill="white"/>
+<path d="M8 17.25C8.69036 17.25 9.25 16.6904 9.25 16C9.25 15.3096 8.69036 14.75 8 14.75C7.30965 14.75 6.75 15.3096 6.75 16C6.75 16.6904 7.30965 17.25 8 17.25Z" fill="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M5 3C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3H5ZM5 11H19V5H5V11ZM5 13V19H19V13H5Z" fill="white"/>
+</svg> System Specs</a></li>
+            <li><a href="Projects.html" class="nav-link"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M3 19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V8.82843C21 8.298 20.7893 7.78929 20.4142 7.41421L16.5858 3.58579C16.2107 3.21071 15.702 3 15.1716 3H5C3.89543 3 3 3.89543 3 5V19ZM5 5L5 19H7V16C7 14.8954 7.89543 14 9 14H15C16.1046 14 17 14.8954 17 16V19H19V8.82843L16 5.82843V8C16 9.10457 15.1046 10 14 10H9C7.89543 10 7 9.10457 7 8V5L5 5ZM9 5V8H14V5H9ZM15 19V16H9V19H15Z" fill="white"/>
+</svg> Data Archives</a></li>
+            <li><a href="Contact.html" class="nav-link active"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM20 12C20 12.6906 19.9125 13.3608 19.748 14H16.41C16.469 13.3538 16.5 12.6849 16.5 12C16.5 11.3151 16.469 10.6462 16.41 10H19.748C19.9125 10.6392 20 11.3094 20 12ZM16.1256 8H18.9297C18.046 6.47231 16.6716 5.26398 15.0221 4.59049C15.4904 5.53438 15.8689 6.69453 16.1256 8ZM8.97794 4.59049C7.32837 5.26398 5.95398 6.47231 5.07026 8H7.87444C8.13111 6.69453 8.50958 5.53438 8.97794 4.59049ZM7.59002 10H4.25204C4.08751 10.6392 4 11.3094 4 12C4 12.6906 4.08751 13.3608 4.25204 14H7.59002C7.53099 13.3538 7.5 12.6849 7.5 12C7.5 11.3151 7.53099 10.6462 7.59002 10ZM7.87444 16H5.07026C5.95398 17.5277 7.32837 18.736 8.97794 19.4095C8.50958 18.4656 8.13111 17.3055 7.87444 16ZM15.0221 19.4095C16.6716 18.736 18.046 17.5277 18.9297 16H16.1256C15.8689 17.3055 15.4904 18.4656 15.0221 19.4095ZM14.5 12C14.5 12.6943 14.4652 13.3635 14.4008 14H9.59918C9.53484 13.3635 9.5 12.6943 9.5 12C9.5 11.3057 9.53484 10.6365 9.59918 10H14.4008C14.4652 10.6365 14.5 11.3057 14.5 12ZM14.0822 8C13.8907 7.14167 13.6428 6.38215 13.3581 5.74966C13.0204 4.99913 12.6701 4.51413 12.3818 4.24316C12.2431 4.11273 12.1393 4.05118 12.079 4.02377C12.031 4.00192 12.008 4.00012 12.0017 4H11.9983C11.992 4.00012 11.969 4.00192 11.921 4.02377C11.8607 4.05118 11.7569 4.11273 11.6182 4.24316C11.3299 4.51413 10.9796 4.99913 10.6419 5.74966C10.3572 6.38215 10.1093 7.14167 9.91779 8H14.0822ZM9.91779 16C10.1093 16.8583 10.3572 17.6179 10.6419 18.2503C10.9796 19.0009 11.3299 19.4859 11.6182 19.7568C11.7569 19.8873 11.8607 19.9488 11.921 19.9762C11.9689 19.998 11.9919 19.9999 11.9983 20H12.0017C12.0081 19.9999 12.0311 19.998 12.079 19.9762C12.1393 19.9488 12.2431 19.8873 12.3818 19.7568C12.6701 19.4859 13.0204 19.0009 13.3581 18.2503C13.6428 17.6179 13.8907 16.8583 14.0822 16H9.91779Z" fill="white"/>
+</svg> Communication Hub</a></li>
+        </ul>
+    </nav>
+
+    <!-- Guild Hall Main -->
+    <main class="guild-hall">
+        <!-- Welcome Chamber -->
+            <div class="quest-area guild-welcome read-section" data-section="contact-welcome" data-xp="15">
+                <h2>Collaboration Intake Panel</h2>
+                <p class="quest-description">Submit project intent, integration needs, or exploratory engagement details. This hub facilitates rapid alignment and structured solution planning.</p>
+            </div>
+            
+            <!-- Communication Crystal (Contact Form) -->
+            <div class="quest-area communication-crystal read-section" data-section="contact-form" data-xp="15">
+                <h2>Secure Communication Channel</h2>
+                <p class="quest-description">Let's connect! Fill out the form below to get in touch, discuss a project, or explore collaboration opportunities.</p>
+                
+                <div class="packing-area">
+                    <!-- Form in original flat layout (visible by default) -->
+                    <div class="form-wrapper" style="width:100%;max-width:700px;">
+                        <form class="guild-contact-form" action="https://formspree.io/f/xqagrkya" method="POST">
+                            <div class="form-row" style="margin-bottom: 12px;display:flex;gap:12px;">
+                                <div class="form-group" style="flex:1;margin: 0;">
+                                    <label for="adventurer-name">Your Name:</label>
+                                    <input type="text" id="adventurer-name" name="name" required placeholder="Your name" style="width: 100%;">
+                                </div>
+                                <div class="form-group" style="flex:1;margin: 0;">
+                                    <label for="crystal-address">Email Address:</label>
+                                    <input type="email" id="crystal-address" name="email" required placeholder="your@domain.com" style="width: 100%;">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="subject">Subject (optional):</label>
+                                <input type="text" id="subject" name="subject" placeholder="Subject (optional)" style="width: 100%;">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="quest-description">Your Message:</label>
+                                <textarea id="quest-description" name="message" required placeholder="Write your message here..." rows="6" style="width: 100%;"></textarea>
+                            </div>
+
+                            <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:10px;">
+                                <button type="submit" class="rpg-button submit-quest">Send message</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>            
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; border-left: 4px solid rgba(255, 255, 255, 0.3);">
+                    <p style="margin: 0; color: #fff; font-size: 0.95em;">
+                        <strong>Quick Response:</strong> I typically respond within 24-48 hours. For urgent matters, please mention it in your message.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Direct Contact Options -->
+            <div class="quest-area direct-contact">
+                <h2>Connect With Me</h2>
+                <p class="quest-description">Follow me on social media and connect professionally:</p>
+                
+                <div class="contact-options" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <a href="https://www.linkedin.com/in/markuss-šube-90816b23a" target="_blank" class="rpg-button" style="display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
+                        <i class="fab fa-linkedin" style="font-size: 1.5em;"></i> LinkedIn
+                    </a>
+                    
+                    <a href="https://open.spotify.com/artist/4uIBBmr7idW92I0KmrGq6w?si=X-8Nc7CESiywU-ZxzZMnOA" target="_blank" class="rpg-button" style="display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
+                        <i class="fab fa-spotify" style="font-size: 1.5em;"></i> Spotify
+                    </a>
+                    
+                    <a href="https://www.instagram.com/" target="_blank" class="rpg-button" style="display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
+                        <i class="fab fa-instagram" style="font-size: 1.5em;"></i> Instagram
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Journey Completion -->
+            <div class="quest-area journey-completion">
+                <h2>Exploration Summary: Portfolio Systems</h2>
+                <p class="quest-description">You have traversed all modules—capabilities, delivered solutions, and collaboration channels—mapping the complete engineering profile.</p>
+                
+                <div class="completion-stats">
+                    <div class="completion-badge">
+                        <h4>Portfolio Navigator</h4>
+                        <p>Completed full multi-module traversal</p>
+                    </div>
+                    
+                    <div class="completion-badge">
+                        <h4>Capability Analyst</h4>
+                        <p>Reviewed system specifications</p>
+                    </div>
+                    
+                    <div class="completion-badge">
+                        <h4>Archive Reviewer</h4>
+                        <p>Examined deployed solution records</p>
+                    </div>
+                    
+                    <div class="completion-badge">
+                        <h4>Collaboration Ready</h4>
+                        <p>Prepared for engagement</p>
+                    </div>
+                </div>
+                
+                <div class="restart-journey">
+                    <!-- Reset button removed as requested -->
+                </div>
+            </div>
+            <div class="quest-progress">
+                <p><strong>Interaction Logged:</strong></p>
+                <div class="progress-container">
+                    <div class="progress-bar" id="reading-progress" style="width: 0%"></div>
+                </div>
+                <p class="progress-text">Review all hub modules! (<span id="sections-read">0</span>/2 sections analyzed)</p>
+            </div>
+
+        </div>
+        
+        <!-- Achievement Showcase -->
+        <div class="achievement-showcase">
+            <h2><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M19 4H21C22.1046 4 23 4.89543 23 6V9C23 11.2091 21.2091 13 19 13H18.3264C17.3395 15.0774 15.3595 16.5916 13 16.9291V20H15C15.5523 20 16 20.4477 16 21C16 21.5523 15.5523 22 15 22H9C8.44772 22 8 21.5523 8 21C8 20.4477 8.44772 20 9 20H11V16.9291C8.64045 16.5916 6.6605 15.0774 5.67363 13H5C2.79086 13 1 11.2091 1 9V6C1 4.89543 1.89543 4 3 4H5V3.875C5 2.83947 5.83947 2 6.875 2H17.125C18.1605 2 19 2.83947 19 3.875V4ZM12 15C9.23858 15 7 12.7614 7 10V4H17V10C17 12.7614 14.7614 15 12 15ZM18.9291 11H19C20.1046 11 21 10.1046 21 9V6H19V10C19 10.3395 18.9758 10.6734 18.9291 11ZM5.07089 11C5.02417 10.6734 5 10.3395 5 10V6H3V9C3 10.1046 3.89543 11 5 11H5.07089Z" fill="white"/>
+</svg> System Achievements</h2>
+            <p>Track your access progress through the network:</p>
+            <div class="achievement-grid">
+                <div class="achievement-card unlocked">
+                    <div class="achievement-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M19 4H21C22.1046 4 23 4.89543 23 6V9C23 11.2091 21.2091 13 19 13H18.3264C17.3395 15.0774 15.3595 16.5916 13 16.9291V20H15C15.5523 20 16 20.4477 16 21C16 21.5523 15.5523 22 15 22H9C8.44772 22 8 21.5523 8 21C8 20.4477 8.44772 20 9 20H11V16.9291C8.64045 16.5916 6.6605 15.0774 5.67363 13H5C2.79086 13 1 11.2091 1 9V6C1 4.89543 1.89543 4 3 4H5V3.875C5 2.83947 5.83947 2 6.875 2H17.125C18.1605 2 19 2.83947 19 3.875V4ZM12 15C9.23858 15 7 12.7614 7 10V4H17V10C17 12.7614 14.7614 15 12 15ZM18.9291 11H19C20.1046 11 21 10.1046 21 9V6H19V10C19 10.3395 18.9758 10.6734 18.9291 11ZM5.07089 11C5.02417 10.6734 5 10.3395 5 10V6H3V9C3 10.1046 3.89543 11 5 11H5.07089Z" fill="currentColor"/>
+</svg></div>
+                    <h4>Data Explorer</h4>
+                    <p>Processed origin data blocks</p>
+                    <div class="achievement-status"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM16.7682 9.64018C17.1218 9.21591 17.0645 8.58534 16.6402 8.23178C16.2159 7.87821 15.5853 7.93554 15.2318 8.35982L10.6338 13.6774L8.70711 11.7507C8.31658 11.3602 7.68342 11.3602 7.29289 11.7507C6.90237 12.1412 6.90237 12.7744 7.29289 13.1649L9.79289 15.6649C9.99267 15.8647 10.2676 15.9698 10.5507 15.9554C10.8338 15.941 11.0977 15.8083 11.2782 15.5898L16.7682 9.64018Z" fill="currentColor"/>
+</svg> Unlocked</div>
+                </div>
+                <div class="achievement-card unlocked">
+                    <div class="achievement-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M9.7549 23.08C9.44197 23.2689 8.9998 23.0545 8.9998 22.6483V14H4.0869C3.65973 14 3.42927 13.4989 3.70728 13.1746L14.1202 1.02619C14.1579 0.982135 14.2 0.946924 14.2447 0.919942C14.5576 0.731067 14.9998 0.945409 14.9998 1.35159V9.99996H19.9127C20.3399 9.99996 20.5703 10.501 20.2923 10.8254L9.87943 22.9737C9.84167 23.0178 9.7996 23.053 9.7549 23.08ZM10.9946 12.8977C10.9434 12.3935 10.5176 12 9.9998 12H7.34824L12.9998 5.40648V11C12.9998 11.5522 13.4475 12 13.9998 12H16.6514L10.9998 18.5935V13C10.9998 12.9654 10.9981 12.9313 10.9946 12.8977Z" fill="currentColor"/>
+</svg></div>
+                    <h4>System Analyst</h4>
+                    <p>Analyze technical specifications</p>
+                    <div class="achievement-status"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM16.7682 9.64018C17.1218 9.21591 17.0645 8.58534 16.6402 8.23178C16.2159 7.87821 15.5853 7.93554 15.2318 8.35982L10.6338 13.6774L8.70711 11.7507C8.31658 11.3602 7.68342 11.3602 7.29289 11.7507C6.90237 12.1412 6.90237 12.7744 7.29289 13.1649L9.79289 15.6649C9.99267 15.8647 10.2676 15.9698 10.5507 15.9554C10.8338 15.941 11.0977 15.8083 11.2782 15.5898L16.7682 9.64018Z" fill="currentColor"/>
+</svg> Unlocked</div>
+                </div>
+                <div class="achievement-card unlocked">
+                    <div class="achievement-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 2.5C16.9706 2.5 21 4.29086 21 6.5V17.5C21 19.7091 16.9706 21.5 12 21.5C7.02944 21.5 3 19.7091 3 17.5V6.5C3 4.29086 7.02944 2.5 12 2.5ZM19.006 6.4534C19.0063 6.45339 19.0057 6.45676 19.003 6.46355C19.0043 6.4568 19.0056 6.45341 19.006 6.4534ZM18.8439 6.32179C18.9219 6.40368 18.9634 6.46295 18.9848 6.5C18.9634 6.53706 18.9219 6.59632 18.8439 6.67821C18.6248 6.90844 18.2133 7.20677 17.5517 7.5008C16.2336 8.08664 14.2724 8.5 12 8.5C9.72757 8.5 7.76644 8.08664 6.44832 7.5008C5.78673 7.20677 5.37516 6.90844 5.15606 6.67821C5.07812 6.59632 5.03659 6.53706 5.01516 6.5C5.03659 6.46295 5.07812 6.40368 5.15606 6.32179C5.37516 6.09156 5.78673 5.79323 6.44832 5.4992C7.76644 4.91337 9.72757 4.5 12 4.5C14.2724 4.5 16.2336 4.91337 17.5517 5.4992C18.2133 5.79323 18.6248 6.09156 18.8439 6.32179ZM4.99403 6.4534C4.99436 6.4534 4.99567 6.4568 4.99699 6.46355C4.99435 6.45676 4.99369 6.45339 4.99403 6.4534ZM5 9.01437V11.9707C5.01331 12.0007 5.05262 12.0695 5.15606 12.1782C5.37516 12.4084 5.78673 12.7068 6.44832 13.0008C7.76644 13.5866 9.72757 14 12 14C14.2724 14 16.2336 13.5866 17.5517 13.0008C18.2133 12.7068 18.6248 12.4084 18.8439 12.1782C18.9474 12.0695 18.9867 12.0007 19 11.9707V9.01437C17.35 9.92059 14.8273 10.5 12 10.5C9.17274 10.5 6.64996 9.92059 5 9.01437ZM19 14.5144C17.35 15.4206 14.8273 16 12 16C9.17274 16 6.64996 15.4206 5 14.5144V17.4707C5.01331 17.5007 5.05262 17.5695 5.15606 17.6782C5.37516 17.9084 5.78673 18.2068 6.44832 18.5008C7.76644 19.0866 9.72757 19.5 12 19.5C14.2724 19.5 16.2336 19.0866 17.5517 18.5008C18.2133 18.2068 18.6248 17.9084 18.8439 17.6782C18.9474 17.5695 18.9867 17.5007 19 17.4707V14.5144Z" fill="currentColor"/>
+</svg></div>
+                    <h4>Database Scanner</h4>
+                    <p>Scan project archives</p>
+                    <div class="achievement-status"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM16.7682 9.64018C17.1218 9.21591 17.0645 8.58534 16.6402 8.23178C16.2159 7.87821 15.5853 7.93554 15.2318 8.35982L10.6338 13.6774L8.70711 11.7507C8.31658 11.3602 7.68342 11.3602 7.29289 11.7507C6.90237 12.1412 6.90237 12.7744 7.29289 13.1649L9.79289 15.6649C9.99267 15.8647 10.2676 15.9698 10.5507 15.9554C10.8338 15.941 11.0977 15.8083 11.2782 15.5898L16.7682 9.64018Z" fill="currentColor"/>
+</svg> Unlocked</div>
+                </div>
+                <div class="achievement-card unlocked">
+                    <div class="achievement-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM20 12C20 12.6906 19.9125 13.3608 19.748 14H16.41C16.469 13.3538 16.5 12.6849 16.5 12C16.5 11.3151 16.469 10.6462 16.41 10H19.748C19.9125 10.6392 20 11.3094 20 12ZM16.1256 8H18.9297C18.046 6.47231 16.6716 5.26398 15.0221 4.59049C15.4904 5.53438 15.8689 6.69453 16.1256 8ZM8.97794 4.59049C7.32837 5.26398 5.95398 6.47231 5.07026 8H7.87444C8.13111 6.69453 8.50958 5.53438 8.97794 4.59049ZM7.59002 10H4.25204C4.08751 10.6392 4 11.3094 4 12C4 12.6906 4.08751 13.3608 4.25204 14H7.59002C7.53099 13.3538 7.5 12.6849 7.5 12C7.5 11.3151 7.53099 10.6462 7.59002 10ZM7.87444 16H5.07026C5.95398 17.5277 7.32837 18.736 8.97794 19.4095C8.50958 18.4656 8.13111 17.3055 7.87444 16ZM15.0221 19.4095C16.6716 18.736 18.046 17.5277 18.9297 16H16.1256C15.8689 17.3055 15.4904 18.4656 15.0221 19.4095ZM14.5 12C14.5 12.6943 14.4652 13.3635 14.4008 14H9.59918C9.53484 13.3635 9.5 12.6943 9.5 12C9.5 11.3057 9.53484 10.6365 9.59918 10H14.4008C14.4652 10.6365 14.5 11.3057 14.5 12ZM14.0822 8C13.8907 7.14167 13.6428 6.38215 13.3581 5.74966C13.0204 4.99913 12.6701 4.51413 12.3818 4.24316C12.2431 4.11273 12.1393 4.05118 12.079 4.02377C12.031 4.00192 12.008 4.00012 12.0017 4H11.9983C11.992 4.00012 11.969 4.00192 11.921 4.02377C11.8607 4.05118 11.7569 4.11273 11.6182 4.24316C11.3299 4.51413 10.9796 4.99913 10.6419 5.74966C10.3572 6.38215 10.1093 7.14167 9.91779 8H14.0822ZM9.91779 16C10.1093 16.8583 10.3572 17.6179 10.6419 18.2503C10.9796 19.0009 11.3299 19.4859 11.6182 19.7568C11.7569 19.8873 11.8607 19.9488 11.921 19.9762C11.9689 19.998 11.9919 19.9999 11.9983 20H12.0017C12.0081 19.9999 12.0311 19.998 12.079 19.9762C12.1393 19.9488 12.2431 19.8873 12.3818 19.7568C12.6701 19.4859 13.0204 19.0009 13.3581 18.2503C13.6428 17.6179 13.8907 16.8583 14.0822 16H9.91779Z" fill="currentColor"/>
+</svg></div>
+                    <h4>Network Connected</h4>
+                    <p>Establish communication link</p>
+                    <div class="achievement-status"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM16.7682 9.64018C17.1218 9.21591 17.0645 8.58534 16.6402 8.23178C16.2159 7.87821 15.5853 7.93554 15.2318 8.35982L10.6338 13.6774L8.70711 11.7507C8.31658 11.3602 7.68342 11.3602 7.29289 11.7507C6.90237 12.1412 6.90237 12.7744 7.29289 13.1649L9.79289 15.6649C9.99267 15.8647 10.2676 15.9698 10.5507 15.9554C10.8338 15.941 11.0977 15.8083 11.2782 15.5898L16.7682 9.64018Z" fill="currentColor"/>
+</svg> Unlocked</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Game Footer -->
+    <footer class="game-footer">
+        <p style="font-size: 0.9em; margin: 15px 0;">© designed by MŠ</p>
+    </footer>
+
+    <!-- Game Engine -->
+    <script src="progression.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize game
+            if (window.PortfolioRPG) {
+                window.portfolioGame = new PortfolioRPG();
+                
+                // Mark that user has reached the guild hall
+                window.portfolioGame.completeQuest('guild-visit', {
+                    title: 'Hub Visitor',
+                    description: 'Accessed the communication hub and completed portfolio exploration',
+                    xpReward: 50
+                });
+            }
+            
+            // Handle form submission
+            initializeContactForm();
+            
+            // Handle restart button
+            // Reset button logic removed as requested
+        });
+        
+        function initializeContactForm() {
+            const form = document.querySelector('.guild-contact-form');
+            if (form) {
+                // HTML-escape helper
+                function escapeHtml(str) {
+                    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                }
+
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const packingArea = this.closest('.packing-area');
+
+                    // collect elements and build FormData BEFORE disabling controls (disabled inputs are not submitted)
+                    const elements = this.querySelectorAll('input, textarea, button');
+                    const payload = new FormData(this);
+
+                    // disable inputs while processing
+                    elements.forEach(el => el.disabled = true);
+
+                    // Submit to Formspree using fetch
+                    fetch(this.action, {
+                        method: this.method || 'POST',
+                        body: payload,
+                        headers: { 'Accept': 'application/json' }
+                    }).then(async response => {
+                        if (response.ok) {
+                            showRequestSubmittedNotification();
+
+                            // success: reset form after a short delay
+                            setTimeout(() => {
+                                elements.forEach(el => el.disabled = false);
+                                this.reset();
+                                form.style.visibility = '';
+                            }, 1600);
+                        } else {
+                            // Try to parse error message (json or plain text)
+                            let data;
+                            try {
+                                data = await response.json();
+                            } catch (parseErr) {
+                                const txt = await response.text();
+                                throw new Error(txt || 'Submission failed with status ' + response.status);
+                            }
+
+                            throw new Error((data && data.error) ? data.error : JSON.stringify(data) || ('Submission failed with status ' + response.status));
+                        }
+                    }).catch(err => {
+                        console.error('Form submission error:', err);
+                        const errDiv = document.createElement('div');
+                        errDiv.className = 'delivery-message';
+                        errDiv.style.color = '#ff6b6b';
+                        errDiv.textContent = 'Failed to send message. Please try again later.';
+                        if (packingArea) packingArea.appendChild(errDiv);
+
+                        setTimeout(() => {
+                            if (errDiv && errDiv.parentNode) errDiv.parentNode.removeChild(errDiv);
+                            elements.forEach(el => el.disabled = false);
+                        }, 3500);
+                    });
+                });
+            }
+        }
+        
+        function showRequestSubmittedNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'quest-complete-notification';
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <h3>Engagement Request Sent!</h3>
+                    <p>Your submission has been received by the Automation Architect.</p>
+                    <p>A response will follow based on selected priority level.</p>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="background-shader.js"></script>
+    
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Scroll to top">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 4L12 20M12 4L6 10M12 4L18 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+    
+    <script>
+        const scrollBtn = document.getElementById('scrollToTop');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollBtn.classList.add('visible');
+            } else {
+                scrollBtn.classList.remove('visible');
+            }
+        });
+        scrollBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Settings functionality
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsModal = document.getElementById('settings-modal');
+        const closeSettings = document.getElementById('close-settings');
+        const toggleLevelingBtn = document.getElementById('toggle-leveling-btn');
+        const levelingStatus = document.getElementById('leveling-status');
+        
+        function updateSettingsDisplay() {
+            const isEnabled = localStorage.getItem('levelingSystemChoice') !== 'disabled';
+            if (isEnabled) {
+                levelingStatus.innerHTML = '<span style="color:#fff;font-weight:700;">Status:</span> <span style="color:#fff;">Enabled</span>';
+                toggleLevelingBtn.textContent = 'Disable Leveling';
+                toggleLevelingBtn.style.background = '#ff2a6d';
+                toggleLevelingBtn.style.color = '#fff';
+            } else {
+                levelingStatus.innerHTML = '<span style="color:#fff;font-weight:700;">Status:</span> <span style="color:#ff0000;">Disabled</span>';
+                toggleLevelingBtn.textContent = 'Enable Leveling';
+                toggleLevelingBtn.style.background = '#00f7ff';
+                toggleLevelingBtn.style.color = '#000';
+            }
+        }
+        
+        settingsBtn.addEventListener('click', () => {
+            updateSettingsDisplay();
+            settingsModal.style.display = 'flex';
+        });
+        
+        closeSettings.addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+        });
+        
+        // Translate button functionality
+        const translateBtn = document.getElementById('translate-btn');
+        
+        translateBtn.addEventListener('click', () => {
+            if (typeof google !== 'undefined' && google.translate) {
+                const translateWidget = document.querySelector('.goog-te-combo');
+                if (translateWidget) {
+                    translateWidget.click();
+                } else {
+                    initializeGoogleTranslate();
+                }
+            } else {
+                initializeGoogleTranslate();
+            }
+        });
+        
+        translateBtn.addEventListener('mouseenter', () => {
+            translateBtn.style.transform = 'translateY(-50%) scale(1.15)';
+        });
+        translateBtn.addEventListener('mouseleave', () => {
+            translateBtn.style.transform = 'translateY(-50%) scale(1)';
+        });
+        
+        function initializeGoogleTranslate() {
+            if (!document.getElementById('google-translate-script')) {
+                if (!document.getElementById('google_translate_element')) {
+                    const translateDiv = document.createElement('div');
+                    translateDiv.id = 'google_translate_element';
+                    translateDiv.style.cssText = 'position:fixed;top:80px;right:20px;z-index:9999;background:rgba(26,26,46,0.95);padding:15px;border-radius:10px;border:2px solid #00f7ff;box-shadow:0 0 20px rgba(0,247,255,0.5);';
+                    document.body.appendChild(translateDiv);
+                }
+                
+                window.googleTranslateElementInit = function() {
+                    new google.translate.TranslateElement(
+                        {pageLanguage: 'lv', includedLanguages: 'lv,en,es,fr,de,it,pt,ru,zh-CN,ja,ar,hi', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+                        'google_translate_element'
+                    );
+                };
+                
+                const script = document.createElement('script');
+                script.id = 'google-translate-script';
+                script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+                script.async = true;
+                document.head.appendChild(script);
+            } else {
+                const translateElement = document.getElementById('google_translate_element');
+                if (translateElement) {
+                    translateElement.style.display = translateElement.style.display === 'none' ? 'block' : 'none';
+                }
+            }
+        }
+        
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.style.display = 'none';
+            }
+        });
+        
+        toggleLevelingBtn.addEventListener('click', () => {
+            const currentChoice = localStorage.getItem('levelingSystemChoice');
+            if (currentChoice === 'disabled') {
+                // Enabling XP - reset progress and go to main screen
+                localStorage.setItem('levelingSystemChoice', 'enabled');
+                localStorage.removeItem('portfolioProgression');
+                localStorage.removeItem('hasChosenLeveling');
+                window.name = '';
+                window.location.href = 'index.html';
+            } else {
+                // Disabling XP - just reload current page
+                localStorage.setItem('levelingSystemChoice', 'disabled');
+                location.reload();
+            }
+        });
+        
+        settingsBtn.addEventListener('mouseenter', () => {
+            settingsBtn.style.transform = 'translateY(-50%) scale(1.1)';
+        });
+        settingsBtn.addEventListener('mouseleave', () => {
+            settingsBtn.style.transform = 'translateY(-50%) scale(1)';
+        });
+    </script>
+</body>
+</html>
