@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Teaser Challenge - Test Your Mind</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .game-container {
+            max-width: 600px;
+            width: 100%;
+            background: linear-gradient(135deg, #111, #000 80%);
+            border: 4px solid #fff;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 
+                0 30px 80px rgba(0, 0, 0, 0.95),
+                0 0 80px 20px rgba(0, 0, 0, 0.3),
+                0 0 60px 10px rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        
+        .score-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-label {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .score-value {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .question-container {
+            margin-bottom: 30px;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #fff;
+            text-align: center;
+        }
+        
+        .answers-grid {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .answer-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 15px 20px;
+            font-size: 1rem;
+            font-family: 'Roboto Mono', monospace;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+        
+        .answer-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateX(10px);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+        }
+        
+        .answer-btn.correct {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #00ff00;
+            animation: correctPulse 0.5s ease;
+        }
+        
+        .answer-btn.incorrect {
+            background: rgba(255, 59, 48, 0.3);
+            border-color: #ff3b30;
+            animation: shake 0.5s ease;
+        }
+        
+        .answer-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .next-btn {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            font-size: 1.1rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            display: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .next-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .game-over {
+            display: none;
+            text-align: center;
+        }
+        
+        .game-over h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        
+        .final-score {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+        
+        .restart-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .restart-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .feedback {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            min-height: 30px;
+            color: #fff;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .question-text {
+                font-size: 1rem;
+            }
+            
+            .back-btn {
+                top: 10px;
+                left: 10px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="Projects.html" class="back-btn">← Back to Projects</a>
+    <div class="game-container">
+        <h1>🧠 Brain Teaser Challenge</h1>
+        
+        <div class="score-container">
+            <div class="score-item">
+                <div class="score-label">Question</div>
+                <div class="score-value" id="question-number">1/10</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Score</div>
+                <div class="score-value" id="score">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Streak</div>
+                <div class="score-value" id="streak">0</div>
+            </div>
+        </div>
+        
+        <div id="game-area">
+            <div class="question-container">
+                <div class="question-text" id="question"></div>
+                <div class="answers-grid" id="answers"></div>
+                <div class="feedback" id="feedback"></div>
+            </div>
+            <button class="next-btn" id="next-btn">Next Question</button>
+        </div>
+        
+        <div class="game-over" id="game-over">
+            <h2>🎉 Game Complete!</h2>
+            <div class="final-score">
+                <p>Final Score: <span id="final-score"></span></p>
+                <p>Correct Answers: <span id="correct-answers"></span>/10</p>
+            </div>
+            <button class="restart-btn" onclick="location.reload()">Play Again</button>
+        </div>
+    </div>
+    
+    <script>
+        const questions = [
+            {
+                question: "What comes next in the sequence: 2, 4, 8, 16, ?",
+                answers: ["24", "32", "20", "28"],
+                correct: 1
+            },
+            {
+                question: "If you have 3 apples and you take away 2, how many do you have?",
+                answers: ["1 apple", "2 apples", "3 apples", "No apples"],
+                correct: 1
+            },
+            {
+                question: "A farmer has 17 sheep. All but 9 die. How many are left?",
+                answers: ["8", "9", "17", "0"],
+                correct: 1
+            },
+            {
+                question: "What is full of holes but still holds water?",
+                answers: ["A bucket", "A sponge", "A net", "A strainer"],
+                correct: 1
+            },
+            {
+                question: "I am an odd number. Take away one letter and I become even. What number am I?",
+                answers: ["Five", "Seven", "Nine", "Three"],
+                correct: 1
+            },
+            {
+                question: "What has keys but can't open locks?",
+                answers: ["A map", "A piano", "A computer", "A treasure"],
+                correct: 1
+            },
+            {
+                question: "If two's company and three's a crowd, what are four and five?",
+                answers: ["A party", "Nine", "Too many", "A group"],
+                correct: 1
+            },
+            {
+                question: "What occurs once in a minute, twice in a moment, but never in a thousand years?",
+                answers: ["The letter T", "The letter M", "The letter E", "The letter N"],
+                correct: 1
+            },
+            {
+                question: "A bus driver was heading down a street. He went right past a stop sign without stopping. Then he turned left where there was a 'no left turn' sign. Finally, he went the wrong way on a one-way street. Yet he didn't break any traffic laws. Why not?",
+                answers: ["He was off duty", "He was walking", "It was Sunday", "He had permission"],
+                correct: 1
+            },
+            {
+                question: "You see a boat filled with people. It has not sunk, but when you look again you don't see a single person on the boat. Why?",
+                answers: ["They jumped off", "All were married", "It was a ghost ship", "They went below deck"],
+                correct: 1
+            }
+        ];
+        
+        let currentQuestion = 0;
+        let score = 0;
+        let streak = 0;
+        let correctAnswers = 0;
+        
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('question').textContent = q.question;
+            document.getElementById('question-number').textContent = `${currentQuestion + 1}/10`;
+            document.getElementById('feedback').textContent = '';
+            
+            const answersContainer = document.getElementById('answers');
+            answersContainer.innerHTML = '';
+            
+            q.answers.forEach((answer, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = answer;
+                btn.onclick = () => checkAnswer(index);
+                answersContainer.appendChild(btn);
+            });
+            
+            document.getElementById('next-btn').style.display = 'none';
+        }
+        
+        function checkAnswer(selected) {
+            const q = questions[currentQuestion];
+            const buttons = document.querySelectorAll('.answer-btn');
+            
+            buttons.forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === q.correct) {
+                    btn.classList.add('correct');
+                }
+                if (index === selected && selected !== q.correct) {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            if (selected === q.correct) {
+                streak++;
+                const points = 10 + (streak * 5);
+                score += points;
+                correctAnswers++;
+                document.getElementById('feedback').textContent = `✓ Correct! +${points} points`;
+                document.getElementById('feedback').style.color = '#00ff00';
+            } else {
+                streak = 0;
+                document.getElementById('feedback').textContent = '✗ Incorrect. Better luck next time!';
+                document.getElementById('feedback').style.color = '#ff3b30';
+            }
+            
+            document.getElementById('score').textContent = score;
+            document.getElementById('streak').textContent = streak;
+            document.getElementById('next-btn').style.display = 'block';
+        }
+        
+        document.getElementById('next-btn').addEventListener('click', () => {
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        });
+        
+        function endGame() {
+            document.getElementById('game-area').style.display = 'none';
+            document.getElementById('game-over').style.display = 'block';
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('correct-answers').textContent = correctAnswers;
+        }
+        
+        // Load first question
+        loadQuestion();
+    </script>
+</body>
+</html>

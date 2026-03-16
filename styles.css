@@ -1,0 +1,1378 @@
+/* styles.css — theme variables & layout */
+:root{
+  /* Updated body color to #fefae0 */
+  --bg: #fefae0;
+  --surface:#07101a;
+  /* Updated text color to black for better contrast on cream background */
+  --text:#000000;
+  /* header/content left offset — used to align header text, nav and main content */
+  --header-text-offset: 18px;
+  --masthead-offset:1rem;
+  --subheader-overlay:0.35rem; /* vertical gap between header and nav when overlaying the hero (positive keeps them stacked) */
+  --muted-border:rgba(255,255,255,0.04);
+  --accent:#7dd3fc;
+  --accent-strong:#5cc0f0;
+  /* Button shadow matching the spotify-style shadow used on social bubble */
+  --btn-shadow: 0 6px 18px rgba(2,6,23,0.45);
+  --btn-shadow-hover: 0 8px 24px rgba(2,6,23,0.6);
+  /* small nudge for the pill row so its visual left edge lines up with header text */
+  --pill-nudge: 14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* Custom cursor */
+* {
+  cursor: url('data:image/svg+xml;charset=UTF-8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M21.2913 11.8126L14 14L11.8126 21.2913C11.5417 22.1943 10.2862 22.2551 9.9292 21.3826L2.90287 4.20705C2.56714 3.38638 3.38638 2.56714 4.20705 2.90287L21.3825 9.92922C22.2551 10.2862 22.1943 11.5417 21.2913 11.8126ZM12.0843 13.4253C12.2775 12.7813 12.7813 12.2775 13.4253 12.0843L18.0079 10.7095L5.65686 5.65686L10.7095 18.0079L12.0843 13.4253Z" fill="white"/></svg>') 2 2, auto !important;
+}
+
+a, button, .clickable, [onclick] {
+  cursor: url('data:image/svg+xml;charset=UTF-8,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.10192 11.2152C2.92206 9.82598 4.64911 9.37918 6.00748 10.0569C6.26128 10.1835 6.50221 10.3494 6.72195 10.5557L7.99393 11.75H8.00748V4C8.00748 2.34315 9.35063 1 11.0075 1C12.6643 1 14.0075 2.34315 14.0075 4L14.0075 8L19.4617 9.41667C20.7842 9.76018 21.7075 10.9539 21.7075 12.3203V13C21.7075 17.9706 17.5213 22 12.3575 22C8.68634 22 5.50935 19.9634 3.97938 17C3.94903 16.9412 3.91933 16.8821 3.89029 16.8226L2.03618 13.1206C1.73311 12.5155 1.75787 11.798 2.10192 11.2152ZM12.0075 8C12.0075 8.91092 12.623 9.70676 13.5047 9.93577L18.9589 11.3524C19.3997 11.4669 19.7075 11.8649 19.7075 12.3203V13C19.7075 16.7948 16.4894 20 12.3575 20C9.43418 20 6.94306 18.3807 5.75651 16.0825C5.73304 16.037 5.71007 15.9913 5.68762 15.9453C5.68462 15.9392 5.68159 15.933 5.67853 15.9269L3.8262 12.2285C4.14938 11.6859 4.89204 11.581 5.35295 12.0137L6.62494 13.208C6.99575 13.5562 7.48528 13.75 7.99393 13.75H8.00748C9.11205 13.75 10.0075 12.8546 10.0075 11.75V4C10.0075 3.44772 10.4552 3 11.0075 3C11.5598 3 12.0075 3.44772 12.0075 4L12.0075 8Z" fill="white"/></svg>') 2 2, pointer !important;
+}
+
+html,body{height:100%}
+body{
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  /* Prefer Monaco; fall back to Menlo, Courier New, then generic monospace */
+  font-family: Monaco, Menlo, "Courier New", monospace;
+  background:var(--bg);
+  background-attachment:fixed; /* ensure gradient stays in place */
+  background-size:100% 100%; /* stretch gradient to full body */
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.6;
+  /* padding-bottom kept minimal because footer is now part of the flow */
+  padding-bottom:0;
+}
+
+/* Header */
+header{
+  background:transparent; /* make header transparent so hero shows through */
+  color:#ffffff; /* header letters remain white */
+  position:relative; /* positioned so z-index works inside the masthead */
+  z-index:61; /* ensure header sits above masthead's stacking context */
+  /* left-align header container; header text offset from the viewport left edge */
+  text-align:left;
+  /* thinner header: keep same vertical spacing but offset text 60px from the left wall */
+  padding:1.05rem 1rem 1.05rem var(--header-text-offset); /* top right bottom left */
+  border-bottom:none; /* remove visible line so photo shows cleanly behind header */
+}
+
+/* Non-home masthead (gradient header for Experience, Contact, Projects) */
+body:not(.has-hero) .masthead{
+  background: linear-gradient(180deg, 
+    #260701 0%,
+    #2f0e07 10%,
+    #38160d 20%,
+    #411d13 30%,
+    #4a2419 40%,
+    #532c1e 50%,
+    #5c3324 60%,
+    #653a2a 70%,
+    #6e4230 85%,
+    #774936 100%
+  ); /* Rich dark-to-light brown gradient (top to bottom) from Coolors palette */
+  position:relative;
+  z-index:65;
+}
+body:not(.has-hero) header,
+body:not(.has-hero) .subheader{
+  background:transparent; /* keep header elements visually part of masthead */
+  /* draw a subtle separation line against the body gradient if present */
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  box-shadow:none;
+  color: #ffffff; /* Ensure white text for good contrast on brown gradient */
+}
+
+/* Make header text slightly smaller to match reduced padding */
+header h1{font-size:1.6rem;line-height:1.15;margin-bottom:0.25rem}
+header p{font-size:0.95rem;margin-top:0}
+
+/* Sub-header (navigation row) */
+.subheader{
+  /* keep the subheader transparent; it will now flow under the header (stacked) */
+  background: transparent;
+  border-top: none;
+  border-bottom: none;
+  /* spacing for the stacked nav; add left padding to align under the header text */
+  padding:0.25rem 0 0.25rem var(--header-text-offset); /* top right bottom left */
+  box-shadow: none;
+  /* align items to the left so nav lines up with header text */
+  justify-content:flex-start;
+}
+.hero-bg{
+  /* Hero: full-viewport image */
+  position:relative;
+  overflow:hidden;
+  width:100%;
+  height:100vh; /* cover the full viewport initially */
+  display:block;
+  border-bottom:1px solid rgba(255,255,255,0.03);
+}
+
+/* Reduce top gap after hero */
+.hero-bg + main{margin-top:0.75rem}
+
+/* Extra gap when no hero */
+.masthead + main{margin-top:2rem}
+
+/* Hero image styles */
+.hero-img{
+  position:relative;
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:none;
+  object-fit:cover; /* fill hero area — crops where necessary */
+  transform:translate3d(0,0,0);will-change:transform;
+}
+
+/* Hero text */
+.hero-quote{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  z-index:20; /* above the image but beneath the overlayed nav (.subheader has z-index:40) */
+  color:#ffffff; /* white hero letters */
+  text-align:center;
+  padding:0 1rem;
+  width:100%;
+  max-width:1100px;
+  font-weight:800;
+  /* responsive sizing: larger and clamped for legibility */
+  font-size:clamp(1.75rem, 6vw, 4rem);
+  line-height:1.02;
+  text-transform:uppercase; /* all caps */
+  letter-spacing:0.06em;
+  text-shadow: 0 8px 20px rgba(0,0,0,0.65); /* keep subtle shadow for contrast */
+  pointer-events:none; /* clicks pass through to underlying controls */
+  
+  /* Initial animation state */
+  opacity: 0;
+  transform: translate(-50%, -50%) translateY(30px);
+  animation: heroTextFadeIn 1.5s ease-out 0.5s forwards;
+}
+
+/* Hero text animation */
+@keyframes heroTextFadeIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0);
+  }
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  color: #ffffff;
+  text-align: center;
+  opacity: 0;
+  transform: translateX(-50%) translateY(10px);
+  animation: scrollIndicatorFadeIn 1s ease-out 2s forwards;
+}
+
+.scroll-indicator.fade-out {
+  animation: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px);
+  transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+}
+
+.scroll-indicator::before {
+  content: "";
+  display: block;
+  width: 2px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.6);
+  margin: 0 auto 8px;
+  animation: scrollLine 2s ease-in-out infinite;
+}
+
+.scroll-indicator::after {
+  content: "⌄";
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 300;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+.scroll-text {
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 5px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+/* Scroll indicator animations */
+@keyframes scrollIndicatorFadeIn {
+  0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes scrollLine {
+  0%, 100% { height: 30px; opacity: 0.6; }
+  50% { height: 20px; opacity: 1; }
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+/* Masthead layout & overlay behavior */
+.masthead{
+  /* Default: masthead is in the normal document flow so pages without a hero
+     show the header and nav at the top above the main content. When a page
+     needs the overlay effect the body will receive `.has-hero` and the
+     masthead will be absolutely positioned there. */
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  /* align header and subheader to the left edge by default; header text
+     will be offset with padding so it sits 60px from the viewport wall */
+  align-items:flex-start;
+  width:100%;
+  pointer-events:auto;
+}
+
+/* .has-hero: overlay masthead on hero */
+.has-hero .masthead{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:60; /* above hero but allow header/subheader to set own child z-indexes */
+}
+.subheader{
+  /* Subheader (nav) overlay */
+  position:relative;
+  left:0;
+  right:0;
+  top:auto;
+  transform:none;
+  z-index:62; /* ensure nav sits above the hero image */
+  /* small positive gap beneath the header (use variable) */
+  margin-top:var(--subheader-overlay);
+  display:flex;
+  /* align the nav items under the left-aligned header text and match the
+    header offset so they line up visually with header content */
+  justify-content:flex-start;
+  padding-left:var(--header-text-offset);
+  width:100%;
+  padding:0.6rem 0;
+}
+.hero-bg{padding-top:0; z-index:10} /* hero sits beneath the overlayed nav */
+/* Layout flex rules */
+.hero-bg{flex:0 0 auto}
+main{flex:1 0 auto}
+
+/* Ensure the main container (Experience, Projects, Contact) sits above the hero image
+  so the photo never visually overlaps those sections. */
+.container{position:relative;z-index:30}
+/* Legacy alias kept but neutralized: avoid boxed appearance when `.container` is still present in markup */
+.container{max-width:none;background:none;border:none;border-radius:0;padding:0;margin:0}
+main{position:relative;z-index:30}
+
+/* On small screens avoid overlap and parallax (lighter weight) */
+@media (max-width:720px){
+  /* Smaller font size for mobile devices */
+  body {
+    font-size: 14px;
+  }
+  
+  /* Mobile adjustments */
+  .subheader{
+    position:relative;
+    left:0;
+    right:0;
+    top:auto;
+    transform:none;
+    padding:0.45rem 0;
+    justify-content:center;
+    /* reduce the overlay on small screens so nav doesn't overlap too much */
+    margin-top:0.2rem;
+  }
+  .hero-bg{padding-top:0}
+  /* smaller upward offset on narrow screens to avoid overlapping too much */
+  .hero-bg{margin-top: -2rem}
+  /* Allow nav links to wrap on narrow screens so they stay usable */
+  nav ul{flex-wrap:wrap;gap:0.6rem}
+
+  /* On narrow screens restore centered header layout and remove the 60px
+     left padding so the header remains flush and avoids horizontal overflow */
+  .masthead{ align-items:center }
+  header{ padding-left:1rem; text-align:center }
+  /* restore centered nav on small screens and remove the extra left padding */
+  .subheader{ justify-content:center; padding-left:0 }
+  /* ensure the nav list is centered on small screens as well */
+  nav{ justify-content:center; padding:0.25rem 0.5rem }
+  nav ul{ justify-content:center }
+  /* reset pill-row left margin on small screens */
+  .subheader nav ul{ margin-left: 0 }
+  /* remove the first-child nudge on narrow viewports so centered nav is exact */
+  .subheader nav a:first-child{ margin-left: 0 }
+  /* reset main left padding on small screens so content has usable gutters */
+  main{ padding-left:0.75rem }
+}
+.subheader nav ul{ margin:0 0 0 var(--pill-nudge) }
+
+/* Navigation: layout & pill styles */
+nav{background:transparent;padding:0.25rem 0;display:flex;justify-content:flex-start;gap:1rem;align-items:center}
+nav ul{list-style:none;display:flex;justify-content:flex-start;gap:1.25rem;margin:0;padding-left:0}
+/* Pill-style navigation buttons: centered, subtle background, rounded */
+nav a{
+  color: #ffffff; /* make nav button letters pure white */
+  text-decoration: none;
+  display: inline-block;
+  /* slightly smaller pill buttons */
+  padding: 0.35rem 0.85rem;
+  font-size:0.95rem;
+  border-radius: 9999px; /* pill */
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  transition: background .18s ease, transform .08s ease, color .12s, box-shadow .12s ease;
+  /* apply spotify-style outer shadow while keeping the subtle inset for depth */
+  box-shadow: var(--btn-shadow), 0 1px 0 rgba(0,0,0,0.18) inset;
+}
+nav a:hover{
+  background: linear-gradient(90deg, rgba(125,211,252,0.08), rgba(125,211,252,0.06));
+  color: #ffffff; /* remain white on hover */
+  transform: translateY(-1px);
+  box-shadow: var(--btn-shadow-hover), 0 1px 0 rgba(0,0,0,0.18) inset;
+}
+nav a:focus{
+  outline: 3px solid rgba(125,211,252,0.12);
+  outline-offset: 3px;
+  color: #ffffff; /* remain white on focus */
+}
+
+/* Align first nav item */
+.subheader nav a:first-child{ margin-left: 0 }
+
+/* Container */
+.container{ /* neutralized: legacy alias - no box styling */
+  max-width:none;
+  margin:0;
+  padding:0;
+  background:none;
+  color:inherit;
+  border:none;
+  border-radius:0;
+}
+
+/* Main content layout */
+main{
+  width:100%;
+  max-width:none;
+  margin:0;
+  /* use the same left offset as the header so main content aligns with header text */
+  padding:1.25rem 1.25rem 0 var(--header-text-offset); /* top right bottom left - removed bottom padding */
+  /* Increase base font-size for main content for better readability */
+  font-size:1.125rem; /* ~18px */
+  background:none; /* no background */
+  color:inherit;
+  border:none;
+  border-radius:0;
+}
+
+@media (min-width:1000px){
+  /* Slightly larger type on wide screens */
+  main{ font-size:1.1875rem; /* ~19px */ }
+}
+
+/* Sections */
+.about-section{margin:1.5rem 0}
+
+/* Robot Arm Styling */
+.robot-arm {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.arm-base {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 25px;
+  background: linear-gradient(135deg, #2c2c2c, #444);
+  border: 2px solid #1a1a1a;
+  border-radius: 8px 8px 4px 4px;
+  z-index: 4;
+  overflow: hidden; /* Hide any part of the segment that extends beyond the base */
+}
+
+.arm-base::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  background: #1a1a1a;
+  border: 1px solid #555;
+  border-radius: 50%;
+}
+
+.arm-segment-1 {
+  position: absolute;
+  bottom: 20px; /* Match the base positioning in JS */
+  left: 50%;
+  transform-origin: bottom center;
+  width: 10px;
+  height: 60px;
+  background: linear-gradient(90deg, #3a3a3a, #555);
+  border: 1px solid #1a1a1a;
+  border-radius: 5px;
+  transform: translateX(-50%) rotate(0deg);
+  transition: none; /* Remove CSS transition for smoother JS animation */
+  z-index: 1; /* Lower z-index so it appears behind the base */
+}
+
+.arm-segment-1::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: #2c2c2c;
+  border: 1px solid #1a1a1a;
+  border-radius: 50%;
+}
+
+.arm-segment-1::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: #2c2c2c;
+  border: 1px solid #1a1a1a;
+  border-radius: 50%;
+}
+
+.arm-segment-2 {
+  position: absolute;
+  bottom: 85px;
+  left: 50%;
+  transform-origin: bottom center;
+  width: 8px;
+  height: 45px;
+  background: linear-gradient(90deg, #3a3a3a, #555);
+  border: 1px solid #1a1a1a;
+  border-radius: 4px;
+  transform: translateX(-50%) rotate(0deg);
+  transition: none; /* Remove CSS transition for smoother JS animation */
+  z-index: 2;
+}
+
+.arm-segment-2::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background: #2c2c2c;
+  border: 1px solid #1a1a1a;
+  border-radius: 50%;
+}
+
+.arm-segment-2::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background: #2c2c2c;
+  border: 1px solid #1a1a1a;
+  border-radius: 50%;
+}
+
+.arm-segment-3 {
+  position: absolute;
+  bottom: 130px;
+  left: 50%;
+  transform-origin: bottom center;
+  width: 6px;
+  height: 35px;
+  background: linear-gradient(90deg, #3a3a3a, #555);
+  border: 1px solid #1a1a1a;
+  border-radius: 3px;
+  transform: translateX(-50%) rotate(0deg);
+  transition: none;
+  z-index: 1;
+}
+
+.arm-segment-3::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: #2c2c2c;
+  border: 1px solid #1a1a1a;
+  border-radius: 50%;
+}
+
+.arm-segment-3::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: #2c2c2c;
+  border: 1px solid #1a1a1a;
+  border-radius: 50%;
+}
+
+.arm-end {
+  position: absolute;
+  bottom: 130px;
+  left: 50%;
+  width: 6px;
+  height: 8px;
+  background: linear-gradient(45deg, #4a4a4a, #666);
+  border: 1px solid #1a1a1a;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  transition: none;
+  z-index: 1;
+}
+
+.arm-end::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 1px;
+  width: 15px;
+  height: 3px;
+  background: linear-gradient(90deg, #555, #777);
+  border: 0.5px solid #333;
+  border-radius: 1px;
+  transform: rotate(-60deg);
+  transform-origin: left top;
+}
+
+.arm-end::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 1px;
+  width: 15px;
+  height: 3px;
+  background: linear-gradient(90deg, #555, #777);
+  border: 0.5px solid #333;
+  border-radius: 1px;
+  transform: rotate(60deg);
+  transform-origin: right top;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* About Me section layout */
+.about-row {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  margin: 3rem auto;
+  max-width: 1200px;
+  justify-content: center;
+}
+
+.about-row.centered-only {
+  justify-content: center;
+}
+
+.about-text-centered {
+  flex: 1;
+  text-align: center;
+  max-width: 600px;
+  padding: 0 1rem;
+}
+
+.about-text-centered.full-width {
+  max-width: 800px;
+}
+
+.about-image {
+  flex: 0 0 300px;
+  text-align: center;
+}
+
+.about-photo {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.about-text-centered p {
+  font-size: 1.3rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Responsive: stack on smaller screens */
+@media (max-width: 768px) {
+  .about-row,
+  .about-row.reverse {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  
+  .about-image {
+    flex: none;
+  }
+  
+  .about-photo {
+    max-width: 250px;
+  }
+  
+  .about-text-centered.full-width {
+    max-width: 100%;
+  }
+}
+
+/* Experience page bullet point animations */
+.bullet-point {
+  opacity: 0;
+  transform: translate3d(-30px, 0, 0);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: transform, opacity;
+  margin-top: 2rem; /* Add space above bullet points */
+  font-size: 1.2rem; /* Larger font for bullet points */
+}
+
+.bullet-point.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* Skills section styling */
+.skills-section {
+  margin: 3rem 0;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.skill-item {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+  background: #272123;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--muted-border);
+}
+
+.skill-item.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+.skill-item h3 {
+  color: #e6f7ff;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.skill-tag {
+  background: linear-gradient(135deg, rgba(125,211,252,0.2), rgba(124,58,237,0.2));
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid rgba(125,211,252,0.3);
+  transition: all 0.3s ease;
+}
+
+.skill-tag:hover {
+  background: linear-gradient(135deg, rgba(125,211,252,0.3), rgba(124,58,237,0.3));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(125,211,252,0.2);
+}
+
+/* Staggered animation for skill items */
+.skill-item:nth-child(1).animate-in { transition-delay: 0.1s; }
+.skill-item:nth-child(2).animate-in { transition-delay: 0.2s; }
+.skill-item:nth-child(3).animate-in { transition-delay: 0.3s; }
+
+/* Center the third skill item when it's alone on its row */
+.skill-item:nth-child(3) {
+  grid-column: 1 / -1;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Make the main experience paragraph larger */
+.about-section .center-block p:not(.bullet-point) {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin-bottom: 2.5rem; /* More space before bullet points */
+}
+
+/* Stagger animation delays for bullet points */
+.bullet-point:nth-of-type(2).animate-in { transition-delay: 0.2s; }
+.bullet-point:nth-of-type(3).animate-in { transition-delay: 0.4s; }
+.bullet-point:nth-of-type(4).animate-in { transition-delay: 0.6s; }
+
+/* Scroll animation for About Me section - ONLY on homepage with hero */
+body.has-hero .about-section {
+  isolation: isolate; /* Create new stacking context to prevent conflicts with hero */
+  transform-style: preserve-3d; /* Ensure proper 3D rendering */
+}
+
+/* Individual About Me row animations */
+body.has-hero .about-row {
+  opacity: 0;
+  transform: translate3d(0, 40px, 0);
+  transition: opacity 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero .about-row.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* Staggered delays for each About Me row */
+body.has-hero .about-row:nth-child(2).animate-in { transition-delay: 0.2s; } /* First paragraph */
+body.has-hero .about-row:nth-child(3).animate-in { transition-delay: 0.4s; } /* Second paragraph */
+body.has-hero .about-row:nth-child(4).animate-in { transition-delay: 0.6s; } /* Third paragraph */
+
+/* About Me title animation */
+body.has-hero .about-section h2 {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero .about-section h2.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* Remove bottom margin from contact section to prevent brown band */
+section#contact{margin-bottom:0}
+.contact-center{margin-bottom:0}
+
+/* Homepage contact section scroll animations - ONLY on homepage with hero */
+body.has-hero #contact h2 {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact h2.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+body.has-hero #contact .profile-image {
+  opacity: 0;
+  transform: translate3d(-40px, 0, 0) scale(0.9);
+  transition: opacity 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact .profile-image.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+body.has-hero #contact .contact-info {
+  opacity: 0;
+  transform: translate3d(40px, 0, 0);
+  transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact .contact-info.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+body.has-hero #contact .social-buttons {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact .social-buttons.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* Staggered animation for homepage contact social buttons */
+body.has-hero #contact .social-bubble {
+  opacity: 0;
+  transform: translate3d(0, 15px, 0) scale(0.8);
+  transition: opacity 0.5s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+body.has-hero #contact .social-bubble.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+body.has-hero #contact .social-bubble:nth-child(1).animate-in { transition-delay: 0.1s; }
+body.has-hero #contact .social-bubble:nth-child(2).animate-in { transition-delay: 0.2s; }
+body.has-hero #contact .social-bubble:nth-child(3).animate-in { transition-delay: 0.3s; }
+
+/* Projects grid and cards */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;margin:2rem 0}
+.project-card{background:#272123;border:1px solid var(--muted-border);padding:1.5rem;border-radius:8px}
+.project-card h3{color:#e6f7ff; margin-bottom:1rem}
+.project-card p{color:#ffffff}
+.project-image{width:100%;height:200px;object-fit:cover;border-radius:6px;margin-bottom:1rem}
+
+/* Scroll animation for project cards - ONLY on homepage with hero */
+body.has-hero .project-card {
+  opacity: 0;
+  transform: translate3d(0, 40px, 0) scale(0.95);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: transform, opacity;
+}
+
+body.has-hero .project-card.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+/* All project cards appear together - no staggered delays on homepage */
+
+/* Scroll animation for project cards - ONLY on Projects page (no has-hero class) */
+body:not(.has-hero) .project-card {
+  opacity: 0;
+  transform: translate3d(0, 50px, 0) scale(0.95);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  will-change: transform, opacity;
+}
+
+body:not(.has-hero) .project-card.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+/* Stagger animation delay for Projects page */
+body:not(.has-hero) .project-card:nth-child(1).animate-in { transition-delay: 0.1s; }
+body:not(.has-hero) .project-card:nth-child(2).animate-in { transition-delay: 0.3s; }
+body:not(.has-hero) .project-card:nth-child(3).animate-in { transition-delay: 0.5s; }
+body:not(.has-hero) .project-card:nth-child(4).animate-in { transition-delay: 0.7s; }
+
+/* Links */
+a{color:var(--accent)}
+a:hover{color:var(--accent-strong)}
+
+/* Footer */
+/* Footer matches the last color stop of the page gradient for a cohesive edge */
+footer{background:transparent;color:var(--text);text-align:center;padding:1rem 0;border-top:1px solid rgba(255,255,255,0.04);position:static;margin-top:3rem}
+
+/* Utility */
+p small{color:rgba(230,238,248,0.7)}
+
+/* Responsive tweaks */
+@media (max-width:480px){
+  nav ul{gap:0.5rem;flex-wrap:wrap;justify-content:center}
+  /* reduce mobile nav button padding too */
+  nav{padding:0.2rem 0.5rem;justify-content:center}
+  nav a{padding:0.3rem 0.6rem;font-size:0.92rem}
+  .container{padding:0.75rem}
+  main{padding:0.75rem 0.75rem 0 0.75rem} /* removed bottom padding to prevent brown band */
+  
+  /* Center navigation on mobile */
+  .subheader nav ul{ margin:0;justify-content:center }
+}
+
+/* Utility: center short text blocks */
+.center-text{ text-align:center }
+
+/* Centered content block with justified text and even edges */
+.center-block{
+  max-width:920px; /* limit line length for readability */
+  margin:1.25rem auto; /* center block horizontally */
+  padding:0 1rem;
+  text-align:justify; /* even left and right edges */
+  -webkit-hyphens:auto;
+  -ms-hyphens:auto;
+  hyphens:auto;
+  color:inherit; /* inherit from .container so text is readable on white */
+}
+.center-block p{margin-bottom:0.9rem}
+/* Center the last line for a nicer visual balance on short final lines */
+.center-block p:last-child{ text-align:center; text-align-last:center }
+
+/* Contact page: profile image and layout */
+.contact-grid{
+  display:flex;
+  gap:2.5rem; /* increase space between image and text */
+  align-items:flex-start; /* align to top so tall text doesn't vertically center/cut the image */
+  margin-top:0.45rem; /* tighten space below the section heading on Contact page */
+  overflow:visible; /* ensure image isn't clipped by parent */
+  margin-bottom:4rem; /* ensure larger space before footer so image isn't near fixed footer */
+}
+/* Contact page: transparent background */
+.contact-page{
+  background: transparent; /* let the body gradient show through */
+  color: #ffffff; /* white text across contact area */
+  border: none; /* keep no border */
+  border-bottom: none; /* ensure no bottom border */
+  box-shadow: none;
+  padding-bottom: 0; /* remove any bottom padding that might create space */
+}
+
+/* .contact-center: homepage contact layout */
+.contact-center .contact-grid{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:1rem;
+  margin-top:0.6rem;
+  margin-bottom:0; /* remove bottom margin to eliminate brown band */
+}
+.contact-center .contact-info{
+  max-width:100%;
+  margin:0;
+}
+.contact-center .profile-image{
+  margin:1rem auto 0; /* nudge the profile photo lower on the homepage contact block */
+  box-shadow: 0 6px 18px rgba(2,6,23,0.5);
+}
+
+/* contact-page.contact-center: constrain width */
+.contact-page.contact-center h2{ text-align:center }
+.contact-page.contact-center .contact-info{ max-width:700px; margin:0 auto }
+.contact-page.contact-center .contact-form{ margin:0 auto }
+
+/* Contact page scroll animations */
+.contact-page h2 {
+  opacity: 0;
+  transform: translate3d(0, 30px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page h2.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+.contact-page .profile-image {
+  opacity: 0;
+  transform: translate3d(-40px, 0, 0) scale(0.9);
+  transition: opacity 0.7s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page .profile-image.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+.contact-page .contact-form {
+  opacity: 0;
+  transform: translate3d(40px, 0, 0);
+  transition: opacity 0.8s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page .contact-form.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+.contact-page .social-buttons {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page .social-buttons.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+/* Staggered animation for social buttons */
+.contact-page .social-bubble {
+  opacity: 0;
+  transform: translate3d(0, 15px, 0) scale(0.8);
+  transition: opacity 0.5s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.contact-page .social-bubble.animate-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+.contact-page .social-bubble:nth-child(1).animate-in { transition-delay: 0.1s; }
+.contact-page .social-bubble:nth-child(2).animate-in { transition-delay: 0.2s; }
+.contact-page .social-bubble:nth-child(3).animate-in { transition-delay: 0.3s; }
+
+/* Contact page text in black for cream background */
+.contact-page h2,
+.contact-page p,
+.contact-page .contact-info,
+.contact-page .form-note,
+.contact-page label{ color: #000000 }
+.contact-page a{ color: #000000 }
+
+/* Form inputs */
+.contact-page .contact-form input[type="text"],
+.contact-page .contact-form input[type="email"],
+.contact-page .contact-form input[type="url"],
+.contact-page .contact-form textarea{
+  background: rgba(255,255,255,0.9);
+  color: #041526; /* dark text for legibility inside inputs */
+  border: 1px solid rgba(0,0,0,0.12);
+}
+
+/* Adjust button appearance on contact page for visibility */
+.contact-page .btn-primary{
+  /* make the contact page "Send message" button a dark brown with white text */
+  background: #523726; /* dark brown matching footer/gradient end */
+  color: #ffffff; /* white label for contrast */
+  border: none;
+  box-shadow: var(--btn-shadow);
+}
+.contact-page .btn-primary:hover{ /* ensure label stays white on hover and shadow intensifies */
+  color: #ffffff;
+  box-shadow: var(--btn-shadow-hover);
+}
+.contact-info{
+  /* push text further to the right and limit width */
+  max-width: calc(100% - 220px);
+}
+.profile-image{
+  width:200px; /* preferred display width */
+  height:auto; /* preserve aspect ratio and avoid cropping */
+  max-height:220px; /* keep image from becoming too tall */
+  border-radius:12px;
+  object-fit:cover;
+  border:1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+}
+
+@media (max-width:600px){
+  .contact-grid{flex-direction:column;align-items:flex-start;gap:1rem}
+  .profile-image{width:160px;height:auto;max-height:180px}
+  .contact-info{max-width:100%}
+}
+
+/* Contact form styles */
+.contact-form{margin-top:1.25rem;display:flex;flex-direction:column;gap:0.75rem;max-width:700px}
+.contact-form label{font-size:0.95rem;color:rgba(230,238,248,0.9)}
+.contact-form input[type="text"],.contact-form input[type="email"],.contact-form input[type="url"],.contact-form textarea{
+  width:100%;padding:0.65rem 0.75rem;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:var(--text);resize:vertical;font-size:0.95rem
+}
+.contact-form textarea{min-height:140px}
+.contact-form .form-row{display:flex;gap:0.75rem}
+.contact-form .form-row > *{flex:1}
+.contact-form .btn-primary{ /* center the Send button inside the contact form */
+  align-self:center;
+  margin-top:0.5rem;
+}
+.btn-primary{display:inline-block;padding:0.6rem 1.1rem;border-radius:9999px;background:linear-gradient(90deg,var(--accent),var(--accent-strong));color:#041526;border:none;cursor:pointer;font-weight:600}
+.btn-primary{box-shadow:var(--btn-shadow)}
+.btn-primary:hover{opacity:0.95;transform:translate3d(0, -1px, 0);box-shadow:var(--btn-shadow-hover)}
+.form-note{font-size:0.9rem;color:rgba(230,238,248,0.8);margin-bottom:1.5rem}
+.form-success{margin-top:0.5rem;padding:0.6rem 0.8rem;background:rgba(125,211,252,0.08);border:1px solid rgba(125,211,252,0.12);color:var(--accent);border-radius:6px;display:none}
+.form-submit-row{display:flex;gap:0.75rem;align-items:center;margin-top:0.5rem}
+
+@media (max-width:600px){
+  .contact-form .form-row{flex-direction:column}
+}
+
+/* Center the Contact page heading */
+.contact-page h2{ text-align:center; margin-bottom:0.35rem }
+
+.social-bubble{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:linear-gradient(135deg, rgba(125,211,252,0.08), rgba(124,58,237,0.08));
+  border:1px solid rgba(255,255,255,0.04);
+  color:var(--accent);
+  text-decoration:none;
+  transition:transform .12s ease, box-shadow .12s ease, background .12s;
+  /* give social bubbles the same base shadow as other buttons */
+  box-shadow: var(--btn-shadow);
+}
+.social-bubble:hover{transform:translate3d(0, -3px, 0);box-shadow:var(--btn-shadow-hover);background:linear-gradient(135deg, rgba(125,211,252,0.12), rgba(124,58,237,0.12));}
+.social-bubble svg{width:20px;height:20px;fill:currentColor}
+
+@media (max-width:600px){
+  .social-bubble{width:40px;height:40px}
+}
+
+/* Social buttons container: align multiple circular icons with spacing */
+.social-buttons{display:flex;gap:0.5rem;align-items:center;justify-content:center}
+
+/* Remove margin from paragraph containing social buttons to prevent brown band */
+p:has(.social-buttons){margin:0}
+.contact-info p:last-child{margin-bottom:0}
+
+/* Allow icons inside the bubble to size consistently (SVG or IMG) */
+.social-bubble img,.social-bubble .social-icon{width:20px;height:20px;display:block}
+@media (max-width:600px){
+  .social-bubble img,.social-bubble .social-icon{width:18px;height:18px}
+}
+
+/* Brand color variants for social bubbles */
+.social-bubble.instagram{ /* keep subtle gradient but ensure white icon */
+  background: radial-gradient(circle at 30% 20%, #feda75 0%, #fa7e1e 30%, #d62976 60%, #962fbf 85%);
+  color:#fff;
+  border-color: rgba(255,255,255,0.06);
+}
+.social-bubble.instagram:hover{box-shadow:0 8px 24px rgba(214,41,118,0.18)}
+
+.social-bubble.linkedin{
+  background: #0A66C2; /* LinkedIn brand blue */
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.06);
+}
+.social-bubble.linkedin:hover{box-shadow:0 8px 24px rgba(10,102,194,0.18)}
+
+.social-bubble.spotify{
+  background: #1DB954; /* Spotify green */
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.06);
+}
+/* Force small bitmap logo to be visible on green background by inverting/brightening */
+.social-bubble.spotify img{filter:brightness(0) invert(1);width:20px;height:20px;display:block}
+@media (max-width:600px){
+  .social-bubble.spotify img{width:18px;height:18px}
+}
+
+/* Small Instagram photo next to the bubble (not currently used) */
+/* Removed unused .insta-photo styles to keep stylesheet lean. */
+
+/* Responsive video styling for mobile devices */
+.scroll-video {
+    display: none; /* Hidden by default on desktop */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+/* Media query for tablet and mobile devices */
+@media (max-width: 768px) {
+    .robot-arm {
+        display: none; /* Hide robot arms on smaller screens */
+    }
+    
+    /* Show only the first video on mobile */
+    .scroll-video {
+        display: none; /* Hide all videos by default */
+    }
+    
+    /* Show only the first video (in the first about-row) */
+    .about-row:first-of-type .scroll-video {
+        display: block;
+    }
+    
+    .about-image {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Hide the entire about-image containers for 2nd and 3rd sections on mobile */
+    .about-row:not(:first-of-type) .about-image {
+        display: none;
+
+/* ============================================
+   SVG ICON CLASSES - Centralized Icon System
+   ============================================ */
+
+/* Icon base class */
+.icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Navigation Icons */
+.icon-home {
+    background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3 11.8284C3 11.2979 3.21071 10.7892 3.58579 10.4142L10.5858 3.41416C11.3668 2.63311 12.6332 2.63311 13.4142 3.41416L20.4142 10.4142C20.7893 10.7892 21 11.2979 21 11.8284V20C21 20.5522 20.5523 21 20 21H14C13.4477 21 13 20.5522 13 20V15H11V20C11 20.5522 10.5523 21 10 21H4C3.44772 21 3 20.5522 3 20V11.8284ZM12 4.82837L5 11.8284V19H9V13.9999C9 13.4477 9.44772 12.9999 10 12.9999H14C14.5523 12.9999 15 13.4477 15 13.9999V19H19V11.8284L12 4.82837Z" fill="white"/></svg>');
+}
+
+.icon-server {
+    background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.25 8C9.25 8.69036 8.69036 9.25 8 9.25C7.30965 9.25 6.75 8.69036 6.75 8C6.75 7.30965 7.30965 6.75 8 6.75C8.69036 6.75 9.25 7.30965 9.25 8Z" fill="white"/><path d="M8 17.25C8.69036 17.25 9.25 16.6904 9.25 16C9.25 15.3096 8.69036 14.75 8 14.75C7.30965 14.75 6.75 15.3096 6.75 16C6.75 16.6904 7.30965 17.25 8 17.25Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5 3C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3H5ZM5 11H19V5H5V11ZM5 13V19H19V13H5Z" fill="white"/></svg>');
+}
+
+.icon-archive {
+    background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3 19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V8.82843C21 8.298 20.7893 7.78929 20.4142 7.41421L16.5858 3.58579C16.2107 3.21071 15.702 3 15.1716 3H5C3.89543 3 3 3.89543 3 5V19ZM5 5L5 19H7V16C7 14.8954 7.89543 14 9 14H15C16.1046 14 17 14.8954 17 16V19H19V8.82843L16 5.82843V8C16 9.10457 15.1046 10 14 10H9C7.89543 10 7 9.10457 7 8V5L5 5ZM9 5V8H14V5H9ZM15 19V16H9V19H15Z" fill="white"/></svg>');
+}
+
+.icon-globe {
+    background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM20 12C20 12.6906 19.9125 13.3608 19.748 14H16.41C16.469 13.3538 16.5 12.6849 16.5 12C16.5 11.3151 16.469 10.6462 16.41 10H19.748C19.9125 10.6392 20 11.3094 20 12ZM16.1256 8H18.9297C18.046 6.47231 16.6716 5.26398 15.0221 4.59049C15.4904 5.53438 15.8689 6.69453 16.1256 8ZM8.97794 4.59049C7.32837 5.26398 5.95398 6.47231 5.07026 8H7.87444C8.13111 6.69453 8.50958 5.53438 8.97794 4.59049ZM7.59002 10H4.25204C4.08751 10.6392 4 11.3094 4 12C4 12.6906 4.08751 13.3608 4.25204 14H7.59002C7.53099 13.3538 7.5 12.6849 7.5 12C7.5 11.3151 7.53099 10.6462 7.59002 10ZM7.87444 16H5.07026C5.95398 17.5277 7.32837 18.736 8.97794 19.4095C8.50958 18.4656 8.13111 17.3055 7.87444 16ZM15.0221 19.4095C16.6716 18.736 18.046 17.5277 18.9297 16H16.1256C15.8689 17.3055 15.4904 18.4656 15.0221 19.4095ZM14.5 12C14.5 12.6943 14.4652 13.3635 14.4008 14H9.59918C9.53484 13.3635 9.5 12.6943 9.5 12C9.5 11.3057 9.53484 10.6365 9.59918 10H14.4008C14.4652 10.6365 14.5 11.3057 14.5 12ZM14.0822 8C13.8907 7.14167 13.6428 6.38215 13.3581 5.74966C13.0204 4.99913 12.6701 4.51413 12.3818 4.24316C12.2431 4.11273 12.1393 4.05118 12.079 4.02377C12.031 4.00192 12.008 4.00012 12.0017 4H11.9983C11.992 4.00012 11.969 4.00192 11.921 4.02377C11.8607 4.05118 11.7569 4.11273 11.6182 4.24316C11.3299 4.51413 10.9796 4.99913 10.6419 5.74966C10.3572 6.38215 10.1093 7.14167 9.91779 8H14.0822ZM9.91779 16C10.1093 16.8583 10.3572 17.6179 10.6419 18.2503C10.9796 19.0009 11.3299 19.4859 11.6182 19.7568C11.7569 19.8873 11.8607 19.9488 11.921 19.9762C11.9689 19.998 11.9919 19.9999 11.9983 20H12.0017C12.0081 19.9999 12.0311 19.998 12.079 19.9762C12.1393 19.9488 12.2431 19.8873 12.3818 19.7568C12.6701 19.4859 13.0204 19.0009 13.3581 18.2503C13.6428 17.6179 13.8907 16.8583 14.0822 16H9.91779Z" fill="white"/></svg>');
+}
+
+/* Achievement Icons */
+.icon-headset {
+    background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M19 4H21C22.1046 4 23 4.89543 23 6V9C23 11.2091 21.2091 13 19 13H18.3264C17.3395 15.0774 15.3595 16.5916 13 16.9291V20H15C15.5523 20 16 20.4477 16 21C16 21.5523 15.5523 22 15 22H9C8.44772 22 8 21.5523 8 21C8 20.4477 8.44772 20 9 20H11V16.9291C8.64045 16.5916 6.6605 15.0774 5.67363 13H5C2.79086 13 1 11.2091 1 9V6C1 4.89543 1.89543 4 3 4H5V3.875C5 2.83947 5.83947 2 6.875 2H17.125C18.1605 2 19 2.83947 19 3.875V4ZM12 15C9.23858 15 7 12.7614 7 10V4H17V10C17 12.7614 14.7614 15 12 15ZM18.9291 11H19C20.1046 11 21 10.1046 21 9V6H19V10C19 10.3395 18.9758 10.6734 18.9291 11ZM5.07089 11C5.02417 10.6734 5 10.3395 5 10V6H3V9C3 10.1046 3.89543 11 5 11H5.07089Z" fill="white"/></svg>');
+}
+
+.icon-lightning {
+    background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.7549 23.08C9.44197 23.2689 8.9998 23.0545 8.9998 22.6483V14H4.0869C3.65973 14 3.42927 13.4989 3.70728 13.1746L14.1202 1.02619C14.1579 0.982135 14.2 0.946924 14.2447 0.919942C14.5576 0.731067 14.9998 0.945409 14.9998 1.35159V9.99996H19.9127C20.3399 9.99996 20.5703 10.501 20.2923 10.8254L9.87943 22.9737C9.84167 23.0178 9.7996 23.053 9.7549 23.08ZM10.9946 12.8977C10.9434 12.3935 10.5176 12 9.9998 12H7.34824L12.9998 5.40648V11C12.9998 11.5522 13.4475 12 13.9998 12H16.6514L10.9998 18.5935V13C10.9998 12.9654 10.9981 12.9313 10.9946 12.8977Z" fill="white"/></svg>');
+}
+
+.icon-checkmark {
+    background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.5001 8.99998C16.8906 9.3905 16.8906 10.0237 16.5001 10.4142L11.7072 15.2071C11.3167 15.5976 10.6835 15.5976 10.293 15.2071L8.0001 12.9142C7.60958 12.5237 7.60958 11.8905 8.0001 11.5C8.39063 11.1095 9.02379 11.1095 9.41432 11.5L11.0001 13.0858L15.0859 8.99998C15.1347 8.95116 15.1873 8.90845 15.2428 8.87184C15.6309 8.61556 16.1584 8.65827 16.5001 8.99998Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12Z" fill="currentColor"/></svg>');
+}
+
+.icon-lock {
+    background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 16.5C12.8284 16.5 13.5 15.8284 13.5 15C13.5 14.1716 12.8284 13.5 12 13.5C11.1716 13.5 10.5 14.1716 10.5 15C10.5 15.8284 11.1716 16.5 12 16.5Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1C9.23858 1 7 3.23858 7 6V9L5 9.00003C3.89543 9.00003 3 9.89546 3 11V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V11C21 9.89546 20.1046 9.00003 19 9.00003H17V6C17 3.23858 14.7614 1 12 1ZM12 3C10.3431 3 9 4.34315 9 6V9H15V6C15 4.34315 13.6569 3 12 3ZM5 11L5 19H19V11H5Z" fill="currentColor"/></svg>');
+}
+
+.icon-cube {
+    background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.9994 2.17806C11.6185 1.82037 12.3815 1.82037 13.0006 2.17806L20.0006 6.2225C20.619 6.57985 21 7.23993 21 7.95423V16.0457C21 16.76 20.619 17.4201 20.0006 17.7774L13.0006 21.8219C12.3815 22.1796 11.6185 22.1796 10.9994 21.8219L3.99944 17.7774C3.38095 17.4201 3 16.76 3 16.0457V7.95423C3 7.23993 3.38096 6.57985 3.99944 6.2225L10.9994 2.17806ZM18.0017 7.37742L12 10.845L5.99834 7.37742L12 3.90979L18.0017 7.37742ZM5 16.0457L5 9.11043L11 12.5771V19.5124L5 16.0457ZM19 16.0457L13 19.5124V12.5771L19 9.11043V16.0457Z" fill="white"/></svg>');
+}
+
+.icon-settings {
+    background-image: url('data:image/svg+xml,<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 16C14.2094 16 16.0002 14.2091 16.0002 12C16.0002 9.79086 14.2094 8 12.0002 8C9.79109 8 8.00023 9.79086 8.00023 12C8.00023 14.2091 9.79109 16 12.0002 16ZM12.0002 14C13.1048 14 14.0002 13.1046 14.0002 12C14.0002 10.8954 13.1048 10 12.0002 10C10.8957 10 10.0002 10.8954 10.0002 12C10.0002 13.1046 10.8957 14 12.0002 14Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.1182 1.86489L15.5203 4.81406C15.8475 4.97464 16.1621 5.1569 16.4623 5.35898L19.2185 4.23223C19.6814 4.043 20.2129 4.2248 20.463 4.65787L22.5901 8.34213C22.8401 8.77521 22.7318 9.3264 22.3365 9.63266L19.9821 11.4566C19.9941 11.6362 20.0002 11.8174 20.0002 12C20.0002 12.1826 19.9941 12.3638 19.9821 12.5434L22.3365 14.3673C22.7318 14.6736 22.8401 15.2248 22.5901 15.6579L20.463 19.3421C20.2129 19.7752 19.6814 19.957 19.2185 19.7678L16.4623 18.641C16.1621 18.8431 15.8475 19.0254 15.5203 19.1859L15.1182 22.1351C15.0506 22.6306 14.6274 23 14.1273 23H9.87313C9.37306 23 8.94987 22.6306 8.8823 22.1351L8.48014 19.1859C8.15296 19.0254 7.83835 18.8431 7.53818 18.641L4.78195 19.7678C4.31907 19.957 3.78756 19.7752 3.53752 19.3421L1.41042 15.6579C1.16038 15.2248 1.26869 14.6736 1.66401 14.3673L4.01841 12.5434C4.00636 12.3638 4.00025 12.1826 4.00025 12C4.00025 11.8174 4.00636 11.6362 4.01841 11.4566L1.66401 9.63266C1.26869 9.3264 1.16038 8.77521 1.41041 8.34213L3.53752 4.65787C3.78755 4.2248 4.31906 4.043 4.78195 4.23223L7.53818 5.35898C7.83835 5.1569 8.15296 4.97464 8.48014 4.81406L8.8823 1.86489C8.94987 1.3694 9.37306 1 9.87313 1H14.1273C14.6274 1 15.0506 1.3694 15.1182 1.86489ZM13.6826 6.14004L14.6392 6.60948C14.8842 6.72975 15.1201 6.86639 15.3454 7.01805L16.231 7.61423L19.1674 6.41382L20.4216 8.58619L17.9153 10.5278L17.9866 11.5905C17.9956 11.7255 18.0002 11.8621 18.0002 12C18.0002 12.1379 17.9956 12.2745 17.9866 12.4095L17.9153 13.4722L20.4216 15.4138L19.1674 17.5862L16.231 16.3858L15.3454 16.982C15.1201 17.1336 14.8842 17.2702 14.6392 17.3905L13.6826 17.86L13.2545 21H10.746L10.3178 17.86L9.36131 17.3905C9.11626 17.2702 8.88037 17.1336 8.6551 16.982L7.76954 16.3858L4.83313 17.5862L3.57891 15.4138L6.0852 13.4722L6.01392 12.4095C6.00487 12.2745 6.00024 12.1379 6.00024 12C6.00024 11.8621 6.00487 11.7255 6.01392 11.5905L6.0852 10.5278L3.57891 8.58619L4.83312 6.41382L7.76953 7.61423L8.6551 7.01805C8.88037 6.86639 9.11625 6.72976 9.36131 6.60949L10.3178 6.14004L10.746 3H13.2545L13.6826 6.14004Z" fill="white"/></svg>');
+}
+
+/* Scroll to Top Button */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+.scroll-to-top:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+.scroll-to-top:active {
+    transform: scale(0.95);
+}
+
+.scroll-to-top svg {
+    width: 24px;
+    height: 24px;
+}
+
+@media (max-width: 768px) {
+    .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+    
+    .scroll-to-top svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+    }
+}

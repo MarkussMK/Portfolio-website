@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Arcade - Markuss Šube</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: #000;
+            color: #0f0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Scanline Effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 9999;
+            animation: scanline 8s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(10px); }
+        }
+
+        /* CRT Screen Glow */
+        .arcade-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            background: radial-gradient(ellipse at center, #001100 0%, #000000 70%);
+            box-shadow: inset 0 0 100px rgba(0, 255, 0, 0.1);
+        }
+
+        /* Header with Neon Effect */
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #0f0;
+            text-shadow: 
+                0 0 10px #0f0,
+                0 0 20px #0f0,
+                0 0 30px #0f0,
+                0 0 40px #00ff00,
+                0 0 70px #00ff00,
+                0 0 80px #00ff00,
+                0 0 100px #00ff00;
+            animation: flicker 3s infinite alternate;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+        }
+
+        @keyframes flicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 1;
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.8;
+            }
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: #0a0;
+            text-shadow: 0 0 5px #0f0;
+            letter-spacing: 2px;
+        }
+
+        /* Back Button */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #000;
+            color: #0f0;
+            border: 3px solid #0f0;
+            padding: 15px 25px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 0 20px #0f0;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .back-btn:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 30px #0f0, 0 0 50px #0f0;
+            transform: scale(1.05);
+        }
+
+        /* Coin Counter */
+        .coin-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #000;
+            border: 3px solid #ffd700;
+            padding: 15px 25px;
+            font-size: 0.7rem;
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+            box-shadow: 0 0 20px #ffd700;
+            z-index: 1000;
+        }
+
+        .coin-counter span {
+            font-size: 1rem;
+            margin-left: 10px;
+        }
+
+        /* Game Grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 80px 40px;
+            margin-bottom: 60px;
+            padding-top: 60px;
+        }
+
+        /* Arcade Cabinet Style */
+        .game-cabinet {
+            background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+            perspective: 1000px;
+            padding-bottom: 30px;
+        }
+
+        .game-cabinet:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        /* Marquee (Top Sign) */
+        .game-cabinet::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 50px;
+            background: linear-gradient(180deg, #cc0000 0%, #990000 100%);
+            border: 8px solid #ffd700;
+            border-bottom: none;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 
+                0 -5px 20px rgba(255, 215, 0, 0.5),
+                inset 0 5px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Side Panels */
+        .game-cabinet::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -10px;
+            width: calc(100% + 20px);
+            height: calc(100% + 50px);
+            background: linear-gradient(90deg, 
+                #ffd700 0%, #ffd700 8px, 
+                transparent 8px, transparent calc(100% - 8px), 
+                #ffd700 calc(100% - 8px), #ffd700 100%);
+            border-radius: 15px 15px 0 0;
+            z-index: -1;
+            box-shadow: 
+                -5px 0 15px rgba(255, 215, 0, 0.3),
+                5px 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Rainbow light strip */
+        .game-cabinet .marquee-light {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 20px;
+            background: linear-gradient(90deg, #ff0000, #ff7700, #ffff00, #00ff00, #0000ff, #8b00ff);
+            border-radius: 10px;
+            animation: rainbow 3s linear infinite;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            z-index: 1;
+        }
+
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        /* Cabinet body */
+        .game-cabinet .cabinet-body {
+            background: linear-gradient(180deg, #b30000 0%, #8b0000 50%, #660000 100%);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 
+                inset -5px 0 15px rgba(0, 0, 0, 0.5),
+                inset 5px 0 15px rgba(0, 0, 0, 0.5),
+                inset 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Pac-Man specific coloring (yellow cabinet) */
+        .pacman-cabinet::before {
+            background: linear-gradient(180deg, #ffeb3b 0%, #ffb300 100%);
+            border: 8px solid #ffda00;
+            border-bottom: none;
+            box-shadow:
+                0 -5px 20px rgba(255, 215, 0, 0.6),
+                inset 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .pacman-cabinet::after {
+            background: linear-gradient(90deg,
+                #fff176 0%, #ffd54f 8px,
+                transparent 8px, transparent calc(100% - 8px),
+                #ffd54f calc(100% - 8px), #fff176 100%);
+            box-shadow:
+                -5px 0 15px rgba(255, 215, 0, 0.25),
+                5px 0 15px rgba(255, 215, 0, 0.25);
+        }
+
+        .pacman-cabinet .cabinet-body {
+            background: linear-gradient(180deg, #fff176 0%, #ffd54f 50%, #ffb300 100%);
+        }
+
+        .pacman-cabinet .marquee-light {
+            background: linear-gradient(90deg, #ffb300, #ffd700, #fff59d);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .pacman-cabinet .game-title {
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700, 0 0 20px rgba(255,215,0,0.35);
+        }
+
+        .pacman-cabinet .joystick {
+            background: radial-gradient(circle at 30% 30%, #ffd966 0%, #ffb300 50%, #b38600 100%);
+        }
+
+        .pacman-cabinet .button {
+            background: linear-gradient(180deg, #ffeb3b 0%, #ffd54f 100%);
+        }
+
+        /* Tetris specific coloring (blue cabinet) */
+        .tetris-cabinet::before {
+            background: linear-gradient(180deg, #0077aa 0%, #005f99 100%);
+            border: 8px solid #66d9ff;
+            border-bottom: none;
+            box-shadow:
+                0 -5px 20px rgba(102, 217, 255, 0.6),
+                inset 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .tetris-cabinet::after {
+            background: linear-gradient(90deg,
+                #66d9ff 0%, #66d9ff 8px,
+                transparent 8px, transparent calc(100% - 8px),
+                #66d9ff calc(100% - 8px), #66d9ff 100%);
+            box-shadow:
+                -5px 0 15px rgba(102, 217, 255, 0.25),
+                5px 0 15px rgba(102, 217, 255, 0.25);
+        }
+
+        .tetris-cabinet .cabinet-body {
+            background: linear-gradient(180deg, #66b3ff 0%, #5591d6 50%, #2f6fb3 100%);
+        }
+
+        .tetris-cabinet .marquee-light {
+            background: linear-gradient(90deg, #3399ff, #66d9ff, #99e6ff);
+            box-shadow: 0 0 20px rgba(102,217,255,0.5);
+        }
+
+        .tetris-cabinet .game-title {
+            color: #66d9ff;
+            text-shadow: 0 0 10px #66d9ff;
+        }
+
+        .tetris-cabinet .joystick {
+            background: radial-gradient(circle at 30% 30%, #99dfff 0%, #66b3ff 50%, #2f6fb3 100%);
+        }
+
+        .tetris-cabinet .button {
+            background: linear-gradient(180deg, #66d9ff 0%, #5591d6 100%);
+        }
+
+        /* Pong cabinet (white theme) */
+        .pong-cabinet::before {
+            background: linear-gradient(180deg, #ffffff 0%, #f2f2f2 100%);
+            border: 8px solid #ffffff;
+            border-bottom: none;
+            box-shadow:
+                0 -5px 20px rgba(255,255,255,0.5),
+                inset 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .pong-cabinet::after {
+            background: linear-gradient(90deg,
+                #ffffff 0%, #ffffff 8px,
+                transparent 8px, transparent calc(100% - 8px),
+                #ffffff calc(100% - 8px), #ffffff 100%);
+            box-shadow:
+                -5px 0 15px rgba(255,255,255,0.2),
+                5px 0 15px rgba(255,255,255,0.2);
+        }
+
+        .pong-cabinet .cabinet-body {
+            background: linear-gradient(180deg, #ffffff 0%, #eaeaea 50%, #d4d4d4 100%);
+        }
+
+        .pong-cabinet .marquee-light {
+            background: linear-gradient(90deg, #ffffff, #fffbe6, #ffffff);
+            box-shadow: 0 0 20px rgba(255,255,255,0.6);
+        }
+
+        .pong-cabinet .game-title {
+            color: #000;
+            text-shadow: 0 0 6px rgba(0,0,0,0.25);
+        }
+
+        .game-screen {
+            background: #000;
+            border: 15px solid #1a1a1a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                inset 0 0 30px rgba(0, 0, 0, 0.9),
+                inset 0 5px 10px rgba(255, 255, 255, 0.1),
+                0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .game-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                rgba(255, 255, 255, 0.1) 0%,
+                transparent 50%,
+                rgba(0, 0, 0, 0.3) 100%
+            );
+            pointer-events: none;
+        }
+
+        .game-screen::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+            pointer-events: none;
+        }
+
+        .game-title {
+            font-size: 1.2rem;
+            color: #0f0;
+            text-shadow: 0 0 10px #0f0;
+            margin-bottom: 10px;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .game-subtitle {
+            font-size: 0.5rem;
+            color: #0a0;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .insert-coin {
+            font-size: 0.6rem;
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0; }
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 15px;
+            padding: 20px;
+            background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+            border-radius: 15px;
+            box-shadow: 
+                inset 0 3px 10px rgba(0, 0, 0, 0.8),
+                0 -2px 5px rgba(0, 0, 0, 0.5);
+            border: 3px solid #333;
+        }
+
+        /* Coin slot */
+        .controls::after {
+            content: '💰';
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 25px;
+            background: #000;
+            border: 3px solid #333;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            box-shadow: 
+                inset 0 2px 5px rgba(0, 0, 0, 0.8),
+                0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .joystick {
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle at 30% 30%, #ff4444 0%, #cc0000 50%, #880000 100%);
+            border-radius: 50%;
+            border: 5px solid #222;
+            box-shadow: 
+                0 8px 20px rgba(0, 0, 0, 0.6),
+                inset 0 -3px 8px rgba(0, 0, 0, 0.5),
+                inset 0 3px 8px rgba(255, 100, 100, 0.3);
+            position: relative;
+        }
+
+        .joystick::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 25px;
+            background: linear-gradient(180deg, #aa0000 0%, #880000 100%);
+            border-radius: 10px 10px 0 0;
+            box-shadow: 
+                0 2px 5px rgba(0, 0, 0, 0.5),
+                inset 0 1px 3px rgba(255, 100, 100, 0.3);
+        }
+
+        .joystick::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle at 30% 30%, #1a1a1a 0%, #000 100%);
+            border-radius: 50%;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.8);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 5px solid #222;
+            box-shadow: 
+                0 6px 15px rgba(0, 0, 0, 0.6),
+                inset 0 -3px 8px rgba(0, 0, 0, 0.4);
+            transition: all 0.1s;
+            position: relative;
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            height: 15px;
+            border-radius: 50% 50% 0 0;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .button:active {
+            transform: translateY(4px);
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.6),
+                inset 0 2px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        .button-a {
+            background: radial-gradient(circle at 30% 30%, #44ff44 0%, #00dd00 50%, #008800 100%);
+        }
+
+        .button-b {
+            background: radial-gradient(circle at 30% 30%, #ffff44 0%, #dddd00 50%, #888800 100%);
+        }
+
+        .button-c {
+            background: radial-gradient(circle at 30% 30%, #4444ff 0%, #0000dd 50%, #000088 100%);
+        }
+
+        .high-score {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.5rem;
+            color: #f0f;
+            text-shadow: 0 0 5px #f0f;
+        }
+
+        /* Coming Soon Badge */
+        .coming-soon {
+            position: absolute;
+            top: 50px;
+            right: -30px;
+            background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+            color: #fff;
+            padding: 5px 40px;
+            font-size: 0.5rem;
+            transform: rotate(45deg);
+            box-shadow: 
+                0 0 15px #ff0000,
+                inset 0 1px 3px rgba(255, 255, 255, 0.3);
+            z-index: 10;
+            border: 2px solid #ff3333;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 3px solid #0f0;
+            margin-top: 60px;
+        }
+
+        footer p {
+            font-size: 0.6rem;
+            color: #0a0;
+            text-shadow: 0 0 5px #0f0;
+            margin: 10px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .game-title {
+                font-size: 0.9rem;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .back-btn {
+                font-size: 0.5rem;
+                padding: 10px 15px;
+            }
+
+            .coin-counter {
+                font-size: 0.5rem;
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="Projects.html" class="back-btn">← Back</a>
+    
+    <div class="coin-counter">
+        COINS: <span id="coin-count">00</span>
+    </div>
+
+    <div class="arcade-container">
+        <header>
+            <h1>RETRO ARCADE</h1>
+            <p class="subtitle">*** INSERT COIN TO PLAY ***</p>
+        </header>
+
+        <div class="games-grid">
+            <!-- Game 1 -->
+            <div class="game-cabinet" onclick="window.location.href='space-invaders.html'">
+                <div class="marquee-light"></div>
+                <div class="cabinet-body">
+                    <div class="game-screen">
+                        <div style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
+                            <img src="Space_invaders_logo.svg.png" alt="Space Invaders Logo" style="max-width:120px;max-height:60px;object-fit:contain;filter:drop-shadow(0 0 8px #ffd700);">
+                        </div>
+                        <div class="game-title">SPACE INVADERS</div>
+                        <div class="game-subtitle">DEFEND EARTH</div>
+                        <div class="insert-coin">INSERT COIN</div>
+                    </div>
+                    <div class="controls">
+                        <div class="joystick"></div>
+                        <div class="buttons">
+                            <div class="button button-a"></div>
+                            <div class="button button-b"></div>
+                        </div>
+                    </div>
+                    <div class="high-score">HIGH SCORE: 999999</div>
+                </div>
+            </div>
+
+            <!-- Game 2 -->
+            <div class="game-cabinet pacman-cabinet" onclick="window.location.href='pacman.html'">
+                <div class="marquee-light"></div>
+                <div class="cabinet-body">
+                    <div class="game-screen">
+                        <div style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
+                            <img src="423-4232181_pac-man-pacman-logo-svg.png" alt="Pac-Man Logo" style="max-width:120px;max-height:60px;object-fit:contain;filter:drop-shadow(0 0 8px #ffd700);">
+                        </div>
+                        <div class="game-title">PAC-MAN</div>
+                        <div class="game-subtitle">EAT ALL DOTS</div>
+                        <div class="insert-coin">INSERT COIN</div>
+                    </div>
+                    <div class="controls">
+                        <div class="joystick"></div>
+                        <div class="buttons">
+                            <div class="button button-a"></div>
+                        </div>
+                    </div>
+                    <div class="high-score">HIGH SCORE: 888888</div>
+                </div>
+            </div>
+
+            <!-- Game 3 -->
+            <div class="game-cabinet tetris-cabinet" onclick="window.location.href='tetris.html'">
+                <div class="marquee-light"></div>
+                <div class="cabinet-body">
+                    <div class="game-screen">
+                        <div style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
+                            <img src="Tetris-Logo-1-1155x770.png" alt="Tetris Logo" style="max-width:140px;max-height:60px;object-fit:contain;filter:drop-shadow(0 0 8px #66d9ff);">
+                        </div>
+                        <div class="game-title">TETRIS</div>
+                        <div class="game-subtitle">CLEAR LINES</div>
+                        <div class="insert-coin">INSERT COIN</div>
+                    </div>
+                    <div class="controls">
+                        <div class="joystick"></div>
+                        <div class="buttons">
+                            <div class="button button-a"></div>
+                            <div class="button button-b"></div>
+                        </div>
+                    </div>
+                    <div class="high-score">HIGH SCORE: 777777</div>
+                </div>
+            </div>
+
+            <!-- Game 4 -->
+            <div class="game-cabinet pong-cabinet" onclick="window.location.href='pong.html'">
+                <div class="marquee-light"></div>
+                <div class="cabinet-body">
+                    <div class="game-screen">
+                        <div style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
+                            <img src="pong-logo-png_seeklogo-438122.png" alt="Pong Logo" style="max-width:120px;max-height:60px;object-fit:contain;filter:drop-shadow(0 0 8px #fff);">
+                        </div>
+                        <div class="game-title">PONG</div>
+                        <div class="game-subtitle">CLASSIC ARCADE</div>
+                        <div class="insert-coin">INSERT COIN</div>
+                    </div>
+                    <div class="controls">
+                        <div class="joystick"></div>
+                        <div class="buttons">
+                            <div class="button button-a"></div>
+                        </div>
+                    </div>
+                    <div class="high-score">HIGH SCORE: 666666</div>
+                </div>
+            </div>
+            <!-- Game 5 -->
+            <div class="game-cabinet" onclick="alert('Game Coming Soon! Stay tuned for updates.')">
+                <div class="marquee-light"></div>
+                <div class="cabinet-body">
+                    <div class="game-screen">
+                        <div class="game-title">BREAKOUT</div>
+                        <div class="game-subtitle">BREAK BRICKS</div>
+                        <div class="insert-coin">INSERT COIN</div>
+                    </div>
+                    <div class="controls">
+                        <div class="joystick"></div>
+                        <div class="buttons">
+                            <div class="button button-a"></div>
+                            <div class="button button-b"></div>
+                        </div>
+                    </div>
+                    <div class="high-score">HIGH SCORE: 555555</div>
+                </div>
+                <div class="coming-soon">SOON</div>
+            </div>
+
+            <!-- Game 6 -->
+            <div class="game-cabinet" onclick="alert('Game Coming Soon! Stay tuned for updates.')">
+                <div class="marquee-light"></div>
+                <div class="cabinet-body">
+                    <div class="game-screen">
+                        <div class="game-title">ASTEROIDS</div>
+                        <div class="game-subtitle">SHOOT ROCKS</div>
+                        <div class="insert-coin">INSERT COIN</div>
+                    </div>
+                    <div class="controls">
+                        <div class="joystick"></div>
+                        <div class="buttons">
+                            <div class="button button-a"></div>
+                            <div class="button button-b"></div>
+                            <div class="button button-c"></div>
+                        </div>
+                    </div>
+                    <div class="high-score">HIGH SCORE: 444444</div>
+                </div>
+                <div class="coming-soon">SOON</div>
+            </div>
+        </div>
+
+        <footer>
+            <p>*** PLAYER ONE READY ***</p>
+            <p>&copy; 2026 RETRO ARCADE - MARKUSS ŠUBE</p>
+            <p>ALL GAMES COMING SOON</p>
+        </footer>
+    </div>
+
+    <script>
+        // Coin counter animation
+        let coins = 0;
+        const coinDisplay = document.getElementById('coin-count');
+        
+        setInterval(() => {
+            coins = (coins + 1) % 100;
+            coinDisplay.textContent = coins.toString().padStart(2, '0');
+        }, 2000);
+
+        // Add click sound effect (visual feedback)
+        document.querySelectorAll('.game-cabinet').forEach(cabinet => {
+            cabinet.addEventListener('click', function() {
+                this.style.transform = 'translateY(-5px) scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-10px) scale(1)';
+                }, 100);
+            });
+        });
+
+        // Random screen flicker effect
+        setInterval(() => {
+            const screens = document.querySelectorAll('.game-screen');
+            const randomScreen = screens[Math.floor(Math.random() * screens.length)];
+            randomScreen.style.opacity = '0.8';
+            setTimeout(() => {
+                randomScreen.style.opacity = '1';
+            }, 50);
+        }, 5000);
+    </script>
+</body>
+</html>
