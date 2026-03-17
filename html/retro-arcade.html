@@ -317,6 +317,48 @@
             background: linear-gradient(180deg, #66d9ff 0%, #5591d6 100%);
         }
 
+        /* Space Invaders cabinet (yellow + light blue) */
+        .spaceinvaders-cabinet::before {
+            background: linear-gradient(180deg, #ffe600 0%, #ffc200 100%);
+            border: 8px solid #7de8ff;
+            border-bottom: none;
+            box-shadow:
+                0 -5px 20px rgba(125, 232, 255, 0.6),
+                inset 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .spaceinvaders-cabinet::after {
+            background: linear-gradient(90deg,
+                #7de8ff 0%, #7de8ff 8px,
+                transparent 8px, transparent calc(100% - 8px),
+                #7de8ff calc(100% - 8px), #7de8ff 100%);
+            box-shadow:
+                -5px 0 15px rgba(125, 232, 255, 0.3),
+                5px 0 15px rgba(125, 232, 255, 0.3);
+        }
+
+        .spaceinvaders-cabinet .cabinet-body {
+            background: linear-gradient(180deg, #ffe600 0%, #aaddff 50%, #7de8ff 100%);
+        }
+
+        .spaceinvaders-cabinet .marquee-light {
+            background: linear-gradient(90deg, #ffe600, #7de8ff, #ffe600);
+            box-shadow: 0 0 20px rgba(125, 232, 255, 0.6);
+        }
+
+        .spaceinvaders-cabinet .game-title {
+            color: #ffe600;
+            text-shadow: 0 0 10px #ffe600, 0 0 20px rgba(255,230,0,0.5);
+        }
+
+        .spaceinvaders-cabinet .joystick {
+            background: radial-gradient(circle at 30% 30%, #7de8ff 0%, #33bbdd 50%, #006688 100%);
+        }
+
+        .spaceinvaders-cabinet .button {
+            background: linear-gradient(180deg, #ffe600 0%, #ffc200 100%);
+        }
+
         /* Pong cabinet (white theme) */
         .pong-cabinet::before {
             background: linear-gradient(180deg, #ffffff 0%, #f2f2f2 100%);
@@ -349,6 +391,64 @@
         .pong-cabinet .game-title {
             color: #000;
             text-shadow: 0 0 6px rgba(0,0,0,0.25);
+        }
+
+        /* Breakout cabinet (B&W prison stripes) */
+        .breakout-cabinet::before {
+            background: repeating-linear-gradient(
+                0deg,
+                #000000 0px, #000000 12px,
+                #ffffff 12px, #ffffff 24px
+            );
+            border: 8px solid #ffffff;
+            border-bottom: none;
+            box-shadow:
+                0 -5px 20px rgba(255,255,255,0.4),
+                inset 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .breakout-cabinet::after {
+            background: linear-gradient(90deg,
+                #ffffff 0%, #ffffff 8px,
+                transparent 8px, transparent calc(100% - 8px),
+                #ffffff calc(100% - 8px), #ffffff 100%);
+            box-shadow:
+                -5px 0 15px rgba(255,255,255,0.3),
+                5px 0 15px rgba(255,255,255,0.3);
+        }
+
+        .breakout-cabinet .cabinet-body {
+            background: repeating-linear-gradient(
+                90deg,
+                #111111 0px, #111111 18px,
+                #dddddd 18px, #dddddd 36px
+            );
+        }
+
+        .breakout-cabinet .marquee-light {
+            background: repeating-linear-gradient(
+                90deg,
+                #000 0px, #000 10px,
+                #fff 10px, #fff 20px
+            );
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        .breakout-cabinet .game-title {
+            color: #fff;
+            text-shadow: 0 0 10px #fff, 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        .breakout-cabinet .game-subtitle {
+            color: #ccc;
+        }
+
+        .breakout-cabinet .joystick {
+            background: radial-gradient(circle at 30% 30%, #888 0%, #444 50%, #111 100%);
+        }
+
+        .breakout-cabinet .button {
+            background: linear-gradient(180deg, #ffffff 0%, #aaaaaa 100%);
         }
 
         .game-screen {
@@ -635,12 +735,12 @@
 
         <div class="games-grid">
             <!-- Game 1 -->
-            <div class="game-cabinet" onclick="window.location.href='space-invaders.html'">
+            <div class="game-cabinet spaceinvaders-cabinet" onclick="window.location.href='space-invaders.html'">
                 <div class="marquee-light"></div>
                 <div class="cabinet-body">
                     <div class="game-screen">
                         <div style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
-                            <img src="Space_invaders_logo.svg.png" alt="Space Invaders Logo" style="max-width:120px;max-height:60px;object-fit:contain;filter:drop-shadow(0 0 8px #ffd700);">
+                            <img src="../images/Space_invaders_logo.svg.png" alt="Space Invaders Logo" style="max-width:120px;max-height:60px;object-fit:contain;filter:drop-shadow(0 0 8px #ffd700);">
                         </div>
                         <div class="game-title">SPACE INVADERS</div>
                         <div class="game-subtitle">DEFEND EARTH</div>
@@ -663,7 +763,7 @@
                 <div class="cabinet-body">
                     <div class="game-screen">
                         <div style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
-                            <img src="423-4232181_pac-man-pacman-logo-svg.png" alt="Pac-Man Logo" style="max-width:120px;max-height:60px;object-fit:contain;filter:drop-shadow(0 0 8px #ffd700);">
+                            <img src="../images/423-4232181_pac-man-pacman-logo-svg.png" alt="Pac-Man Logo" style="max-width:120px;max-height:60px;object-fit:contain;filter:drop-shadow(0 0 8px #ffd700);">
                         </div>
                         <div class="game-title">PAC-MAN</div>
                         <div class="game-subtitle">EAT ALL DOTS</div>
@@ -685,7 +785,7 @@
                 <div class="cabinet-body">
                     <div class="game-screen">
                         <div style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
-                            <img src="Tetris-Logo-1-1155x770.png" alt="Tetris Logo" style="max-width:140px;max-height:60px;object-fit:contain;filter:drop-shadow(0 0 8px #66d9ff);">
+                            <img src="../images/Tetris-Logo-1-1155x770.png" alt="Tetris Logo" style="max-width:140px;max-height:60px;object-fit:contain;filter:drop-shadow(0 0 8px #66d9ff);">
                         </div>
                         <div class="game-title">TETRIS</div>
                         <div class="game-subtitle">CLEAR LINES</div>
@@ -708,7 +808,7 @@
                 <div class="cabinet-body">
                     <div class="game-screen">
                         <div style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
-                            <img src="pong-logo-png_seeklogo-438122.png" alt="Pong Logo" style="max-width:120px;max-height:60px;object-fit:contain;filter:drop-shadow(0 0 8px #fff);">
+                            <img src="../images/pong-logo-png_seeklogo-438122.png" alt="Pong Logo" style="max-width:120px;max-height:60px;object-fit:contain;filter:drop-shadow(0 0 8px #fff);">
                         </div>
                         <div class="game-title">PONG</div>
                         <div class="game-subtitle">CLASSIC ARCADE</div>
@@ -724,10 +824,13 @@
                 </div>
             </div>
             <!-- Game 5 -->
-            <div class="game-cabinet" onclick="alert('Game Coming Soon! Stay tuned for updates.')">
+            <div class="game-cabinet breakout-cabinet" onclick="window.location.href='breakout.html'">
                 <div class="marquee-light"></div>
                 <div class="cabinet-body">
                     <div class="game-screen">
+                        <div style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
+                            <img src="../images/breakout.jpg" alt="Breakout Logo" style="max-width:120px;max-height:60px;object-fit:contain;filter:drop-shadow(0 0 8px #fff) grayscale(1) contrast(1.2);">
+                        </div>
                         <div class="game-title">BREAKOUT</div>
                         <div class="game-subtitle">BREAK BRICKS</div>
                         <div class="insert-coin">INSERT COIN</div>
@@ -741,14 +844,16 @@
                     </div>
                     <div class="high-score">HIGH SCORE: 555555</div>
                 </div>
-                <div class="coming-soon">SOON</div>
             </div>
 
             <!-- Game 6 -->
-            <div class="game-cabinet" onclick="alert('Game Coming Soon! Stay tuned for updates.')">
+            <div class="game-cabinet" onclick="window.location.href='asteroids.html'">
                 <div class="marquee-light"></div>
                 <div class="cabinet-body">
                     <div class="game-screen">
+                        <div style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
+                            <img src="../images/astroids.png" alt="Asteroids Logo" style="max-width:120px;max-height:60px;object-fit:contain;filter:drop-shadow(0 0 8px #0f0);">
+                        </div>
                         <div class="game-title">ASTEROIDS</div>
                         <div class="game-subtitle">SHOOT ROCKS</div>
                         <div class="insert-coin">INSERT COIN</div>
@@ -763,7 +868,6 @@
                     </div>
                     <div class="high-score">HIGH SCORE: 444444</div>
                 </div>
-                <div class="coming-soon">SOON</div>
             </div>
         </div>
 

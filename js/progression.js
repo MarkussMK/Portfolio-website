@@ -1,3 +1,6 @@
+// Image base path — accounts for html/ subfolder pages vs root index.html
+const _imgBase = window.location.pathname.startsWith('/html/') ? '../images/' : 'images/';
+
 // Check if leveling system is enabled
 function isLevelingEnabled() {
     const choice = localStorage.getItem('levelingSystemChoice');
@@ -252,7 +255,7 @@ function showUnifiedUnlockNotification(levelTitle, unlockedPageHref, unlockedPag
     if (unlockedPageHref) {
         setTimeout(() => {
             const navLinks = document.querySelectorAll('.quest-menu .nav-link');
-            const targetButton = Array.from(navLinks).find(a => a.getAttribute('href') === unlockedPageHref);
+            const targetButton = Array.from(navLinks).find(a => (a.getAttribute('href') || '').split('/').pop() === unlockedPageHref);
 
             if (targetButton) {
                 // Remove click handler immediately to prevent interference
@@ -411,12 +414,13 @@ function updateNavigationLocks(skipHref) {
     navLinks.forEach(link => {
         const href = link.getAttribute('href');
         if (!href) return;
+        const hrefBasename = href.split('/').pop();
         
         // Skip this link if it's being animated
-        if (skipHref && href === skipHref) return;
+        if (skipHref && hrefBasename === skipHref) return;
         
-        const isUnlocked = state.unlockedPages.includes(href);
-        const isCompleted = state.completedPages.includes(href);
+        const isUnlocked = state.unlockedPages.includes(hrefBasename);
+        const isCompleted = state.completedPages.includes(hrefBasename);
         
         // Clean any previous state markers to avoid duplication
         link.querySelectorAll('.lock-icon, .completed-icon').forEach(el => el.remove());
@@ -635,7 +639,7 @@ function createManualResetControl() {
         document.body.appendChild(notice);
         setTimeout(() => {
             notice.remove();
-            window.location.href = 'index.html';
+            window.location.href = '../index.html';
             setTimeout(() => { window.location.reload(); }, 100);
         }, 1200);
         // Reinitialize state
@@ -984,7 +988,7 @@ function initializeLevelingSystem() {
             tracker.innerHTML = `
                 <div class="character-avatar-display">
                     <div class="character-sprite" id="character-sprite">
-                        <img src="linkedin.jpg" alt="Markuss Šube" style="width:48px;height:48px;border-radius:50%;object-fit:cover;filter:grayscale(0.8) opacity(0.55);">
+                        <img src="${_imgBase}linkedin.jpg" alt="Markuss Šube" style="width:48px;height:48px;border-radius:50%;object-fit:cover;filter:grayscale(0.8) opacity(0.55);">
                     </div>
                 </div>
                 <div class="character-info-display">
@@ -1035,7 +1039,7 @@ function initializeLevelingSystem() {
                 // Restore original tracker structure
                 tracker.innerHTML = `
                     <div class="character-avatar-display">
-                        <div class="character-sprite" id="character-sprite"><img src="linkedin.jpg" alt="Markuss Šube" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></div>
+                        <div class="character-sprite" id="character-sprite"><img src="${_imgBase}linkedin.jpg" alt="Markuss Šube" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></div>
                     </div>
                     <div class="character-info-display">
                         <h4 id="character-title">Intern</h4>
@@ -1078,7 +1082,7 @@ function previewDisabledPopup(enable) {
         // or modify stored progression — it's a visual preview only.
         tracker.innerHTML = `
             <div class="character-avatar-display">
-                <div class="character-sprite" id="character-sprite"><img src="linkedin.jpg" alt="Markuss Šube" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></div>
+                <div class="character-sprite" id="character-sprite"><img src="${_imgBase}linkedin.jpg" alt="Markuss Šube" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></div>
             </div>
             <div class="character-info-display">
                 <h4 id="character-title">Intern <span style="background:#222;border:1px solid #444;color:#fff;padding:2px 6px;border-radius:6px;font-size:0.6rem;margin-left:8px;">PREVIEW</span></h4>

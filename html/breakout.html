@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>Breakout — Retro Arcade</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Press Start 2P', cursive;
+      background: #000;
+      color: #0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Scanline overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px,
+        transparent 1px, transparent 2px
+      );
+      pointer-events: none;
+      z-index: 9999;
+      animation: scanline 8s linear infinite;
+    }
+    @keyframes scanline {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(10px); }
+    }
+
+    .wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 20px;
+      width: 100%;
+    }
+
+    .topbar {
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .back-btn {
+      background: #000;
+      color: #0f0;
+      border: 3px solid #0f0;
+      padding: 10px 14px;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+      text-decoration: none;
+      box-shadow: 0 0 10px #0f0;
+      transition: background 0.2s, color 0.2s;
+    }
+    .back-btn:hover { background: #0f0; color: #000; }
+
+    .title-txt {
+      font-size: 16px;
+      color: #0f0;
+      text-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+    }
+
+    /* HUD */
+    .hud {
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #ffd700;
+      text-shadow: 0 0 8px #ffd700;
+    }
+
+    /* Canvas */
+    canvas {
+      background: #000;
+      border: 6px solid #111;
+      display: block;
+      box-shadow: 0 0 40px rgba(0,255,0,0.15), inset 0 0 20px rgba(0,0,0,0.8);
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+    }
+    .btn {
+      background: #000;
+      color: #0f0;
+      border: 2px solid #0f0;
+      padding: 10px 16px;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 8px #0f0;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn:hover { background: #0f0; color: #000; }
+
+    .instructions {
+      font-size: 9px;
+      color: #0a0;
+      text-align: center;
+      line-height: 2;
+      max-width: 520px;
+    }
+
+    /* Overlay (start / game-over / win) */
+    #overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: rgba(0,0,0,0.82);
+      pointer-events: none;
+    }
+    #overlay.hidden { display: none; }
+    #overlay-title {
+      font-size: 20px;
+      color: #0f0;
+      text-shadow: 0 0 20px #0f0;
+      text-align: center;
+      line-height: 1.8;
+    }
+    #overlay-sub {
+      font-size: 11px;
+      color: #ffd700;
+      text-shadow: 0 0 8px #ffd700;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity:1; }
+      50% { opacity:0; }
+    }
+
+    .canvas-wrap {
+      position: relative;
+    }
+
+    @media (max-width: 560px) {
+      canvas { width: 320px; height: 460px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <a href="retro-arcade.html" class="back-btn">← Back</a>
+    <div class="title-txt">BREAKOUT</div>
+    <div style="width:86px"></div>
+  </div>
+
+  <div class="hud">
+    <span>SCORE: <span id="score-val">0</span></span>
+    <span>LEVEL: <span id="level-val">1</span></span>
+    <span>LIVES: <span id="lives-val">3</span></span>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="c" width="520" height="560"></canvas>
+    <div id="overlay">
+      <div id="overlay-title">BREAKOUT</div>
+      <div id="overlay-sub">PRESS START</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" id="startBtn">START</button>
+    <button class="btn" id="restartBtn">RESTART</button>
+  </div>
+
+  <div class="instructions">
+    MOUSE / TOUCH — move paddle &nbsp;|&nbsp; ARROW KEYS / A-D — move paddle<br>
+    SPACE — launch ball &nbsp;|&nbsp; CLEAR ALL BRICKS TO ADVANCE
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('c');
+  const ctx    = canvas.getContext('2d');
+
+  const W = canvas.width;
+  const H = canvas.height;
+
+  // ── Colours per brick row ──────────────────────────────────────
+  const ROW_COLORS = [
+    '#ff4444', '#ff7700', '#ffdd00',
+    '#44ff44', '#44aaff', '#cc44ff'
+  ];
+
+  // ── Game state ──────────────────────────────────────────────────
+  let state; // 'idle' | 'playing' | 'over' | 'won'
+  let score, lives, level;
+  let bricks, ball, paddle, launched;
+  let keys = {};
+  let animId;
+
+  // ── Constants ──────────────────────────────────────────────────
+  const PADDLE_H   = 12;
+  const BALL_R     = 8;
+  const BRICK_ROWS = 6;
+  const BRICK_COLS = 10;
+  const BRICK_PAD  = 4;
+  const BRICK_TOP  = 60;
+
+  function brickW() {
+    return (W - BRICK_PAD * (BRICK_COLS + 1)) / BRICK_COLS;
+  }
+  function brickH() { return 18; }
+
+  // ── Init ────────────────────────────────────────────────────────
+  function init(keepLives) {
+    const bw = brickW();
+    const bh = brickH();
+
+    if (!keepLives) {
+      score  = 0;
+      lives  = 3;
+      level  = 1;
+    }
+
+    paddle = {
+      w: Math.max(60, 100 - (level - 1) * 8),
+      h: PADDLE_H,
+      x: W / 2,
+      speed: 7 + level * 0.5
+    };
+    paddle.x = W / 2 - paddle.w / 2;
+
+    const baseSpeed = 4 + level * 0.6;
+    ball = {
+      x: W / 2,
+      y: H - 80,
+      r: BALL_R,
+      dx: baseSpeed * (Math.random() < 0.5 ? 1 : -1),
+      dy: -baseSpeed,
+      speed: baseSpeed
+    };
+    launched = false;
+
+    bricks = [];
+    for (let r = 0; r < BRICK_ROWS; r++) {
+      for (let c = 0; c < BRICK_COLS; c++) {
+        bricks.push({
+          x: BRICK_PAD + c * (bw + BRICK_PAD),
+          y: BRICK_TOP + r * (bh + BRICK_PAD),
+          w: bw,
+          h: bh,
+          color: ROW_COLORS[r],
+          alive: true,
+          // top rows worth more points
+          pts: (BRICK_ROWS - r) * 10
+        });
+      }
+    }
+
+    updateHUD();
+  }
+
+  // ── HUD ─────────────────────────────────────────────────────────
+  function updateHUD() {
+    document.getElementById('score-val').textContent = score;
+    document.getElementById('level-val').textContent = level;
+    document.getElementById('lives-val').textContent = lives;
+  }
+
+  // ── Overlay helpers ─────────────────────────────────────────────
+  const overlay    = document.getElementById('overlay');
+  const oTitle     = document.getElementById('overlay-title');
+  const oSub       = document.getElementById('overlay-sub');
+
+  function showOverlay(title, sub) {
+    oTitle.innerHTML = title;
+    oSub.textContent = sub;
+    overlay.classList.remove('hidden');
+  }
+  function hideOverlay() { overlay.classList.add('hidden'); }
+
+  // ── Paddle mouse / touch ─────────────────────────────────────────
+  canvas.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = W / rect.width;
+    const mx = (e.clientX - rect.left) * scaleX;
+    paddle.x = Math.max(0, Math.min(W - paddle.w, mx - paddle.w / 2));
+  });
+  canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = W / rect.width;
+    const tx = (e.touches[0].clientX - rect.left) * scaleX;
+    paddle.x = Math.max(0, Math.min(W - paddle.w, tx - paddle.w / 2));
+  }, { passive: false });
+
+  // ── Keyboard ────────────────────────────────────────────────────
+  document.addEventListener('keydown', e => {
+    keys[e.key] = true;
+    if (e.key === ' ') {
+      e.preventDefault();
+      if (state === 'playing' && !launched) launch();
+    }
+  });
+  document.addEventListener('keyup', e => { keys[e.key] = false; });
+
+  function handleKeys() {
+    if (keys['ArrowLeft'] || keys['a'] || keys['A'])
+      paddle.x = Math.max(0, paddle.x - paddle.speed);
+    if (keys['ArrowRight'] || keys['d'] || keys['D'])
+      paddle.x = Math.min(W - paddle.w, paddle.x + paddle.speed);
+  }
+
+  function launch() {
+    launched = true;
+  }
+
+  // ── Ball-paddle collision (with angle influence) ─────────────────
+  function paddleBounce() {
+    const hitPos = (ball.x - paddle.x) / paddle.w; // 0..1
+    const angle  = (hitPos - 0.5) * 2;             // -1..1
+    const speed  = ball.speed;
+    ball.dx = angle * speed * 1.2;
+    ball.dy = -Math.sqrt(Math.max(0, speed * speed - ball.dx * ball.dx));
+    // ensure dy never flattens out
+    if (Math.abs(ball.dy) < speed * 0.3) ball.dy = -speed * 0.3;
+  }
+
+  // ── AABB vs circle brick collision ──────────────────────────────
+  function brickCollision(brick) {
+    const closestX = Math.max(brick.x, Math.min(ball.x, brick.x + brick.w));
+    const closestY = Math.max(brick.y, Math.min(ball.y, brick.y + brick.h));
+    const dx = ball.x - closestX;
+    const dy = ball.y - closestY;
+    if (dx * dx + dy * dy > ball.r * ball.r) return false;
+
+    // Determine which side was hit
+    const overlapX = ball.r - Math.abs(dx);
+    const overlapY = ball.r - Math.abs(dy);
+    if (overlapX < overlapY) ball.dx = -ball.dx;
+    else                      ball.dy = -ball.dy;
+
+    return true;
+  }
+
+  // ── Update ──────────────────────────────────────────────────────
+  function update() {
+    if (state !== 'playing') return;
+
+    handleKeys();
+
+    if (!launched) {
+      // Ball sits on paddle, follows it
+      ball.x = paddle.x + paddle.w / 2;
+      ball.y = H - 80;
+      return;
+    }
+
+    ball.x += ball.dx;
+    ball.y += ball.dy;
+
+    // Wall collisions
+    if (ball.x - ball.r < 0) { ball.x = ball.r; ball.dx = Math.abs(ball.dx); }
+    if (ball.x + ball.r > W) { ball.x = W - ball.r; ball.dx = -Math.abs(ball.dx); }
+    if (ball.y - ball.r < 0) { ball.y = ball.r; ball.dy = Math.abs(ball.dy); }
+
+    // Paddle collision
+    if (
+      ball.dy > 0 &&
+      ball.y + ball.r >= H - 55 &&
+      ball.y + ball.r <= H - 55 + PADDLE_H + ball.r &&
+      ball.x >= paddle.x - ball.r &&
+      ball.x <= paddle.x + paddle.w + ball.r
+    ) {
+      ball.y = H - 55 - ball.r;
+      paddleBounce();
+    }
+
+    // Ball lost
+    if (ball.y - ball.r > H) {
+      lives--;
+      updateHUD();
+      if (lives <= 0) {
+        state = 'over';
+        showOverlay('GAME OVER\n\nSCORE: ' + score, 'PRESS RESTART');
+        return;
+      }
+      // Reset ball
+      launched = false;
+      ball.x = paddle.x + paddle.w / 2;
+      ball.y = H - 80;
+    }
+
+    // Brick collisions
+    let remaining = 0;
+    for (const b of bricks) {
+      if (!b.alive) continue;
+      remaining++;
+      if (brickCollision(b)) {
+        b.alive = false;
+        score += b.pts * level;
+        remaining--;
+        updateHUD();
+        // Particle flash stored on brick
+        b.flash = 6;
+        break; // one brick per frame to avoid tunnelling weirdness
+      }
+    }
+
+    if (remaining === 0) {
+      level++;
+      updateHUD();
+      init(true);
+      state = 'playing';
+      showOverlay('LEVEL ' + level + '!', 'GET READY...');
+      setTimeout(hideOverlay, 1800);
+    }
+  }
+
+  // ── Draw ────────────────────────────────────────────────────────
+  function drawBricks() {
+    for (const b of bricks) {
+      if (!b.alive) continue;
+      // Fill
+      ctx.fillStyle = b.color;
+      ctx.shadowColor = b.color;
+      ctx.shadowBlur = 6;
+      ctx.fillRect(b.x, b.y, b.w, b.h);
+      // Shine
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = 'rgba(255,255,255,0.18)';
+      ctx.fillRect(b.x + 2, b.y + 2, b.w - 4, 5);
+      // Border
+      ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(b.x, b.y, b.w, b.h);
+    }
+    ctx.shadowBlur = 0;
+  }
+
+  function drawPaddle() {
+    const px = paddle.x, py = H - 55, pw = paddle.w, ph = PADDLE_H;
+    // Glow
+    ctx.shadowColor = '#0f0';
+    ctx.shadowBlur  = 14;
+    ctx.fillStyle   = '#0f0';
+    ctx.beginPath();
+    ctx.roundRect(px, py, pw, ph, 4);
+    ctx.fill();
+    // Shine
+    ctx.shadowBlur  = 0;
+    ctx.fillStyle   = 'rgba(255,255,255,0.25)';
+    ctx.beginPath();
+    ctx.roundRect(px + 3, py + 2, pw - 6, 4, 2);
+    ctx.fill();
+  }
+
+  function drawBall() {
+    ctx.shadowColor = '#fff';
+    ctx.shadowBlur  = 18;
+    ctx.fillStyle   = '#fff';
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    // Shine
+    ctx.fillStyle = 'rgba(200,200,255,0.6)';
+    ctx.beginPath();
+    ctx.arc(ball.x - ball.r * 0.3, ball.y - ball.r * 0.3, ball.r * 0.35, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Background grid dots
+    ctx.fillStyle = 'rgba(0,255,0,0.04)';
+    for (let x = 0; x < W; x += 20)
+      for (let y = 0; y < H; y += 20)
+        ctx.fillRect(x, y, 1, 1);
+
+    drawBricks();
+    drawPaddle();
+    drawBall();
+
+    // "SPACE to launch" hint
+    if (!launched && state === 'playing') {
+      ctx.fillStyle = 'rgba(255,215,0,0.8)';
+      ctx.font = '9px "Press Start 2P"';
+      ctx.textAlign = 'center';
+      ctx.fillText('— SPACE / CLICK TO LAUNCH —', W / 2, H - 20);
+    }
+  }
+
+  // ── Game loop ───────────────────────────────────────────────────
+  function loop() {
+    update();
+    draw();
+    animId = requestAnimationFrame(loop);
+  }
+
+  // ── Controls Panel click-to-launch ──────────────────────────────
+  canvas.addEventListener('click', () => {
+    if (state === 'playing' && !launched) launch();
+  });
+
+  // ── Buttons ─────────────────────────────────────────────────────
+  document.getElementById('startBtn').addEventListener('click', () => {
+    if (state === 'playing') return;
+    if (animId) cancelAnimationFrame(animId);
+    init(false);
+    state = 'playing';
+    hideOverlay();
+    loop();
+  });
+
+  document.getElementById('restartBtn').addEventListener('click', () => {
+    if (animId) cancelAnimationFrame(animId);
+    init(false);
+    state = 'playing';
+    hideOverlay();
+    loop();
+  });
+
+  // ── Idle draw ───────────────────────────────────────────────────
+  state = 'idle';
+  init(false);
+  showOverlay('BREAKOUT', 'PRESS START');
+
+  // Draw a static frame so canvas isn't blank before start
+  (function idleDraw() {
+    draw();
+  })();
+</script>
+</body>
+</html>
