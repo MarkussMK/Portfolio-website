@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:,">
     <title>Brain Teaser Challenge - Test Your Mind</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -367,36 +368,40 @@
             document.getElementById('question').textContent = q.question;
             document.getElementById('question-number').textContent = `${currentQuestion + 1}/10`;
             document.getElementById('feedback').textContent = '';
+
+            // Shuffle answers, keeping track of which is correct
+            const correctText = q.answers[q.correct];
+            const shuffled = [...q.answers].sort(() => Math.random() - 0.5);
+            const shuffledCorrectIndex = shuffled.indexOf(correctText);
             
             const answersContainer = document.getElementById('answers');
             answersContainer.innerHTML = '';
             
-            q.answers.forEach((answer, index) => {
+            shuffled.forEach((answer, index) => {
                 const btn = document.createElement('button');
                 btn.className = 'answer-btn';
                 btn.textContent = answer;
-                btn.onclick = () => checkAnswer(index);
+                btn.onclick = () => checkAnswer(index, shuffledCorrectIndex);
                 answersContainer.appendChild(btn);
             });
             
             document.getElementById('next-btn').style.display = 'none';
         }
         
-        function checkAnswer(selected) {
-            const q = questions[currentQuestion];
+        function checkAnswer(selected, correctIndex) {
             const buttons = document.querySelectorAll('.answer-btn');
             
             buttons.forEach((btn, index) => {
                 btn.disabled = true;
-                if (index === q.correct) {
+                if (index === correctIndex) {
                     btn.classList.add('correct');
                 }
-                if (index === selected && selected !== q.correct) {
+                if (index === selected && selected !== correctIndex) {
                     btn.classList.add('incorrect');
                 }
             });
             
-            if (selected === q.correct) {
+            if (selected === correctIndex) {
                 streak++;
                 const points = 10 + (streak * 5);
                 score += points;
