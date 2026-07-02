@@ -22,6 +22,44 @@
         .character-tracker, .character-tracker * {
             font-family: 'Courier New', Courier, monospace !important;
         }
+        .mini-scoreboard {
+            width: min(460px, 92%);
+            margin: 28px auto 18px;
+            padding: 10px 16px;
+            border: 1px solid rgba(0, 247, 255, 0.45);
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(7, 19, 29, 0.9), rgba(8, 8, 16, 0.95));
+            box-shadow: 0 0 16px rgba(0, 247, 255, 0.2);
+            color: #eafcff;
+            text-align: center;
+        }
+        .mini-scoreboard .matchup {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.78rem;
+            letter-spacing: 1.1px;
+            opacity: 0.9;
+        }
+        .mini-scoreboard .score {
+            margin-top: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #00f7ff;
+            text-shadow: 0 0 10px rgba(0, 247, 255, 0.4);
+        }
+        @media (max-width: 640px) {
+            .mini-scoreboard {
+                width: calc(100% - 24px);
+                margin-top: 22px;
+            }
+            .mini-scoreboard .matchup {
+                font-size: 0.7rem;
+            }
+            .mini-scoreboard .score {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -356,6 +394,11 @@
                 </div>
             </div>
     </main>
+
+    <div class="mini-scoreboard" aria-label="Scoreboard">
+        <div class="matchup">MARKUSS VS TOMS</div>
+        <div class="score">7 : 1</div>
+    </div>
 
     <!-- System Footer -->
     <footer class="game-footer">
