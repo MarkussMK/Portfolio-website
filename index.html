@@ -23,41 +23,116 @@
             font-family: 'Courier New', Courier, monospace !important;
         }
         .mini-scoreboard {
-            width: min(460px, 92%);
+            position: relative;
+            overflow: hidden;
+            width: min(620px, 96%);
             margin: 28px auto 18px;
-            padding: 10px 16px;
-            border: 1px solid rgba(0, 247, 255, 0.45);
-            border-radius: 10px;
+            padding: 16px 20px;
+            min-height: 126px;
+            border: 1px solid rgba(0, 247, 255, 0.55);
+            border-radius: 12px;
             background: linear-gradient(135deg, rgba(7, 19, 29, 0.9), rgba(8, 8, 16, 0.95));
-            box-shadow: 0 0 16px rgba(0, 247, 255, 0.2);
+            box-shadow: 0 0 16px rgba(0, 247, 255, 0.2), inset 0 0 20px rgba(0, 247, 255, 0.08);
             color: #eafcff;
             text-align: center;
+            animation: scoreboardPulse 4.2s ease-in-out infinite;
         }
-        .mini-scoreboard .matchup {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.78rem;
-            letter-spacing: 1.1px;
-            opacity: 0.9;
+        .mini-scoreboard .sb-content {
+            position: relative;
+            z-index: 1;
+            min-height: 92px;
+            display: grid;
+            align-content: center;
+            justify-items: center;
+            gap: 8px;
         }
-        .mini-scoreboard .score {
-            margin-top: 4px;
+        .mini-scoreboard::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 12px;
+            pointer-events: none;
+            z-index: 0;
+            background: linear-gradient(110deg, transparent 0%, rgba(0, 247, 255, 0.3) 46%, rgba(0, 247, 255, 0.7) 50%, rgba(0, 247, 255, 0.3) 54%, transparent 100%);
+            transform: translateX(-130%);
+            animation: scoreboardSweep 3.6s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+            mix-blend-mode: screen;
+            opacity: 0.8;
+        }
+        .mini-scoreboard .sb-matchup {
+            position: relative;
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.15rem;
+            font-size: clamp(0.92rem, 1.3vw, 1.08rem);
+            letter-spacing: 2.2px;
+            opacity: 0.96;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+        .mini-scoreboard .sb-score {
+            position: relative;
+            margin-top: 0;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 4.8vw, 2.85rem);
             font-weight: 700;
-            letter-spacing: 2px;
-            color: #00f7ff;
-            text-shadow: 0 0 10px rgba(0, 247, 255, 0.4);
+            letter-spacing: 4px;
+            color: #7afcff;
+            line-height: 1;
+            white-space: nowrap;
+            text-shadow: 0 0 12px rgba(0, 247, 255, 0.45), 0 0 24px rgba(0, 247, 255, 0.3);
+            animation: scoreGlow 1.7s ease-in-out infinite;
+        }
+        @keyframes scoreboardSweep {
+            0% {
+                transform: translateX(-130%);
+            }
+            55%, 100% {
+                transform: translateX(130%);
+            }
+        }
+        @keyframes scoreboardPulse {
+            0%, 100% {
+                box-shadow: 0 0 16px rgba(0, 247, 255, 0.2), inset 0 0 20px rgba(0, 247, 255, 0.08);
+                border-color: rgba(0, 247, 255, 0.45);
+            }
+            50% {
+                box-shadow: 0 0 26px rgba(0, 247, 255, 0.35), inset 0 0 26px rgba(0, 247, 255, 0.16);
+                border-color: rgba(122, 252, 255, 0.95);
+            }
+        }
+        @keyframes scoreGlow {
+            0%, 100% {
+                transform: translateY(0);
+                text-shadow: 0 0 12px rgba(0, 247, 255, 0.45), 0 0 24px rgba(0, 247, 255, 0.3);
+            }
+            50% {
+                transform: translateY(-1px);
+                text-shadow: 0 0 18px rgba(0, 247, 255, 0.65), 0 0 34px rgba(0, 247, 255, 0.45);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .mini-scoreboard,
+            .mini-scoreboard::before,
+            .mini-scoreboard .sb-score {
+                animation: none;
+            }
         }
         @media (max-width: 640px) {
             .mini-scoreboard {
                 width: calc(100% - 24px);
                 margin-top: 22px;
+                padding: 14px 14px;
+                min-height: 108px;
             }
-            .mini-scoreboard .matchup {
-                font-size: 0.7rem;
+            .mini-scoreboard .sb-content {
+                min-height: 78px;
+                gap: 6px;
             }
-            .mini-scoreboard .score {
-                font-size: 1rem;
+            .mini-scoreboard .sb-matchup {
+                font-size: 0.86rem;
+            }
+            .mini-scoreboard .sb-score {
+                font-size: 1.75rem;
+                letter-spacing: 2.4px;
             }
         }
     </style>
@@ -396,8 +471,10 @@
     </main>
 
     <div class="mini-scoreboard" aria-label="Scoreboard">
-        <div class="matchup">MARKUSS VS TOMS</div>
-        <div class="score">14 : 3</div>
+        <div class="sb-content">
+            <div class="sb-matchup">MARKUSS VS TOMS</div>
+            <div class="sb-score">14 : 3</div>
+        </div>
     </div>
 
     <!-- System Footer -->
