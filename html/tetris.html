@@ -19,6 +19,24 @@
     color: #0f0;
   }
 
+  .page-back-btn {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1000;
+    background: #000;
+    color: #0f0;
+    border: 2px solid #0f0;
+    padding: 8px 12px;
+    text-decoration: none;
+    box-shadow: 0 0 12px #0f0;
+  }
+
+  .page-back-btn:hover {
+    background: #0f0;
+    color: #000;
+  }
+
   .game-wrap {
     display: flex;
     gap: 20px;
@@ -30,8 +48,6 @@
   canvas { display:block; background: #000; }
 
   .sidebar { width: 180px; display:flex; flex-direction:column; gap:12px; align-items:center; }
-
-  .back-btn { align-self:flex-start; background:#000; color:#0f0; border:2px solid #0f0; padding:8px 10px; text-decoration:none; box-shadow:0 0 10px #0f0; }
 
   .stat { width:100%; background: rgba(0,0,0,0.6); border:2px solid #0f0; padding:8px; text-align:center; }
   .stat .label { font-size:12px; color:#0a0; margin-bottom:6px; }
@@ -46,12 +62,12 @@
   </style>
 </head>
 <body>
+<a href="retro-arcade.html" class="page-back-btn" aria-label="Back to Retro Arcade">← Back to Arcade</a>
 <div class="game-wrap">
   <div class="board">
     <canvas width="320" height="640" id="game"></canvas>
   </div>
   <aside class="sidebar">
-    <a href="retro-arcade.html" class="back-btn">← Back</a>
     <div class="stat"><div class="label">SCORE</div><div id="score">0</div></div>
     <div class="stat"><div class="label">LINES</div><div id="lines">0</div></div>
     <div class="stat"><div class="label">LEVEL</div><div id="level">1</div></div>
