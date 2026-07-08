@@ -96,6 +96,122 @@
             .parcel.to-3d .face-right { transform: rotateY(90deg) translateZ(80px); opacity:1; }
             .parcel.to-3d .content-wrap { transform: translateZ(80px); }
         }
+
+        /* ===== PIZZAZZ ADDITIONS ===== */
+
+
+
+        /* Scan line sweep over the communication crystal */
+        @keyframes scanline-move {
+            0%   { transform: translateY(-100%); opacity: 0; }
+            5%   { opacity: 1; }
+            95%  { opacity: 1; }
+            100% { transform: translateY(1200%); opacity: 0; }
+        }
+
+
+        /* Online status indicator */
+        @keyframes blink-dot {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px #00ff88, 0 0 16px #00ff88; }
+            50%       { opacity: 0.25; box-shadow: none; }
+        }
+        .online-status-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.78em;
+            color: #00ff88;
+            margin-bottom: 18px;
+            padding: 7px 14px;
+            background: rgba(0,255,136,0.05);
+            border: 1px solid rgba(0,255,136,0.25);
+            border-radius: 4px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .online-dot {
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            background: #00ff88;
+            box-shadow: 0 0 8px #00ff88;
+            animation: blink-dot 1.6s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        .online-status-bar .signal-bars {
+            display: flex; gap: 3px; align-items: flex-end; margin-left: auto;
+        }
+        .online-status-bar .signal-bars span {
+            display: block; width: 4px; background: #00ff88; border-radius: 1px;
+            opacity: 0.8;
+        }
+        .online-status-bar .signal-bars span:nth-child(1) { height: 5px; }
+        .online-status-bar .signal-bars span:nth-child(2) { height: 9px; }
+        .online-status-bar .signal-bars span:nth-child(3) { height: 13px; }
+        .online-status-bar .signal-bars span:nth-child(4) { height: 17px; }
+
+        /* Typewriter cursor */
+        @keyframes blink-cursor {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0; }
+        }
+        .typewriter-active::after {
+            content: '|';
+            display: inline;
+            color: rgba(255,255,255,0.9);
+            animation: blink-cursor 1.1s ease-in-out infinite;
+            margin-left: 2px;
+        }
+
+        /* Floating data particles */
+        @keyframes float-particle-up {
+            0%   { transform: translateY(0)      translateX(0);           opacity: 0; }
+            10%  { opacity: 0.7; }
+            90%  { opacity: 0.5; }
+            100% { transform: translateY(-100px) translateX(var(--pdx));  opacity: 0; }
+        }
+        .data-particle {
+            position: absolute;
+            bottom: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.6em;
+            color: rgba(0,247,255,0.55);
+            pointer-events: none;
+            user-select: none;
+            animation: float-particle-up var(--pdur,5s) ease-in infinite var(--pdelay,0s);
+            z-index: 1;
+        }
+
+        /* Enhanced RPG button hover */
+        .rpg-button {
+            transition: box-shadow 0.3s ease, transform 0.2s ease !important;
+        }
+        .rpg-button:hover {
+            box-shadow: 0 0 16px rgba(0,247,255,0.55), 0 0 32px rgba(0,247,255,0.2) !important;
+            transform: translateY(-3px) !important;
+        }
+
+        /* Achievement card hover shimmer */
+        .achievement-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease !important;
+        }
+        .achievement-card:hover {
+            transform: translateY(-4px) scale(1.03) !important;
+            box-shadow: 0 10px 28px rgba(0,247,255,0.25) !important;
+            border-color: rgba(0,247,255,0.55) !important;
+            background: linear-gradient(135deg, rgba(0,247,255,0.07) 0%, rgba(255,42,109,0.07) 100%) !important;
+        }
+
+        /* Subtle heading glitch */
+        @keyframes heading-glitch {
+            0%, 88%, 100% { text-shadow: none; transform: none; }
+            90%  { text-shadow: -2px 0 rgba(255,42,109,0.7), 2px 0 rgba(0,247,255,0.7); transform: translateX(-1px); }
+            92%  { text-shadow:  2px 0 rgba(255,42,109,0.7), -2px 0 rgba(0,247,255,0.7); transform: translateX( 1px); }
+            94%  { text-shadow: none; transform: none; }
+        }
+        .quest-area h2 {
+            animation: heading-glitch 10s infinite;
+        }
     </style>
 </head>
 <body>
@@ -187,6 +303,15 @@
                 <h2>Secure Communication Channel</h2>
                 <p class="quest-description">Let's connect! Fill out the form below to get in touch, discuss a project, or explore collaboration opportunities.</p>
                 
+                <!-- Online status bar -->
+                <div class="online-status-bar">
+                    <span class="online-dot"></span>
+                    <span>Channel Online &mdash; Secure Transmission Ready</span>
+                    <div class="signal-bars">
+                        <span></span><span></span><span></span><span></span>
+                    </div>
+                </div>
+
                 <div class="packing-area">
                     <!-- Form in original flat layout (visible by default) -->
                     <div class="form-wrapper" style="width:100%;max-width:700px;">
@@ -447,6 +572,43 @@
                 notification.remove();
             }, 5000);
         }
+
+        /* ===== PIZZAZZ: typewriter + floating particles ===== */
+        (function() {
+            // Typewriter effect on the welcome quest-description
+            const welcome = document.querySelector('.guild-welcome .quest-description');
+            if (welcome) {
+                const text = welcome.textContent.trim();
+                welcome.textContent = '';
+                welcome.classList.add('typewriter-active');
+                let i = 0;
+                const interval = setInterval(() => {
+                    welcome.textContent += text[i++];
+                    if (i >= text.length) {
+                        clearInterval(interval);
+                        welcome.classList.remove('typewriter-active');
+                    }
+                }, 22);
+            }
+
+            // Floating data particles inside .communication-crystal
+            const crystal = document.querySelector('.communication-crystal');
+            if (crystal) {
+                crystal.style.position = 'relative';
+                const symbols = ['01','10','0x','FF','//','∑','∆','◈','⟨⟩','{ }','<<','>>','===','null'];
+                for (let n = 0; n < 10; n++) {
+                    const p = document.createElement('span');
+                    p.className = 'data-particle';
+                    p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                    const leftPct = 5 + Math.random() * 88;
+                    const dur     = (3.5 + Math.random() * 4).toFixed(1);
+                    const delay   = (Math.random() * 6).toFixed(1);
+                    const dx      = ((Math.random() - 0.5) * 40).toFixed(0);
+                    p.style.cssText = `left:${leftPct}%;--pdur:${dur}s;--pdelay:${delay}s;--pdx:${dx}px;`;
+                    crystal.appendChild(p);
+                }
+            }
+        })();
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="../js/background-shader.js"></script>
