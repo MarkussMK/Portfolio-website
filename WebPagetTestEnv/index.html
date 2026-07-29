@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markuss Šube — Portfolio</title>
+<meta name="description" content="Markuss Šube — Automation Engineer &amp; Creative Developer. Modern interactive portfolio.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+}
+</script>
+</head>
+<body>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="preloader-inner">
+            <span class="preloader-mark">MŠ</span>
+            <div class="preloader-bar"><span id="preloader-fill"></span></div>
+            <span class="preloader-pct" id="preloader-pct">0%</span>
+        </div>
+    </div>
+
+    <!-- Industrial / engineering background -->
+    <div class="blueprint-grid"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Idle robotic arm decoration -->
+    <div class="robo-arm" aria-hidden="true">
+        <div class="robo-base"></div>
+        <div class="robo-arm1">
+            <div class="robo-arm2">
+                <div class="robo-claw">
+                    <span class="finger f1"></span>
+                    <span class="finger f2"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grain"></div>
+    <div class="glow-blob blob-a"></div>
+    <div class="glow-blob blob-b"></div>
+    <div class="glow-blob blob-c"></div>
+
+    <!-- Custom cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
+
+    <!-- Progress bar -->
+    <div class="scroll-progress"><span id="scroll-progress-fill"></span></div>
+
+    <!-- Nav -->
+    <header class="nav" id="nav">
+        <a href="#home" class="nav-logo" data-cursor="link"><span>M</span>Š<span class="nav-logo-dot">.</span></a>
+        <nav class="nav-links">
+            <a href="#home" class="nav-link active" data-section="home">Home</a>
+            <a href="#about" class="nav-link" data-section="about">About</a>
+            <a href="#skills" class="nav-link" data-section="skills">Skills</a>
+            <a href="#work" class="nav-link" data-section="work">Work</a>
+            <a href="#experience" class="nav-link" data-section="experience">Experience</a>
+            <a href="#contact" class="nav-link" data-section="contact">Contact</a>
+            <a href="html/retro-arcade.html" class="nav-link nav-link-arcade">Arcade</a>
+        </nav>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="#home" class="mobile-link" data-section="home">Home</a>
+        <a href="#about" class="mobile-link" data-section="about">About</a>
+        <a href="#skills" class="mobile-link" data-section="skills">Skills</a>
+        <a href="#work" class="mobile-link" data-section="work">Work</a>
+        <a href="#experience" class="mobile-link" data-section="experience">Experience</a>
+        <a href="#contact" class="mobile-link" data-section="contact">Contact</a>
+        <a href="html/retro-arcade.html" class="mobile-link mobile-link-arcade">Arcade</a>
+    </div>
+
+    <main>
+        <!-- HERO -->
+        <section id="home" class="section hero">
+            <div class="hero-inner">
+                <h1 class="hero-title">
+                    <span class="line reveal-up" style="--d:0">Hi, I'm</span>
+                    <span class="line hero-name" style="--d:1"><span id="scramble-name">Markuss Šube</span></span>
+                </h1>
+                <h2 class="hero-role reveal-up" style="--d:2">
+                    I build <span id="role-rotator" class="role-rotator">automation systems</span>
+                </h2>
+                <p class="hero-desc reveal-up" style="--d:3">
+                    Automation Engineer &amp; creative developer turning complex problems into resilient,
+                    elegant, real-time systems — from PLC-driven energy pipelines to gamified web experiences.
+                </p>
+                <div class="hero-cta reveal-up" style="--d:4">
+                    <a href="#work" class="btn btn-primary magnetic"><span>See my work</span></a>
+                    <a href="#contact" class="btn btn-ghost magnetic"><span>Get in touch</span></a>
+                </div>
+            </div>
+
+            <aside class="hero-panel reveal-up" style="--d:2" aria-hidden="true">
+                <div class="hero-panel-row">
+                    <span class="hero-panel-key">Role</span>
+                    <span class="hero-panel-val">Automation Engineer</span>
+                </div>
+                <div class="hero-panel-row">
+                    <span class="hero-panel-key">Base</span>
+                    <span class="hero-panel-val">Seinäjoki, FI</span>
+                </div>
+                <div class="hero-panel-row">
+                    <span class="hero-panel-key">Focus</span>
+                    <span class="hero-panel-val">PLC · QA · Web</span>
+                </div>
+                <div class="hero-panel-row">
+                    <span class="hero-panel-key">Uptime</span>
+                    <span class="hero-panel-val hero-panel-val-live">operational</span>
+                </div>
+                <div class="hero-panel-divider"></div>
+                <p class="hero-panel-note">v2.3 — last deployed 2026</p>
+            </aside>
+
+            <div class="scroll-cue">
+                <span></span>
+                <p>Scroll</p>
+            </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about" class="section about">
+            <p class="eyebrow reveal-up"><span class="eyebrow-idx">§01</span>About</p>
+            <h2 class="section-title reveal-up">Engineering reliability, <br>with a bit of imagination.</h2>
+            <div class="about-grid">
+                <div class="about-text reveal-up">
+                    <p>I'm an Automation Engineer with a deep passion for technology, innovation, and building
+                        things that work smarter. I love bringing complex systems to life — from designing
+                        efficient automation workflows to writing clean, powerful code that makes ideas run
+                        seamlessly.</p>
+                    <p>My approach is methodical yet flexible: understand the requirements deeply, architect
+                        robust solutions, and iterate on real-world feedback until the system doesn't just work —
+                        it delights. Whether that's a real-time energy pipeline or a gamified portfolio, every
+                        project is a chance to blend precision with creativity.</p>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-card reveal-up">
+                        <span class="stat-num" data-count="6">0</span><span class="stat-suffix">+</span>
+                        <p>Languages &amp; tools</p>
+                    </div>
+                    <div class="stat-card reveal-up">
+                        <span class="stat-num" data-count="10">0</span><span class="stat-suffix">+</span>
+                        <p>Projects shipped</p>
+                    </div>
+                    <div class="stat-card reveal-up">
+                        <span class="stat-num" data-count="95">0</span><span class="stat-suffix">%</span>
+                        <p>Automation of systems</p>
+                    </div>
+                    <div class="stat-card reveal-up">
+                        <span class="stat-num" data-count="100">0</span><span class="stat-suffix">%</span>
+                        <p>Curiosity-driven</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills" class="section skills">
+            <p class="eyebrow reveal-up"><span class="eyebrow-idx">§02</span>Capabilities</p>
+            <h2 class="section-title reveal-up">Tools I reach for.</h2>
+
+            <div class="skills-grid">
+                <div class="skill-bar-item reveal-up">
+                    <div class="skill-bar-head"><span>Python</span><span class="skill-pct">95%</span></div>
+                    <div class="skill-track"><div class="skill-fill" style="--val:95%"></div></div>
+                </div>
+                <div class="skill-bar-item reveal-up">
+                    <div class="skill-bar-head"><span>JavaScript</span><span class="skill-pct">90%</span></div>
+                    <div class="skill-track"><div class="skill-fill" style="--val:90%"></div></div>
+                </div>
+                <div class="skill-bar-item reveal-up">
+                    <div class="skill-bar-head"><span>Test Automation</span><span class="skill-pct">95%</span></div>
+                    <div class="skill-track"><div class="skill-fill" style="--val:95%"></div></div>
+                </div>
+                <div class="skill-bar-item reveal-up">
+                    <div class="skill-bar-head"><span>CI/CD Pipelines</span><span class="skill-pct">90%</span></div>
+                    <div class="skill-track"><div class="skill-fill" style="--val:90%"></div></div>
+                </div>
+                <div class="skill-bar-item reveal-up">
+                    <div class="skill-bar-head"><span>SQL</span><span class="skill-pct">88%</span></div>
+                    <div class="skill-track"><div class="skill-fill" style="--val:88%"></div></div>
+                </div>
+                <div class="skill-bar-item reveal-up">
+                    <div class="skill-bar-head"><span>C++</span><span class="skill-pct">85%</span></div>
+                    <div class="skill-track"><div class="skill-fill" style="--val:85%"></div></div>
+                </div>
+            </div>
+
+            <div class="tag-cloud reveal-up">
+                <span>PLC / TwinCAT 3</span><span>API Integration</span><span>HTML5</span><span>CSS3</span>
+                <span>Selenium</span><span>JMeter</span><span>Git</span><span>Real-time Systems</span>
+                <span>Data Analysis</span><span>UI/UX</span>
+            </div>
+        </section>
+
+        <!-- WORK -->
+        <section id="work" class="section work">
+            <p class="eyebrow reveal-up"><span class="eyebrow-idx">§03</span>Selected Work</p>
+            <h2 class="section-title reveal-up">Things I've built.</h2>
+            <p class="work-hint reveal-up">Click a unit to open its case file.</p>
+
+            <div class="work-grid">
+                <div class="project-node reveal-up">
+                    <div class="box-3d" data-project="p1" data-rarity="legendary" tabindex="0" role="button" aria-label="Open case file: Electricity Price Forecasting for Solar Panels">
+                        <div class="box-scene">
+                            <div class="box-cube">
+                                <div class="box-face box-front">
+                                    <span class="box-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.7549 23.08C9.44197 23.2689 8.9998 23.0545 8.9998 22.6483V14H4.0869C3.65973 14 3.42927 13.4989 3.70728 13.1746L14.1202 1.02619C14.1579 0.982135 14.2 0.946924 14.2447 0.919942C14.5576 0.731067 14.9998 0.945409 14.9998 1.35159V9.99996H19.9127C20.3399 9.99996 20.5703 10.501 20.2923 10.8254L9.87943 22.9737C9.84167 23.0178 9.7996 23.053 9.7549 23.08ZM10.9946 12.8977C10.9434 12.3935 10.5176 12 9.9998 12H7.34824L12.9998 5.40648V11C12.9998 11.5522 13.4475 12 13.9998 12H16.6514L10.9998 18.5935V13C10.9998 12.9654 10.9981 12.9313 10.9946 12.8977Z" fill="currentColor"/></svg></span>
+                                    <span class="box-tag legendary">[ Legendary ]</span>
+                                    <h3>Electricity Price Forecasting</h3>
+                                </div>
+                                <div class="box-face box-back"></div>
+                                <div class="box-face box-right"></div>
+                                <div class="box-face box-left"></div>
+                                <div class="box-face box-top"></div>
+                                <div class="box-face box-bottom"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-node reveal-up">
+                    <div class="box-3d" data-project="p2" data-rarity="epic" tabindex="0" role="button" aria-label="Open case file: Youth Entrepreneurship Research">
+                        <div class="box-scene">
+                            <div class="box-cube">
+                                <div class="box-face box-front">
+                                    <span class="box-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.00821 18.2584C4.00276 18.173 4 18.0868 4 18V6C4 3.79086 5.79086 2 8 2H18C19.1046 2 20 2.89543 20 4V20C20 21.1046 19.1046 22 18 22H7.5C5.567 22 4 20.433 4 18.5C4 18.4188 4.00277 18.3382 4.00821 18.2584ZM6 6C6 4.89543 6.89543 4 8 4H18V15H7.5C6.9632 15 6.45463 15.1208 6 15.3368V6ZM6.01782 18.2681C6.12929 17.5498 6.75044 17 7.5 17H18V20H8C6.98634 20 6.14882 19.2459 6.01782 18.2681Z" fill="currentColor"/></svg></span>
+                                    <span class="box-tag epic">[ Epic ]</span>
+                                    <h3>Youth Entrepreneurship Research</h3>
+                                </div>
+                                <div class="box-face box-back"></div>
+                                <div class="box-face box-right"></div>
+                                <div class="box-face box-left"></div>
+                                <div class="box-face box-top"></div>
+                                <div class="box-face box-bottom"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-node reveal-up">
+                    <div class="box-3d" data-project="p3" data-rarity="rare" tabindex="0" role="button" aria-label="Open case file: Web QA and Performance Testing">
+                        <div class="box-scene">
+                            <div class="box-cube">
+                                <div class="box-face box-front">
+                                    <span class="box-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M22 10.1667L20 11.3334V17.1846C20 17.8959 19.6222 18.5538 19.0077 18.9122L13.0077 22.4122C12.385 22.7754 11.615 22.7754 10.9922 22.4122L4.99225 18.9122C4.37781 18.5538 3.99999 17.8959 3.99999 17.1846V11.3334L1.48075 9.8638C0.819243 9.47793 0.819242 8.52212 1.48075 8.13624L10.9922 2.58787C11.615 2.22462 12.385 2.22462 13.0077 2.58787L23.5039 8.71062C23.8111 8.88983 24 9.21873 24 9.57439V15C24 15.5523 23.5523 16 23 16C22.4477 16 22 15.5523 22 15V10.1667ZM5.99999 12.5V17.1846L12 20.6846L18 17.1846V12.5L13.0077 15.4122C12.385 15.7754 11.615 15.7754 10.9922 15.4122L5.99999 12.5ZM20.0307 9.00002L12 4.31543L3.96926 9.00002L12 13.6846L20.0307 9.00002Z" fill="currentColor"/></svg></span>
+                                    <span class="box-tag rare">[ Rare ]</span>
+                                    <h3>Web QA &amp; Performance Testing</h3>
+                                </div>
+                                <div class="box-face box-back"></div>
+                                <div class="box-face box-right"></div>
+                                <div class="box-face box-left"></div>
+                                <div class="box-face box-top"></div>
+                                <div class="box-face box-bottom"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-node reveal-up">
+                    <div class="box-3d" data-project="p4" data-rarity="common" tabindex="0" role="button" aria-label="Open case file: Portfolio Quest">
+                        <div class="box-scene">
+                            <div class="box-cube">
+                                <div class="box-face box-front">
+                                    <span class="box-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 6C2 4.89543 2.89543 4 4 4H20C21.1046 4 22 4.89543 22 6V17C22 17.3643 21.9026 17.7058 21.7324 18H23C23.5523 18 24 18.4477 24 19C24 19.5523 23.5523 20 23 20H1C0.447716 20 0 19.5523 0 19C0 18.4477 0.447715 18 1 18H2.26756C2.09739 17.7058 2 17.3643 2 17V6ZM4 17L4 6H20V17H4Z" fill="currentColor"/></svg></span>
+                                    <span class="box-tag common">[ Live ]</span>
+                                    <h3>Portfolio Quest</h3>
+                                </div>
+                                <div class="box-face box-back"></div>
+                                <div class="box-face box-right"></div>
+                                <div class="box-face box-left"></div>
+                                <div class="box-face box-top"></div>
+                                <div class="box-face box-bottom"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="html/retro-arcade.html" class="arcade-banner reveal-up">
+                <span class="arcade-banner-text">
+                    <strong>Prefer to play?</strong>
+                    <em>Step into the retro arcade — Pac-Man, Tetris, Breakout, Pong, Space Invaders &amp; Asteroids.</em>
+                </span>
+                <span class="arcade-banner-cta">Enter Arcade ↗</span>
+            </a>
+        </section>
+
+        <!-- Project case-file modals -->
+        <div class="project-modal-overlay" id="modal-p1" data-modal>
+            <div class="project-modal">
+                <button class="project-modal-close" data-close aria-label="Close case file">✕</button>
+                <span class="box-tag legendary">[ Legendary ]</span>
+                <h3>Electricity Price Forecasting for Solar Panels</h3>
+                <p>Real-time automation solution streaming NordPool electricity market data straight into a
+                    PLC via TwinCAT 3, so solar systems react to live pricing — charging, discharging, or
+                    exporting power at the most cost-efficient moments without any manual intervention.</p>
+                <div class="work-tags"><span>TwinCAT 3</span><span>PLC</span><span>API Integration</span><span>Real-time Systems</span></div>
+            </div>
+        </div>
+        <div class="project-modal-overlay" id="modal-p2" data-modal>
+            <div class="project-modal">
+                <button class="project-modal-close" data-close aria-label="Close case file">✕</button>
+                <span class="box-tag epic">[ Epic ]</span>
+                <h3>Youth Entrepreneurship Research — Latvia</h3>
+                <p>Authored a scientific research paper analysing the commercial activity and advertising tools
+                    used by young entrepreneurs in the food industry — combining field data collection with
+                    structured academic documentation.</p>
+                <div class="work-tags"><span>Research</span><span>Data Analysis</span><span>Documentation</span></div>
+            </div>
+        </div>
+        <div class="project-modal-overlay" id="modal-p3" data-modal>
+            <div class="project-modal">
+                <button class="project-modal-close" data-close aria-label="Close case file">✕</button>
+                <span class="box-tag rare">[ Rare ]</span>
+                <h3>Web QA &amp; Performance Testing</h3>
+                <p>Worked as a junior tester implementing JMeter performance testing to ensure optimal load
+                    handling and response times for web applications, building repeatable test plans and
+                    reporting on throughput/latency under simulated load.</p>
+                <div class="work-tags"><span>JMeter</span><span>Performance</span><span>QA</span></div>
+            </div>
+        </div>
+        <div class="project-modal-overlay" id="modal-p4" data-modal>
+            <div class="project-modal">
+                <button class="project-modal-close" data-close aria-label="Close case file">✕</button>
+                <span class="box-tag common">[ Live ]</span>
+                <h3>Portfolio Quest — Gamified Portfolio</h3>
+                <p>A fully gamified, XP-leveling portfolio site with a retro arcade (Pac-Man, Tetris, Breakout,
+                    Pong, Space Invaders, Asteroids) built in vanilla JS — including this very redesign, built
+                    from scratch as a self-contained experiment in a different visual direction.</p>
+                <div class="work-tags"><span>HTML5</span><span>CSS3</span><span>JavaScript</span></div>
+            </div>
+        </div>
+
+        <!-- EXPERIENCE -->
+        <section id="experience" class="section experience">
+            <p class="eyebrow reveal-up"><span class="eyebrow-idx">§04</span>Journey</p>
+            <h2 class="section-title reveal-up">How I got here.</h2>
+
+            <div class="timeline">
+                <div class="timeline-item reveal-up">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-tag">Present</span>
+                        <h3>Automation Engineer</h3>
+                        <p>Designing resilient automation, scalable test frameworks, and real-time data pipelines —
+                            turning operational challenges into elegant, reliable systems.</p>
+                    </div>
+                </div>
+                <div class="timeline-item reveal-up">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-tag">Experience</span>
+                        <h3>Junior Web Application Tester</h3>
+                        <p>Implemented performance testing using JMeter, ensuring optimal load handling and
+                            response times across web applications.</p>
+                    </div>
+                </div>
+                <div class="timeline-item reveal-up">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-tag">Research</span>
+                        <h3>Independent Researcher</h3>
+                        <p>Authored a recognized scientific research paper on youth entrepreneurship and
+                            advertising strategy in the food industry.</p>
+                    </div>
+                </div>
+                <div class="timeline-item reveal-up">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-tag">Foundations</span>
+                        <h3>Self-taught Developer</h3>
+                        <p>Started building projects for the love of it — learning Python, JavaScript, C++ and SQL
+                            through hands-on, curiosity-driven development.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact" class="section contact">
+            <p class="eyebrow reveal-up"><span class="eyebrow-idx">§05</span>Contact</p>
+            <h2 class="section-title reveal-up">Let's build something.</h2>
+            <p class="contact-lead reveal-up">Have a project in mind, or just want to talk automation and code?
+                My inbox is open.</p>
+
+            <div class="contact-grid">
+                <form class="contact-form reveal-up" id="contact-form">
+                    <div class="field">
+                        <input type="text" id="cf-name" required placeholder=" ">
+                        <label for="cf-name">Your name</label>
+                        <span class="field-line"></span>
+                    </div>
+                    <div class="field">
+                        <input type="email" id="cf-email" required placeholder=" ">
+                        <label for="cf-email">Your email</label>
+                        <span class="field-line"></span>
+                    </div>
+                    <div class="field">
+                        <textarea id="cf-message" rows="4" required placeholder=" "></textarea>
+                        <label for="cf-message">Message</label>
+                        <span class="field-line"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary magnetic full">
+                        <span id="cf-submit-label">Send message</span>
+                    </button>
+                    <p class="form-note" id="cf-note">This demo form doesn't send anywhere yet — reach out via the
+                        links instead.</p>
+                </form>
+
+                <div class="contact-links reveal-up">
+                    <a class="contact-link magnetic" href="https://www.linkedin.com/in/markuss-šube-90816b23a" target="_blank" rel="noopener">
+                        <span class="contact-link-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6.5 8C7.32843 8 8 7.32843 8 6.5C8 5.67157 7.32843 5 6.5 5C5.67157 5 5 5.67157 5 6.5C5 7.32843 5.67157 8 6.5 8Z" fill="currentColor"/><path d="M5 10C5 9.44772 5.44772 9 6 9H7C7.55228 9 8 9.44772 8 10V18C8 18.5523 7.55228 19 7 19H6C5.44772 19 5 18.5523 5 18V10Z" fill="currentColor"/><path d="M11 19H12C12.5523 19 13 18.5523 13 18V13.5C13 12.1193 14.1193 11 15.5 11C16.8807 11 18 12.1193 18 13.5V18C18 18.5523 18.4477 19 19 19H20C20.5523 19 21 18.5523 21 18V13C21 10.2386 18.7614 8 16 8C14.8093 8 13.7155 8.40839 12.8604 9.09545C12.6523 8.45896 12.0579 8 11.3553 8H11C10.4477 8 10 8.44772 10 9V18C10 18.5523 10.4477 19 11 19Z" fill="currentColor"/><rect x="2" y="2" width="20" height="20" rx="4" stroke="currentColor" stroke-width="2"/></svg>
+                        </span>
+                        <span class="contact-link-text">
+                            <strong>LinkedIn</strong>
+                            <em>Let's connect professionally</em>
+                        </span>
+                        <span class="contact-link-arrow">↗</span>
+                    </a>
+                    <a class="contact-link magnetic" href="https://www.instagram.com/markuss_schubbe/" target="_blank" rel="noopener">
+                        <span class="contact-link-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="6" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>
+                        </span>
+                        <span class="contact-link-text">
+                            <strong>Instagram</strong>
+                            <em>Behind the scenes</em>
+                        </span>
+                        <span class="contact-link-arrow">↗</span>
+                    </a>
+                    <a class="contact-link magnetic" href="https://open.spotify.com/artist/4uIBBmr7idW92I0KmrGq6w?si=X-8Nc7CESiywU-ZxzZMnOA" target="_blank" rel="noopener">
+                        <span class="contact-link-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M7 10c3-1 7-1 10 1M7.5 13c2.5-1 6-1 8.5 1M8 16c2-0.7 4.5-0.7 7 0.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                        </span>
+                        <span class="contact-link-text">
+                            <strong>Spotify</strong>
+                            <em>What I'm listening to</em>
+                        </span>
+                        <span class="contact-link-arrow">↗</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>Designed &amp; built by Markuss Šube.</p>
+        <button class="to-top magnetic" id="to-top" aria-label="Back to top">↑</button>
+    </footer>
+
+    <!-- Easter egg: triggered by clicking "Work" 10 times in a row -->
+    <div class="egg-overlay" id="egg-overlay" aria-hidden="true">
+        <div class="egg-typewriter" id="egg-typewriter">
+            <span id="egg-typewriter-text"></span><span class="egg-cursor">_</span>
+        </div>
+        <div class="egg-game" id="egg-game">
+            <canvas id="egg-canvas"></canvas>
+            <div class="egg-crosshair"></div>
+            <p class="egg-hud">WASD to move &middot; move mouse to look &middot; click to lock cursor &middot; Esc to leave</p>
+            <button class="egg-exit" id="egg-exit" aria-label="Leave the office">Esc — leave</button>
+            <div class="egg-scare-flash" id="egg-scare-flash"></div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
