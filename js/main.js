@@ -13,30 +13,34 @@
 
     // Fast, mostly-cosmetic ramp — real load is near-instant, this just avoids a content flash.
     let progress = 0;
+    let preloadDone = false;
+    function finishPreload() {
+        if (preloadDone) return;
+        preloadDone = true;
+        clearInterval(preloadTimer);
+        preloaderFill.style.width = "100%";
+        preloaderPct.textContent = "100%";
+        preloader.classList.add("hidden");
+        document.body.style.overflow = "";
+        startEntranceAnimations();
+    }
     const preloadTimer = setInterval(() => {
         progress += Math.random() * 32;
         if (progress >= 100) {
             progress = 100;
-            clearInterval(preloadTimer);
-            setTimeout(() => {
-                preloader.classList.add("hidden");
-                document.body.style.overflow = "";
-                startEntranceAnimations();
-            }, 120);
+            setTimeout(finishPreload, 120);
         }
         preloaderFill.style.width = progress + "%";
         preloaderPct.textContent = Math.floor(progress) + "%";
     }, 70);
 
     document.body.style.overflow = "hidden";
-    window.addEventListener("load", () => {
-        // ensure it always finishes even if timer stalls
-        if (progress < 100) {
-            progress = 100;
-            preloaderFill.style.width = "100%";
-            preloaderPct.textContent = "100%";
-        }
-    });
+    // Safety nets: iOS Safari can throttle/stall setInterval (e.g. tab backgrounded
+    // during load, low-power mode), which used to leave the preloader — and the
+    // hero content gated behind it — stuck forever. These force completion no
+    // matter what happens to the timer above.
+    window.addEventListener("load", finishPreload);
+    setTimeout(finishPreload, 3000);
 
     function startEntranceAnimations() {
         document.querySelectorAll(".hero .reveal-up").forEach((el) => {
@@ -144,7 +148,9 @@
         },
         { threshold: 0.15 }
     );
-    document.querySelectorAll(".reveal-up:not(.hero .reveal-up)").forEach((el) => revealObserver.observe(el));
+    // Hero elements are included too (not just below-the-fold sections) so they
+    // still reveal even if the preloader's own completion path is ever delayed.
+    document.querySelectorAll(".reveal-up").forEach((el) => revealObserver.observe(el));
 
     /* ---------------- Counter animation ---------------- */
     const counters = document.querySelectorAll(".stat-num");
@@ -203,7 +209,7 @@
         return visible / rect.height >= ratio;
     }
     function checkRevealsFallback() {
-        document.querySelectorAll(".reveal-up:not(.hero .reveal-up):not(.in-view)").forEach((el) => {
+        document.querySelectorAll(".reveal-up:not(.in-view)").forEach((el) => {
             if (isInViewport(el, 0.15)) el.classList.add("in-view");
         });
         counters.forEach((c) => {
