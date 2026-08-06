@@ -27,7 +27,7 @@ built with plain HTML/CSS/JS — no framework, no build step.
 
 ---
 
-## Structure
+##  Structure
 
 | Path | Description |
 |------|-------------|
