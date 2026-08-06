@@ -11,9 +11,10 @@
     const preloaderFill = document.getElementById("preloader-fill");
     const preloaderPct = document.getElementById("preloader-pct");
 
+    // Fast, mostly-cosmetic ramp — real load is near-instant, this just avoids a content flash.
     let progress = 0;
     const preloadTimer = setInterval(() => {
-        progress += Math.random() * 18;
+        progress += Math.random() * 32;
         if (progress >= 100) {
             progress = 100;
             clearInterval(preloadTimer);
@@ -21,11 +22,11 @@
                 preloader.classList.add("hidden");
                 document.body.style.overflow = "";
                 startEntranceAnimations();
-            }, 300);
+            }, 120);
         }
         preloaderFill.style.width = progress + "%";
         preloaderPct.textContent = Math.floor(progress) + "%";
-    }, 140);
+    }, 70);
 
     document.body.style.overflow = "hidden";
     window.addEventListener("load", () => {
@@ -556,8 +557,11 @@
     /* ---------------- Easter egg: click "Work" 10x in a row ---------------- */
     /* The only place this file reaches outside "no external dependencies": the
        hidden horror-office mini-game lazy-loads three.js from a CDN via dynamic
-       import(), only once triggered, so it never costs anything on a normal visit. */
+       import(), only once triggered, so it never costs anything on a normal visit.
+       Skipped entirely on touch/mobile — the game needs WASD + pointer-lock, which
+       don't work on a phone, so there's no reason to ever wire up or load it there. */
     (function initWorkEasterEgg() {
+        if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
         const triggers = document.querySelectorAll(
             '.nav-link[data-section="work"], .mobile-link[data-section="work"]'
         );

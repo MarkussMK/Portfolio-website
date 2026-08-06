@@ -59,7 +59,7 @@ img, svg { display: block; max-width: 100%; }
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.7s var(--ease), visibility 0.7s var(--ease);
+    transition: opacity 0.4s var(--ease), visibility 0.4s var(--ease);
 }
 #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 .preloader-inner { text-align: center; }
