@@ -32,3 +32,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          # Large 3D-model artifact (~226MB) can take longer than the 10-minute default to report ready
+          timeout: 1800000
