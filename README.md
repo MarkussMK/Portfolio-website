@@ -7,7 +7,7 @@ built with plain HTML/CSS/JS — no framework, no build step.
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Single-page layout** — Home, About, Skills, Work, Experience, and Contact sections with
   scroll-spy nav highlighting and smooth anchor scrolling.
@@ -27,7 +27,7 @@ built with plain HTML/CSS/JS — no framework, no build step.
 
 ---
 
-## 📄 Structure
+## Structure
 
 | Path | Description |
 |------|-------------|
