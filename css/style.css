@@ -1068,13 +1068,18 @@ main { position: relative; z-index: 2; }
 }
 
 @media (max-width: 760px) {
-    .work-grid { grid-template-columns: 1fr; justify-items: center; }
+    /* justify-items must stay "stretch" (grid default) so .project-node gets a definite
+       width to size against — under "center" it shrink-wraps to content, and percentage
+       widths inside that resolve inconsistently between browsers (looked fine in Chromium,
+       came out uneven/mis-scaled in mobile Safari). Center visually with margin:auto instead. */
+    .work-grid { grid-template-columns: 1fr; }
+    .project-node { width: 100%; }
     /* Flatten the 3D cube on touch screens — no hover to trigger it, so the resting tilt just looks broken */
-    .box-3d { max-width: 320px; height: auto; perspective: none; }
+    .box-3d { width: 100%; max-width: 320px; height: auto; perspective: none; margin: 0 auto; }
     .box-scene { height: auto; }
     .box-cube, .box-3d:hover .box-cube, .box-3d:focus-visible .box-cube { transform: none; }
     .box-back, .box-right, .box-left, .box-top, .box-bottom { display: none; }
-    .box-face { position: relative; inset: auto; transform: none !important; }
+    .box-face { position: relative; inset: auto; width: 100%; transform: none !important; }
     .box-front { padding: 28px 20px; }
 }
 

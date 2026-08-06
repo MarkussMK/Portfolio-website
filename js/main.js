@@ -150,7 +150,8 @@
     const counterObserver = new IntersectionObserver(
         (entries, obs) => {
             entries.forEach((entry) => {
-                if (entry.isIntersecting) {
+                if (entry.isIntersecting && !entry.target.dataset.counted) {
+                    entry.target.dataset.counted = "true";
                     animateCounter(entry.target);
                     obs.unobserve(entry.target);
                 }
@@ -188,6 +189,46 @@
         { threshold: 0.4 }
     );
     skillFills.forEach((f) => skillObserver.observe(f));
+
+    /* ---------------- Manual reveal fallback ----------------
+       Some iOS Safari versions don't (re)fire IntersectionObserver until a
+       scroll/resize actually happens (e.g. after the address bar collapses),
+       leaving content stuck at opacity:0 until the user scrolls all the way
+       down and back. This re-checks visibility directly as a safety net. */
+    function isInViewport(el, ratio) {
+        const rect = el.getBoundingClientRect();
+        if (rect.height === 0) return false;
+        const visible = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+        return visible / rect.height >= ratio;
+    }
+    function checkRevealsFallback() {
+        document.querySelectorAll(".reveal-up:not(.hero .reveal-up):not(.in-view)").forEach((el) => {
+            if (isInViewport(el, 0.15)) el.classList.add("in-view");
+        });
+        counters.forEach((c) => {
+            if (!c.dataset.counted && isInViewport(c, 0.6)) {
+                c.dataset.counted = "true";
+                animateCounter(c);
+            }
+        });
+        skillFills.forEach((f) => {
+            if (!f.classList.contains("animate") && isInViewport(f, 0.4)) f.classList.add("animate");
+        });
+    }
+    let fallbackTicking = false;
+    function scheduleFallbackCheck() {
+        if (fallbackTicking) return;
+        fallbackTicking = true;
+        requestAnimationFrame(() => {
+            checkRevealsFallback();
+            fallbackTicking = false;
+        });
+    }
+    window.addEventListener("scroll", scheduleFallbackCheck, { passive: true });
+    window.addEventListener("resize", scheduleFallbackCheck);
+    window.addEventListener("orientationchange", scheduleFallbackCheck);
+    window.addEventListener("load", scheduleFallbackCheck);
+    scheduleFallbackCheck();
 
     /* ---------------- Work card tilt (legacy hook, no-op if absent) ---------------- */
     document.querySelectorAll("[data-tilt]").forEach((card) => {
