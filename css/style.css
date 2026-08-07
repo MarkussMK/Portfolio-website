@@ -628,7 +628,15 @@ main { position: relative; z-index: 2; }
        when it works, this is only the last-resort floor. */
     animation: forceReveal 0.01s 6s forwards;
 }
-.hero .reveal-up { animation: forceReveal 0.01s 2.5s forwards; }
+.hero .reveal-up {
+    /* Faster + tighter stagger than the generic rule (0.8s/0.09s) so the hero
+       finishes fading in around the same time the preloader finishes fading
+       out (0.4s), instead of leaving a gap where the preloader is gone but
+       the text is still mostly transparent. */
+    transition-duration: 0.45s;
+    transition-delay: calc(var(--d, 0) * 0.04s);
+    animation: forceReveal 0.01s 2.5s forwards;
+}
 .reveal-up.in-view { opacity: 1; transform: translateY(0); }
 @keyframes forceReveal { to { opacity: 1; transform: translateY(0); } }
 
