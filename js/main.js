@@ -758,9 +758,8 @@
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         /* Tone-map so bright highlights roll off gracefully instead of hard-clipping
-           to solid white (which happened on the real office model's glossy Phong
-           materials under the high physically-correct light intensities below), but
-           keep exposure low so the room stays dark and moody rather than washed out. */
+           to solid white, but keep exposure low so the room stays dark and moody
+           rather than washed out. */
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 0.55;
 
@@ -769,12 +768,10 @@
            uses physically-correct (candela) light units. Shadows (not just raw
            brightness) are what make the room read as a 3D space instead of a flat
            gradient, since AmbientLight has no directionality of its own.
-           Ambient is kept LOW (unlike a flat wash) because the real FBX office's
-           light-colored cubicle fabric/desks reflect ambient much more brightly
-           than the old dark-painted procedural room did at the same intensity -
-           the point light's falloff (not ambient) should be what carves the room
-           out of near-total darkness, so only the pool right around the light
-           reads clearly and everywhere else fades to black. */
+           Ambient is kept LOW (unlike a flat wash) so the point light's falloff
+           (not ambient) is what carves the room out of near-total darkness, so
+           only the pool right around the light reads clearly and everywhere else
+           fades to black. */
         const ambient = new THREE.AmbientLight(0x2a2018, 1.3);
         scene.add(ambient);
         const flicker = new THREE.PointLight(0xff6a2c, 95, 16, 2);
@@ -787,174 +784,17 @@
         scene.add(flicker);
         let flickerBase = 95;
 
-        /* Room + desks: a real modeled office (rows of cubicles, desks, monitors,
-           printer) loaded from an FBX file, replacing the old procedural boxes.
-           Falls back to a small plain dark room if the model can't be fetched
-           (e.g. no internet, or opened via file:// without a local server). */
+        /* Room + desks: a procedural office (rows of cubicle desks, monitors)
+           built entirely from primitives - no external 3D model/texture assets
+           are loaded, keeping this easter egg lightweight to download. */
         let roomBound = { minX: -6, maxX: 6, minZ: -6, maxZ: 6 };
         let figureSpawn = { x: roomBound.maxX - 1, z: roomBound.maxZ - 1 };
         let initialYaw = 0;
         /* AABBs (in the same world space as camera/figure) that the player can't
            walk through - desks, cubicle partitions, cabinets, etc. Populated below
-           from the real FBX geometry, or from the procedural desks in the fallback. */
+           from the procedural desks placed in the room. */
         let colliders = [];
-        try {
-            const { FBXLoader } = await import(
-                "https://unpkg.com/three@0.160.0/examples/jsm/loaders/FBXLoader.js"
-            );
-            const loader = new FBXLoader();
-            loader.setResourcePath("3d models/textures/");
-            const office = await new Promise((resolve, reject) => {
-                loader.load("3d models/office.fbx", resolve, undefined, reject);
-            });
-
-            /* The model is authored in centimeters; scale to meters to match
-               the rest of the scene, then re-center it on the origin with its
-               floor sitting at y=0. */
-            office.scale.setScalar(0.01);
-            office.updateMatrixWorld(true);
-            const box = new THREE.Box3().setFromObject(office);
-            const center = box.getCenter(new THREE.Vector3());
-            office.position.x -= center.x;
-            office.position.z -= center.z;
-            office.position.y -= box.min.y;
-            office.updateMatrixWorld(true);
-
-            /* The model also includes a few furniture props (e.g. a printer) that
-               sit well outside the actual walled room ("стены") - only the walls
-               mesh reliably marks the real room envelope, and only reasonably
-               small meshes count as in-room obstacles for spawn-point picking. */
-            let wallsBox = null;
-            const obstacleBoxes = [];
-            office.traverse((child) => {
-                if (!child.isMesh) return;
-                child.castShadow = true;
-                child.receiveShadow = true;
-                /* The FBX's default Phong materials have a very bright, wide
-                   specular highlight (specular #ccc, shininess 0) that blows out
-                   to solid white under the horror room's strong point light.
-                   Tame it so the real geometry/texture reads instead of glare.
-                   Also darken the base color itself: the real office's cubicle
-                   fabric/desks/walls are light cream/white, which reads as a
-                   brightly-lit, cheerful room at almost any reasonable light
-                   level - tinting the diffuse color down gives the same dim,
-                   shadowy horror-room look the old all-dark procedural room had,
-                   while keeping the real texture detail (grain, seams, grime)
-                   still visible in the darkened result. */
-                const mats = Array.isArray(child.material) ? child.material : [child.material];
-                mats.forEach((m) => {
-                    if (!m) return;
-                    if (m.specular) m.specular.setScalar(0.08);
-                    if ("shininess" in m) m.shininess = 18;
-                    if (m.color) m.color.multiplyScalar(0.26);
-                });
-
-                const b = new THREE.Box3().setFromObject(child);
-                if (child.name === "стены") {
-                    wallsBox = b;
-                    return;
-                }
-                if (child.name === "Plane") return; // floor
-                const size = b.getSize(new THREE.Vector3());
-                if (size.x > 12 || size.z > 12) return; // other room-shell-scale meshes
-                obstacleBoxes.push(b);
-            });
-            scene.add(office);
-            colliders = obstacleBoxes;
-
-            const shellBox = wallsBox || new THREE.Box3().setFromObject(office);
-            const margin = 1.1;
-            roomBound = {
-                minX: shellBox.min.x + margin,
-                maxX: shellBox.max.x - margin,
-                minZ: shellBox.min.z + margin,
-                maxZ: shellBox.max.z - margin,
-            };
-
-            /* The cubicle floor plan is dense with narrow aisles - a fixed/guessed
-               spawn corner can easily land inside a desk or partition. Instead,
-               sample the floor for points with real clearance from every obstacle
-               mesh, then pick the two clear points that are farthest apart (one
-               for the player, one for the watching figure). */
-            function clearanceAt(x, z, y) {
-                const p = new THREE.Vector3(x, y, z);
-                let min = Infinity;
-                for (const b of obstacleBoxes) {
-                    const c = new THREE.Vector3(
-                        THREE.MathUtils.clamp(x, b.min.x, b.max.x),
-                        THREE.MathUtils.clamp(y, b.min.y, b.max.y),
-                        THREE.MathUtils.clamp(z, b.min.z, b.max.z)
-                    );
-                    const d = p.distanceTo(c);
-                    if (d < min) min = d;
-                }
-                /* Also stay clear of the walls themselves - door alcoves/frame nooks
-                   can jut inward past the flat rectangular envelope used for roomBound,
-                   so re-check the simple distance-to-nearest-wall-plane too. */
-                if (shellBox) {
-                    const wallDist = Math.min(
-                        x - shellBox.min.x,
-                        shellBox.max.x - x,
-                        z - shellBox.min.z,
-                        shellBox.max.z - z
-                    );
-                    if (wallDist < min) min = wallDist;
-                }
-                return min;
-            }
-            const clearSpots = [];
-            const step = 0.4;
-            /* Search only the room's inner area for spawn candidates (well away from
-               the outer wall ring, where door alcoves and corners live), even though
-               the player can still walk all the way out to roomBound afterward. */
-            const spawnMargin = 1.5;
-            const spawnMinX = roomBound.minX + spawnMargin;
-            const spawnMaxX = roomBound.maxX - spawnMargin;
-            const spawnMinZ = roomBound.minZ + spawnMargin;
-            const spawnMaxZ = roomBound.maxZ - spawnMargin;
-            for (let x = spawnMinX; x <= spawnMaxX; x += step) {
-                for (let z = spawnMinZ; z <= spawnMaxZ; z += step) {
-                    if (clearanceAt(x, z, 1.5) > 0.6) clearSpots.push({ x, z });
-                }
-            }
-            let spawnA = { x: (spawnMinX + spawnMaxX) / 2, z: spawnMinZ };
-            let spawnB = { x: (spawnMinX + spawnMaxX) / 2, z: spawnMaxZ };
-            if (clearSpots.length > 1) {
-                let bestDistSq = -1;
-                for (let i = 0; i < clearSpots.length; i++) {
-                    for (let j = i + 1; j < clearSpots.length; j++) {
-                        const dx = clearSpots[i].x - clearSpots[j].x;
-                        const dz = clearSpots[i].z - clearSpots[j].z;
-                        const d = dx * dx + dz * dz;
-                        if (d > bestDistSq) {
-                            bestDistSq = d;
-                            spawnA = clearSpots[i];
-                            spawnB = clearSpots[j];
-                        }
-                    }
-                }
-            }
-            camera.position.set(spawnA.x, 1.6, spawnA.z);
-            figureSpawn = { x: spawnB.x, z: spawnB.z };
-
-            /* Don't just face the figure - that bearing can happen to point straight
-               at a nearby door/partition at close range (a flat surface right in front
-               of the camera reads as a blown-out white wall). Instead, scan directions
-               around the spawn point and start facing whichever has the most open space
-               ahead of it. */
-            let bestYaw = 0;
-            let bestYawClear = -1;
-            for (let a = 0; a < Math.PI * 2; a += Math.PI / 16) {
-                const lookX = spawnA.x + Math.sin(a) * 1.4;
-                const lookZ = spawnA.z + Math.cos(a) * 1.4;
-                const c = clearanceAt(lookX, lookZ, 1.6);
-                if (c > bestYawClear) {
-                    bestYawClear = c;
-                    bestYaw = a;
-                }
-            }
-            initialYaw = bestYaw;
-        } catch (err) {
+        {
             const roomSize = 24;
             const floorMat = new THREE.MeshStandardMaterial({ color: 0x120e0b, roughness: 0.95 });
             const wallMat = new THREE.MeshStandardMaterial({ color: 0x1b1613, roughness: 0.9 });
@@ -1029,62 +869,11 @@
 
         /* A still, watching presence in the far corner - the "statue": it only
            creeps closer while it's outside the player's view cone, and freezes
-           the instant the player looks back at it. Uses the real "creepy guy"
-           FBX model when it can be loaded, falling back to a simple humanoid
-           built from primitives (unlit pure-black material, so it still reads
-           as a flat, unsettling silhouette) if the model/textures can't be
-           fetched. */
+           the instant the player looks back at it. Built entirely from
+           primitives (unlit pure-black material) so it reads as a flat,
+           unsettling silhouette - no external model/texture assets needed. */
         let figure;
-        try {
-            const { FBXLoader } = await import(
-                "https://unpkg.com/three@0.160.0/examples/jsm/loaders/FBXLoader.js"
-            );
-            const figureLoader = new FBXLoader();
-            figureLoader.setResourcePath("3d models/smiley/textures/");
-            const creepyGuy = await new Promise((resolve, reject) => {
-                figureLoader.load("3d models/smiley/source/shia lebeuofsf.fbx", resolve, undefined, reject);
-            });
-
-            /* Same cm -> m rescale as the office model, then rescale again so
-               the model is a human-ish 1.8m tall regardless of its native
-               size, and recenter it on the origin with its feet at y=0. */
-            creepyGuy.scale.setScalar(0.01);
-            creepyGuy.updateMatrixWorld(true);
-            let cgBox = new THREE.Box3().setFromObject(creepyGuy);
-            const cgSize = cgBox.getSize(new THREE.Vector3());
-            const targetHeight = 1.8;
-            if (cgSize.y > 0.001) {
-                creepyGuy.scale.multiplyScalar(targetHeight / cgSize.y);
-                creepyGuy.updateMatrixWorld(true);
-                cgBox = new THREE.Box3().setFromObject(creepyGuy);
-            }
-            const cgCenter = cgBox.getCenter(new THREE.Vector3());
-            creepyGuy.position.x -= cgCenter.x;
-            creepyGuy.position.z -= cgCenter.z;
-            creepyGuy.position.y -= cgBox.min.y;
-            creepyGuy.updateMatrixWorld(true);
-
-            creepyGuy.traverse((child) => {
-                if (!child.isMesh) return;
-                child.castShadow = true;
-                child.receiveShadow = true;
-                const mats = Array.isArray(child.material) ? child.material : [child.material];
-                mats.forEach((m) => {
-                    if (!m) return;
-                    if (m.specular) m.specular.setScalar(0.08);
-                    if ("shininess" in m) m.shininess = 18;
-                    /* Keep its own texture/color mostly intact (unlike the
-                       office furniture, which needed heavy darkening to not
-                       look cheerfully bright) - this model should read as an
-                       unsettling face/figure caught in the light, not just
-                       another flat black silhouette. */
-                    if (m.color) m.color.multiplyScalar(0.85);
-                });
-            });
-
-            figure = new THREE.Group();
-            figure.add(creepyGuy);
-        } catch (err) {
+        {
             const figureMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
             figure = new THREE.Group();
 
@@ -1204,9 +993,7 @@
         window.addEventListener("keyup", onKeyUp);
 
         /* Mouse-look via pointer lock. Start facing whichever direction had the
-           most open space during spawn-point selection (see `initialYaw` above),
-           since the real FBX room's clear spawn points can end up on any side of
-           the room, right next to walls/doors/partitions. */
+           most open space during spawn-point selection (see `initialYaw` above). */
         let yaw = initialYaw;
         let pitch = 0;
         const onMouseMove = (e) => {

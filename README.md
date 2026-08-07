@@ -36,7 +36,6 @@ built with plain HTML/CSS/JS — no framework, no build step.
 | `js/main.js` | All interactions: nav, reveals, canvas background, arcade easter egg, etc. |
 | `html/retro-arcade.html` | Retro Arcade Hall — links to the 6 games below |
 | `html/*.html` (pacman, tetris, breakout, pong, space-invaders, asteroids) | Individual arcade games |
-| `3d models/` | Assets used by the hidden horror-office easter egg (loaded on demand only) |
 | `old project/` | The previous XP-leveling multi-page portfolio, kept for reference |
 
 ---
