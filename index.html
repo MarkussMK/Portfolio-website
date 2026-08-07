@@ -8,7 +8,11 @@
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Non-blocking font load: fetch as a low-priority preload, then swap to a
+     real stylesheet once ready, so a slow fonts.googleapis.com round trip
+     never delays first paint. -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"></noscript>
 <link rel="stylesheet" href="css/style.css">
 <script type="importmap">
 {
@@ -17,6 +21,10 @@
     }
 }
 </script>
+<!-- If JS is disabled/blocked entirely, the CSS-only fallback animations in
+     style.css already hide #preloader and reveal .reveal-up content after a
+     few seconds, but hide it immediately here for a cleaner no-JS experience. -->
+<noscript><style>#preloader { display: none !important; }</style></noscript>
 </head>
 <body>
 
