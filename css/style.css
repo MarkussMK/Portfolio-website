@@ -61,11 +61,14 @@ img, svg { display: block; max-width: 100%; }
     justify-content: center;
     transition: opacity 0.4s var(--ease), visibility 0.4s var(--ease);
     /* Pure-CSS guarantee that this overlay goes away even if JS never runs/
-       throws on some device (no reliance on any timer/observer firing). */
+       throws on some device. Only touches `display` (never `opacity`/
+       `visibility`, which the .hidden transition above already owns) so it
+       can't fight with that transition or leave a half-faded composited
+       layer behind - it's either fully shown or fully gone, no in-between. */
     animation: forceHidePreloader 0.01s 4s forwards;
 }
 #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-@keyframes forceHidePreloader { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+@keyframes forceHidePreloader { to { display: none; } }
 .preloader-inner { text-align: center; }
 .preloader-mark {
     display: block;

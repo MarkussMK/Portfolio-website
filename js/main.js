@@ -23,6 +23,14 @@
         preloader.classList.add("hidden");
         document.body.style.overflow = "";
         startEntranceAnimations();
+        // Fully detach after the fade (matches the 0.4s CSS transition) instead of
+        // just leaving it invisible-but-present - some iOS Safari sessions leave a
+        // stale, half-faded composited layer of this fixed/high-z-index overlay on
+        // screen (a "ghost" of the logo/percentage) if it's never actually removed
+        // from the render tree.
+        setTimeout(() => {
+            preloader.style.display = "none";
+        }, 450);
     }
     const preloadTimer = setInterval(() => {
         progress += Math.random() * 32;
