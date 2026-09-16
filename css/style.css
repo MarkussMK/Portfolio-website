@@ -60,15 +60,8 @@ img, svg { display: block; max-width: 100%; }
     align-items: center;
     justify-content: center;
     transition: opacity 0.4s var(--ease), visibility 0.4s var(--ease);
-    /* Pure-CSS guarantee that this overlay goes away even if JS never runs/
-       throws on some device. Only touches `display` (never `opacity`/
-       `visibility`, which the .hidden transition above already owns) so it
-       can't fight with that transition or leave a half-faded composited
-       layer behind - it's either fully shown or fully gone, no in-between. */
-    animation: forceHidePreloader 0.01s 4s forwards;
 }
 #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-@keyframes forceHidePreloader { to { display: none; } }
 .preloader-inner { text-align: center; }
 .preloader-mark {
     display: block;
@@ -946,11 +939,11 @@ main { position: relative; z-index: 2; }
     height: 100%;
     position: relative;
     transform-style: preserve-3d;
-    transform: rotateX(-14deg) rotateY(24deg);
-    transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+    transform: rotateX(-15deg) rotateY(15deg);
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
 }
 .box-3d:hover .box-cube, .box-3d:focus-visible .box-cube {
-    transform: rotateX(-10deg) rotateY(34deg) scale(1.05);
+    transform: rotateX(-10deg) rotateY(20deg) scale(1.05);
 }
 .box-face {
     position: absolute;
@@ -1264,6 +1257,6 @@ main { position: relative; z-index: 2; }
 
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
-    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    *:not(.robo-arm1):not(.robo-arm2):not(.finger):not(.box-cube) { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
     html { scroll-behavior: auto; }
 }

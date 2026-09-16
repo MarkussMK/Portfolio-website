@@ -10,12 +10,21 @@
     const preloader = document.getElementById("preloader");
     const preloaderFill = document.getElementById("preloader-fill");
     const preloaderPct = document.getElementById("preloader-pct");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Fast, mostly-cosmetic ramp — real load is near-instant, this just avoids a content flash.
+    // Keep the title card visible long enough to read, while still guaranteeing
+    // that a stalled load cannot hold the page indefinitely.
     let progress = 0;
     let preloadDone = false;
+    const preloadStarted = performance.now();
+    const MIN_PRELOAD_TIME = 850;
     function finishPreload() {
         if (preloadDone) return;
+        const remaining = MIN_PRELOAD_TIME - (performance.now() - preloadStarted);
+        if (remaining > 0) {
+            setTimeout(finishPreload, remaining);
+            return;
+        }
         preloadDone = true;
         clearInterval(preloadTimer);
         preloaderFill.style.width = "100%";
@@ -33,11 +42,7 @@
         }, 450);
     }
     const preloadTimer = setInterval(() => {
-        progress += Math.random() * 32;
-        if (progress >= 100) {
-            progress = 100;
-            setTimeout(finishPreload, 120);
-        }
+        progress = Math.min(92, progress + Math.random() * 18);
         preloaderFill.style.width = progress + "%";
         preloaderPct.textContent = Math.floor(progress) + "%";
     }, 70);
@@ -278,6 +283,7 @@
                 open();
             }
         });
+
     });
     document.querySelectorAll(".project-modal-overlay").forEach((overlay) => {
         overlay.querySelector(".project-modal-close").addEventListener("click", () => closeProjectModal(overlay));
@@ -356,13 +362,40 @@
     setTimeout(() => scrambleText(scrambleEl, originalName), 600);
     scrambleEl.addEventListener("mouseenter", () => scrambleText(scrambleEl, originalName, 600));
 
+    /* ---------------- Git x6 -> WebDOOM ---------------- */
+    const gitTrigger = document.querySelector(".git-trigger");
+    if (gitTrigger) {
+        const DOOM_URL = "https://ustymukhman.github.io/WebDOOM/public/";
+        const NEEDED_CLICKS = 6;
+        const RESET_GAP = 1600;
+        let clickCount = 0;
+        let lastClick = 0;
+
+        const countGitClick = () => {
+            const now = Date.now();
+            if (now - lastClick > RESET_GAP) clickCount = 0;
+            lastClick = now;
+            clickCount++;
+            if (clickCount >= NEEDED_CLICKS) window.location.href = DOOM_URL;
+        };
+
+        gitTrigger.addEventListener("click", countGitClick);
+        gitTrigger.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                countGitClick();
+            }
+        });
+    }
+
     /* ---------------- Back to top ---------------- */
     document.getElementById("to-top").addEventListener("click", () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
-    /* ---------------- Contact form (demo only) ---------------- */
+    /* ---------------- Contact form ---------------- */
     const form = document.getElementById("contact-form");
+    const FORM_ENDPOINT = "https://formspree.io/f/xqagrkya";
     const toastHost = document.createElement("div");
     toastHost.className = "toast";
     toastHost.id = "toast";
@@ -374,19 +407,37 @@
         setTimeout(() => toastHost.classList.remove("show"), 3200);
     }
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
         e.preventDefault();
         const label = document.getElementById("cf-submit-label");
+        const submitButton = form.querySelector('button[type="submit"]');
         const original = label.textContent;
-        label.textContent = "Sending…";
-        setTimeout(() => {
-            label.textContent = "Message ready ✓";
-            showToast("Thanks! This demo form doesn't send yet — try the LinkedIn link instead.");
-            setTimeout(() => {
-                label.textContent = original;
-                form.reset();
-            }, 1800);
-        }, 900);
+        const payload = {
+            name: form.elements.name.value.trim(),
+            email: form.elements.email.value.trim(),
+            message: form.elements.message.value.trim(),
+            subject: `Portfolio contact from ${form.elements.name.value.trim()}`
+        };
+
+        label.textContent = "Sending...";
+        submitButton.disabled = true;
+        try {
+            const response = await fetch(FORM_ENDPOINT, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Accept: "application/json" },
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) throw new Error(`Form submission failed: ${response.status}`);
+            form.reset();
+            label.textContent = "Message sent";
+            showToast("Thanks! Your message has been sent.");
+        } catch (error) {
+            console.error(error);
+            label.textContent = original;
+            showToast("The message could not be sent. Please try LinkedIn instead.");
+        } finally {
+            submitButton.disabled = false;
+        }
     });
 
     /* ---------------- Smooth in-page nav ---------------- */
@@ -411,8 +462,6 @@
     let canvasWidth, canvasHeight;
     const pointer = { x: null, y: null };
     const GRID = 46;
-
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function resizeCanvas() {
         canvasWidth = canvas.width = window.innerWidth;
