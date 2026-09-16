@@ -382,6 +382,78 @@ body.egg-open .cursor-dot, body.egg-open .cursor-ring { display: none; }
 .egg-scare-flash.active {
     animation: eggScareFlash 1.3s ease-out forwards;
 }
+.egg-death {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #fff;
+    font-family: var(--font-mono);
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+}
+.egg-death.active {
+    opacity: 1;
+    animation: eggDeathReveal 1.9s ease-out forwards;
+}
+.egg-death strong {
+    color: #ff3d3d;
+    font-size: clamp(2.2rem, 7vw, 5rem);
+    letter-spacing: 0.14em;
+    text-shadow: 0 0 22px rgba(255, 61, 61, 0.7);
+}
+.egg-death span {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: clamp(0.72rem, 1.5vw, 0.95rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+.egg-escape {
+    position: absolute;
+    inset: 0;
+    z-index: 11;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: rgba(4, 20, 14, 0.94);
+    color: #fff;
+    font-family: var(--font-mono);
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+}
+.egg-escape.active {
+    opacity: 1;
+    animation: eggEscapeReveal 1.1s ease-out forwards;
+}
+.egg-escape strong {
+    color: #57e69b;
+    font-size: clamp(1.8rem, 6vw, 4.6rem);
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 24px rgba(87, 230, 155, 0.55);
+}
+.egg-escape span {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: clamp(0.72rem, 1.5vw, 0.95rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+@keyframes eggEscapeReveal {
+    0% { opacity: 0; transform: scale(1.06); }
+    100% { opacity: 1; transform: scale(1); }
+}
+@keyframes eggDeathReveal {
+    0%, 18% { opacity: 0; transform: scale(1.08); }
+    30%, 100% { opacity: 1; transform: scale(1); }
+}
 @keyframes eggScareFlash {
     0%   { opacity: 0;    background: #fff; }
     6%   { opacity: 1;    background: #fff; }

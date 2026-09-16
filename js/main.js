@@ -803,10 +803,10 @@
         }
 
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x020202);
-        scene.fog = new THREE.FogExp2(0x000000, 0.065);
+        scene.background = new THREE.Color(0x16100c);
+        scene.fog = new THREE.FogExp2(0x100b08, 0.014);
 
-        const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.1, 100);
+        const camera = new THREE.PerspectiveCamera(78, window.innerWidth / window.innerHeight, 0.1, 100);
         camera.position.set(0, 1.6, 6);
 
         const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -818,7 +818,7 @@
            to solid white, but keep exposure low so the room stays dark and moody
            rather than washed out. */
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 0.55;
+        renderer.toneMappingExposure = 1.2;
 
         /* Lighting: dim ambient + a single flickering, shadow-casting point light.
            Intensities are tuned higher than old three.js conventions because r155+
@@ -829,9 +829,11 @@
            (not ambient) is what carves the room out of near-total darkness, so
            only the pool right around the light reads clearly and everywhere else
            fades to black. */
-        const ambient = new THREE.AmbientLight(0x2a2018, 1.3);
+        const ambient = new THREE.AmbientLight(0x715a48, 4.2);
         scene.add(ambient);
-        const flicker = new THREE.PointLight(0xff6a2c, 95, 16, 2);
+        const fill = new THREE.HemisphereLight(0xa38b78, 0x34251a, 2.6);
+        scene.add(fill);
+        const flicker = new THREE.PointLight(0xff7938, 220, 26, 2);
         flicker.position.set(0, 2.6, 1.5);
         flicker.castShadow = true;
         flicker.shadow.mapSize.set(1024, 1024);
@@ -839,7 +841,7 @@
         flicker.shadow.camera.far = 18;
         flicker.shadow.bias = -0.003;
         scene.add(flicker);
-        let flickerBase = 95;
+        let flickerBase = 220;
 
         /* Room + desks: a procedural office (rows of cubicle desks, monitors)
            built entirely from primitives - no external 3D model/texture assets
@@ -847,6 +849,12 @@
         let roomBound = { minX: -6, maxX: 6, minZ: -6, maxZ: 6 };
         let figureSpawn = { x: roomBound.maxX - 1, z: roomBound.maxZ - 1 };
         let initialYaw = 0;
+        let exitDoor;
+        let terminalScreen;
+        let terminalLight;
+        let clueLight;
+        const terminalPosition = { x: -9.2, z: -2.0 };
+        const cluePosition = { x: 11.68, z: 5.4 };
         /* AABBs (in the same world space as camera/figure) that the player can't
            walk through - desks, cubicle partitions, cabinets, etc. Populated below
            from the procedural desks placed in the room. */
@@ -879,57 +887,256 @@
             addWall(roomSize, 3.2, -roomSize / 2, 1.6, 0, Math.PI / 2);
             addWall(roomSize, 3.2, roomSize / 2, 1.6, 0, -Math.PI / 2);
 
-            const deskMat = new THREE.MeshStandardMaterial({ color: 0x2a2018, roughness: 0.8 });
-            const deskGeo = new THREE.BoxGeometry(1.6, 0.06, 0.8);
-            const legGeo = new THREE.BoxGeometry(0.06, 0.75, 0.06);
-            for (let i = 0; i < 10; i++) {
-                const x = (Math.random() - 0.5) * (roomSize - 4);
-                const z = (Math.random() - 0.5) * (roomSize - 4);
-                if (Math.abs(x) < 2.5 && Math.abs(z) < 2.5) continue;
-                const rotY = Math.random() * Math.PI;
+            const trimMat = new THREE.MeshStandardMaterial({ color: 0x5c3022, roughness: 0.65 });
+            const metalMat = new THREE.MeshStandardMaterial({ color: 0x34383b, roughness: 0.55, metalness: 0.5 });
+            const warningMat = new THREE.MeshStandardMaterial({ color: 0x8b241b, emissive: 0x300504, emissiveIntensity: 0.6 });
+            const wallTrimGeo = new THREE.BoxGeometry(roomSize, 0.12, 0.12);
+            [[0, 0.18, -11.88], [0, 3.0, -11.88], [0, 0.18, 11.88], [0, 3.0, 11.88]].forEach(([x, y, z]) => {
+                const trim = new THREE.Mesh(wallTrimGeo, trimMat);
+                trim.position.set(x, y, z);
+                scene.add(trim);
+            });
+            const sideTrimGeo = new THREE.BoxGeometry(0.12, 0.12, roomSize);
+            [-11.88, 11.88].forEach((x) => {
+                [0.18, 3.0].forEach((y) => {
+                    const trim = new THREE.Mesh(sideTrimGeo, trimMat);
+                    trim.position.set(x, y, 0);
+                    scene.add(trim);
+                });
+            });
+            for (let i = -8; i <= 8; i += 4) {
+                const ceilingLight = new THREE.Mesh(
+                    new THREE.BoxGeometry(1.4, 0.04, 0.28),
+                    new THREE.MeshStandardMaterial({ color: 0x62605a, emissive: 0xb34b24, emissiveIntensity: 0.8 })
+                );
+                ceilingLight.position.set(i, 3.05, 0);
+                scene.add(ceilingLight);
+            }
+            [-8, 8].forEach((x) => {
+                const panel = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.2, 2.2), metalMat);
+                panel.position.set(x, 1.65, -2);
+                scene.add(panel);
+                const warning = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.28, 1.4), warningMat);
+                warning.position.set(x + (x < 0 ? 0.06 : -0.06), 1.8, -2);
+                scene.add(warning);
+            });
 
+            function addWarningBoard(lines, x, z, facing) {
+                const boardCanvas = document.createElement("canvas");
+                boardCanvas.width = 512;
+                boardCanvas.height = 128;
+                const boardContext = boardCanvas.getContext("2d");
+                boardContext.fillStyle = "#120809";
+                boardContext.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
+                boardContext.strokeStyle = "#8e2723";
+                boardContext.lineWidth = 5;
+                boardContext.strokeRect(8, 8, boardCanvas.width - 16, boardCanvas.height - 16);
+                boardContext.font = "bold 25px monospace";
+                boardContext.textAlign = "center";
+                boardContext.textBaseline = "middle";
+                boardContext.fillStyle = "#ed3730";
+                boardContext.shadowColor = "#ff1710";
+                boardContext.shadowBlur = 14;
+                lines.forEach((line, index) => {
+                    boardContext.fillText(line, boardCanvas.width / 2, 38 + index * 42);
+                });
+                const boardTexture = new THREE.CanvasTexture(boardCanvas);
+                const board = new THREE.Mesh(
+                    new THREE.PlaneGeometry(1.8, 0.45),
+                    new THREE.MeshBasicMaterial({ map: boardTexture, transparent: true, toneMapped: false })
+                );
+                board.position.set(x, 2.35, z);
+                board.rotation.y = facing;
+                scene.add(board);
+            }
+            addWarningBoard(["DO NOT LOOK BACK", "IT LEARNS YOUR NAME"], -11.78, -2.0, Math.PI / 2);
+            addWarningBoard(["OVERTIME NEVER ENDS", "KEEP RUNNING"], 11.78, -2.0, -Math.PI / 2);
+            addWarningBoard(["NO EXIT", "UNTIL POWER RETURNS"], 0, -11.78, 0);
+
+            const doorFrameMat = new THREE.MeshStandardMaterial({ color: 0x25292b, roughness: 0.5, metalness: 0.65 });
+            const doorMat = new THREE.MeshStandardMaterial({
+                color: 0x10231b,
+                emissive: 0x0d482d,
+                emissiveIntensity: 0.7,
+                roughness: 0.62,
+                metalness: 0.35,
+            });
+            exitDoor = new THREE.Group();
+            const recess = new THREE.Mesh(new THREE.BoxGeometry(2.1, 2.9, 0.12), new THREE.MeshStandardMaterial({ color: 0x050707, roughness: 1 }));
+            recess.position.set(0, 1.45, -11.62);
+            exitDoor.add(recess);
+            const door = new THREE.Mesh(new THREE.BoxGeometry(1.35, 2.45, 0.08), doorMat);
+            door.position.set(0, 1.23, -11.84);
+            exitDoor.add(door);
+            [-0.9, 0.9].forEach((x) => {
+                const jamb = new THREE.Mesh(new THREE.BoxGeometry(0.18, 2.9, 0.22), doorFrameMat);
+                jamb.position.set(x, 1.45, -11.78);
+                exitDoor.add(jamb);
+            });
+            const lintel = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.18, 0.22), doorFrameMat);
+            lintel.position.set(0, 2.9, -11.78);
+            exitDoor.add(lintel);
+            const threshold = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.12, 0.5), doorFrameMat);
+            threshold.position.set(0, 0.06, -11.55);
+            exitDoor.add(threshold);
+            const exitSign = new THREE.Mesh(
+                new THREE.BoxGeometry(1.25, 0.32, 0.08),
+                new THREE.MeshStandardMaterial({ color: 0x173b2b, emissive: 0x2eaf70, emissiveIntensity: 2.2 })
+            );
+            exitSign.position.set(0, 2.72, -11.55);
+            exitDoor.add(exitSign);
+            [-0.74, 0.74].forEach((x) => {
+                const lightStrip = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.06, 2.5, 0.06),
+                    new THREE.MeshStandardMaterial({ color: 0x49ed9a, emissive: 0x39e889, emissiveIntensity: 2.6 })
+                );
+                lightStrip.position.set(x, 1.25, -11.49);
+                exitDoor.add(lightStrip);
+            });
+            const handle = new THREE.Mesh(
+                new THREE.BoxGeometry(0.06, 0.28, 0.08),
+                new THREE.MeshStandardMaterial({ color: 0xe0c36b, emissive: 0x8f6318, emissiveIntensity: 0.8, metalness: 0.7 })
+            );
+            handle.position.set(0.42, 1.25, -11.42);
+            exitDoor.add(handle);
+            scene.add(exitDoor);
+
+            const terminalMat = new THREE.MeshStandardMaterial({ color: 0x202628, roughness: 0.5, metalness: 0.4 });
+            const terminalScreenMat = new THREE.MeshStandardMaterial({ color: 0x10251e, emissive: 0x2ee68d, emissiveIntensity: 1.2 });
+            const terminal = new THREE.Group();
+            const terminalBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.7, 0.42), terminalMat);
+            terminalBody.position.set(terminalPosition.x, 0.35, terminalPosition.z);
+            terminal.add(terminalBody);
+            terminalScreen = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.3, 0.03), terminalScreenMat);
+            terminalScreen.position.set(terminalPosition.x, 0.55, terminalPosition.z - 0.23);
+            terminal.add(terminalScreen);
+            terminalLight = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.06, 0.03), warningMat);
+            terminalLight.position.set(terminalPosition.x + 0.28, 0.18, terminalPosition.z - 0.23);
+            terminal.add(terminalLight);
+            scene.add(terminal);
+
+            const alcoveMat = new THREE.MeshStandardMaterial({ color: 0x262a2c, roughness: 0.8, metalness: 0.3 });
+            [-2.95, -1.05].forEach((z) => {
+                const partition = new THREE.Mesh(new THREE.BoxGeometry(1.0, 2.0, 0.12), alcoveMat);
+                partition.position.set(-8.2, 1.0, z);
+                partition.castShadow = true;
+                scene.add(partition);
+                colliders.push({ min: { x: -8.75, z: z - 0.12 }, max: { x: -7.65, z: z + 0.12 } });
+            });
+            const breakerFrame = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.92, 0.08), doorFrameMat);
+            breakerFrame.position.set(cluePosition.x, 1.15, cluePosition.z - 0.08);
+            breakerFrame.rotation.y = Math.PI / 2;
+            scene.add(breakerFrame);
+            const breaker = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.68, 0.14), metalMat);
+            breaker.position.set(cluePosition.x, 1.15, cluePosition.z);
+            breaker.rotation.y = Math.PI / 2;
+            scene.add(breaker);
+            const breakerLabel = new THREE.Mesh(
+                new THREE.PlaneGeometry(0.5, 0.16),
+                new THREE.MeshBasicMaterial({ color: 0xe4b43b, toneMapped: false })
+            );
+            breakerLabel.position.set(cluePosition.x - 0.09, 1.62, cluePosition.z - 0.08);
+            breakerLabel.rotation.y = Math.PI / 2;
+            scene.add(breakerLabel);
+            const breakerLever = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.3, 0.08), warningMat);
+            breakerLever.position.set(cluePosition.x - 0.08, 1.12, cluePosition.z - 0.18);
+            breakerLever.rotation.set(0, Math.PI / 2, -0.35);
+            scene.add(breakerLever);
+            clueLight = new THREE.Mesh(
+                new THREE.BoxGeometry(0.12, 0.12, 0.04),
+                new THREE.MeshStandardMaterial({ color: 0x9b211b, emissive: 0x8e170f, emissiveIntensity: 1.5 })
+            );
+            clueLight.position.set(cluePosition.x, 1.15, cluePosition.z - 0.08);
+            clueLight.rotation.y = Math.PI / 2;
+            scene.add(clueLight);
+            addWarningBoard(["BREAKER", "RESTORE POWER"], cluePosition.x - 0.08, cluePosition.z, -Math.PI / 2);
+            for (let i = -1; i <= 1; i++) {
+                const hazardStripe = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.07, 0.06, 0.26),
+                    new THREE.MeshStandardMaterial({ color: 0xe4b43b, emissive: 0x6e3d0b, emissiveIntensity: 0.7 })
+                );
+                hazardStripe.position.set(cluePosition.x - 0.1, 0.72, cluePosition.z + i * 0.25);
+                hazardStripe.rotation.y = Math.PI / 2;
+                scene.add(hazardStripe);
+            }
+
+            const deskMat = new THREE.MeshStandardMaterial({ color: 0x4a2c20, roughness: 0.72 });
+            const deskEdgeMat = new THREE.MeshStandardMaterial({ color: 0x21130f, roughness: 0.85 });
+            const monitorMat = new THREE.MeshStandardMaterial({
+                color: 0x111716,
+                emissive: 0x245544,
+                emissiveIntensity: 0.7,
+                roughness: 0.45,
+            });
+            const chairMat = new THREE.MeshStandardMaterial({ color: 0x171c20, roughness: 0.78 });
+            const deskPositions = [
+                [-4, -4, 0], [0, -4, 0], [4, -4, 0],
+                [-4, 0, Math.PI], [4, 0, Math.PI],
+                [-4, 4, 0], [0, 4, 0], [4, 4, 0],
+            ];
+            const deskGeo = new THREE.BoxGeometry(1.8, 0.12, 0.9);
+            const legGeo = new THREE.BoxGeometry(0.1, 0.72, 0.1);
+            const chairSeatGeo = new THREE.BoxGeometry(0.46, 0.1, 0.46);
+            const chairBackGeo = new THREE.BoxGeometry(0.46, 0.56, 0.1);
+
+            deskPositions.forEach(([x, z, rotY]) => {
                 const desk = new THREE.Mesh(deskGeo, deskMat);
-                desk.position.set(x, 0.76, z);
+                desk.position.set(x, 0.78, z);
                 desk.rotation.y = rotY;
                 desk.castShadow = true;
                 desk.receiveShadow = true;
                 scene.add(desk);
-                /* Rotation-agnostic square collider big enough to cover the desk
-                   footprint at any angle. */
                 colliders.push({
-                    min: { x: x - 0.9, z: z - 0.9 },
-                    max: { x: x + 0.9, z: z + 0.9 },
+                    min: { x: x - 1.0, z: z - 0.62 },
+                    max: { x: x + 1.0, z: z + 0.62 },
                 });
 
-                [[-0.7, -0.35], [0.7, -0.35], [-0.7, 0.35], [0.7, 0.35]].forEach(([lx, lz]) => {
-                    const leg = new THREE.Mesh(legGeo, deskMat);
-                    const cos = Math.cos(rotY), sin = Math.sin(rotY);
-                    leg.position.set(x + lx * cos - lz * sin, 0.375, z + lx * sin + lz * cos);
+                [[-0.78, -0.34], [0.78, -0.34], [-0.78, 0.34], [0.78, 0.34]].forEach(([lx, lz]) => {
+                    const leg = new THREE.Mesh(legGeo, deskEdgeMat);
+                    leg.position.set(x + lx, 0.39, z + lz);
                     leg.castShadow = true;
                     scene.add(leg);
                 });
+                const modesty = new THREE.Mesh(new THREE.BoxGeometry(1.45, 0.34, 0.06), deskEdgeMat);
+                modesty.position.set(x, 0.58, z + 0.38);
+                modesty.rotation.y = rotY;
+                scene.add(modesty);
 
-                const monitor = new THREE.Mesh(
-                    new THREE.BoxGeometry(0.34, 0.24, 0.03),
-                    new THREE.MeshStandardMaterial({ color: 0x0a0a0a, emissive: 0x1f3a22, emissiveIntensity: 0.5 })
-                );
-                monitor.position.set(x, 0.96, z);
+                const monitor = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.34, 0.05), monitorMat);
+                monitor.position.set(x, 1.06, z - 0.12);
                 monitor.rotation.y = rotY;
                 monitor.castShadow = true;
                 scene.add(monitor);
-            }
+                const monitorStand = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.16, 0.06), deskEdgeMat);
+                monitorStand.position.set(x, 0.86, z - 0.12);
+                scene.add(monitorStand);
+                const keyboard = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.025, 0.16), deskEdgeMat);
+                keyboard.position.set(x, 0.86, z + 0.18);
+                keyboard.rotation.y = rotY;
+                scene.add(keyboard);
+
+                const chairZ = z + (rotY === 0 ? 0.95 : -0.95);
+                const chair = new THREE.Mesh(chairSeatGeo, chairMat);
+                chair.position.set(x, 0.48, chairZ);
+                chair.castShadow = true;
+                scene.add(chair);
+                const chairBack = new THREE.Mesh(chairBackGeo, chairMat);
+                chairBack.position.set(x, 0.78, chairZ + (rotY === 0 ? 0.2 : -0.2));
+                chairBack.rotation.y = rotY;
+                chairBack.castShadow = true;
+                scene.add(chairBack);
+            });
 
             roomBound = { minX: -roomSize / 2 + 0.6, maxX: roomSize / 2 - 0.6, minZ: -roomSize / 2 + 0.6, maxZ: roomSize / 2 - 0.6 };
             camera.position.set(0, 1.6, 6);
-            figureSpawn = { x: roomBound.maxX - 1.0, z: roomBound.maxZ - 1.0 };
+            figureSpawn = { x: roomBound.maxX - 0.3, z: roomBound.maxZ - 0.3 };
         }
 
-        /* A still, watching presence in the far corner - the "statue": it only
-           creeps closer while it's outside the player's view cone, and freezes
-           the instant the player looks back at it. Built entirely from
-           primitives (unlit pure-black material) so it reads as a flat,
-           unsettling silhouette - no external model/texture assets needed. */
+                /* A watching presence in the far corner: it creeps closer while outside
+                     the player's view cone. The primitive keeps the game playable offline
+                     until the animated humanoid finishes loading. */
         let figure;
+                let figureMixer = null;
         {
             const figureMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
             figure = new THREE.Group();
@@ -971,10 +1178,79 @@
         figure.position.set(figureSpawn.x, 0, figureSpawn.z);
         scene.add(figure);
 
+        /* Replace the fallback silhouette with a real animated humanoid when the
+           Three.js example asset is available. A dark material pass and red
+           emissive accents keep the model inside the scene's horror language. */
+        (async () => {
+            try {
+                const { GLTFLoader } = await import(
+                    "https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js"
+                );
+                const loader = new GLTFLoader();
+                loader.load(
+                    "https://threejs.org/examples/models/gltf/Soldier.glb",
+                    (gltf) => {
+                        const model = gltf.scene;
+                        const bounds = new THREE.Box3().setFromObject(model);
+                        const height = Math.max(bounds.max.y - bounds.min.y, 0.001);
+                        model.scale.setScalar(0.6 / height);
+                        model.rotation.y = Math.PI;
+                        model.updateMatrixWorld(true);
+                        const fittedBounds = new THREE.Box3().setFromObject(model);
+                        model.position.y -= fittedBounds.min.y;
+                        model.traverse((child) => {
+                            if (!child.isMesh) return;
+                            child.castShadow = false;
+                            child.receiveShadow = false;
+                            const materials = Array.isArray(child.material) ? child.material : [child.material];
+                            materials.forEach((material) => {
+                                const darkMaterial = material.clone();
+                                if (darkMaterial.color) darkMaterial.color.set(0x4a2928);
+                                if (darkMaterial.emissive) {
+                                    darkMaterial.emissive.set(0x260505);
+                                    darkMaterial.emissiveIntensity = 0.55;
+                                }
+                                if ("roughness" in darkMaterial) darkMaterial.roughness = 0.85;
+                                child.material = Array.isArray(child.material)
+                                    ? materials.map(() => darkMaterial)
+                                    : darkMaterial;
+                            });
+                        });
+                        const eyeMaterial = new THREE.MeshBasicMaterial({
+                            color: 0xff1818,
+                            toneMapped: false,
+                        });
+                        [-0.035, 0.035].forEach((x) => {
+                            const eye = new THREE.Mesh(new THREE.SphereGeometry(0.018, 8, 8), eyeMaterial);
+                            eye.position.set(x, 0.47, 0.045);
+                            model.add(eye);
+                        });
+                        figure.clear();
+                        figure.add(model);
+                        figureMixer = gltf.animations.length
+                            ? new THREE.AnimationMixer(model)
+                            : null;
+                        const walkClip = THREE.AnimationClip.findByName(gltf.animations, "Walk") ||
+                            THREE.AnimationClip.findByName(gltf.animations, "Run");
+                        if (figureMixer && walkClip) {
+                            const walkAction = figureMixer.clipAction(walkClip);
+                            walkAction.setEffectiveTimeScale(0.8);
+                            walkAction.play();
+                        }
+                    },
+                    undefined,
+                    () => {}
+                );
+            } catch (err) {
+                // The primitive fallback remains in place without network access.
+            }
+        })();
+
         /* Push the player back out of any desk/cubicle/cabinet collider they'd
            otherwise walk into (2D, XZ-only - close enough for a walking sim where
            furniture blocks the floor regardless of exact height). */
         const PLAYER_RADIUS = 0.35;
+        const FIGURE_CONTACT_RADIUS = 1.6;
         function resolvePlayerCollisions(pos) {
             for (const b of colliders) {
                 const closestX = THREE.MathUtils.clamp(pos.x, b.min.x, b.max.x);
@@ -1007,9 +1283,76 @@
         }
 
         const scareFlashEl = document.getElementById("egg-scare-flash");
+        const deathEl = document.getElementById("egg-death");
+        const escapeEl = document.getElementById("egg-escape");
+        const hudEl = document.querySelector(".egg-hud");
         if (scareFlashEl) scareFlashEl.classList.remove("active");
+        if (deathEl) deathEl.classList.remove("active");
+        if (escapeEl) escapeEl.classList.remove("active");
         let scareTriggered = false;
+        let escapeTriggered = false;
+        let hackActive = false;
+        let hackComplete = false;
+        let eventStage = 0;
+        let hackIndex = 0;
+        let hackDeadline = 0;
+        const hackCode = ["r", "g", "t"];
         let footstepTimer = 1.6 + Math.random();
+
+        function updateObjective(now) {
+            if (hackComplete) {
+                if (hudEl) hudEl.textContent = "EXIT OPEN — run to the green door";
+                return;
+            }
+            const terminalDistance = Math.hypot(camera.position.x - terminalPosition.x, camera.position.z - terminalPosition.z);
+            const clueDistance = Math.hypot(camera.position.x - cluePosition.x, camera.position.z - cluePosition.z);
+            if (eventStage === 0 && clueDistance < 2.0) {
+                if (hudEl) hudEl.textContent = "RED BREAKER NEARBY — press E to restore power";
+            } else if (eventStage === 1 && !hackActive && terminalDistance < 2.2) {
+                if (hudEl) hudEl.textContent = "WEST TERMINAL ONLINE — press E to override security";
+            } else if (hackActive) {
+                const remaining = Math.max(0, Math.ceil((hackDeadline - now) / 1000));
+                if (remaining === 0) {
+                    hackActive = false;
+                    hackIndex = 0;
+                    if (terminalLight) terminalLight.material.emissive.set(0x300504);
+                    if (hudEl) hudEl.textContent = "OVERRIDE FAILED — press E at the terminal to retry";
+                } else if (hudEl) {
+                    hudEl.textContent = `OVERRIDE ${hackIndex}/3 — type R G T — ${remaining}s`;
+                }
+            } else if (hudEl) {
+                hudEl.textContent = eventStage === 0
+                    ? "Find the red breaker"
+                    : "Find the hidden terminal in the west alcove";
+            }
+        }
+
+        function startHack() {
+            if (eventStage !== 1 || hackActive || hackComplete) return;
+            hackActive = true;
+            hackIndex = 0;
+            hackDeadline = performance.now() + 18000;
+            if (terminalLight) terminalLight.material.emissive.set(0x2ee68d);
+        }
+
+        function completeHack() {
+            hackActive = false;
+            hackComplete = true;
+            if (terminalScreen) terminalScreen.material.emissive.set(0x2ee68d);
+            if (terminalLight) terminalLight.material.emissive.set(0x2ee68d);
+            if (exitDoor && exitDoor.children[1]) {
+                exitDoor.children[1].rotation.y = -Math.PI / 2;
+                exitDoor.children[1].position.x = -0.68;
+            }
+        }
+
+        function triggerEscape() {
+            if (escapeTriggered || scareTriggered || !hackComplete) return;
+            escapeTriggered = true;
+            keys.w = keys.a = keys.s = keys.d = false;
+            if (escapeEl) escapeEl.classList.add("active");
+            setTimeout(() => closeEasterEgg(), 4200);
+        }
 
         function isFigureVisible() {
             const camDir = new THREE.Vector3();
@@ -1030,9 +1373,10 @@
             scareTriggered = true;
             eggPlayScare(audioCtx, masterGain);
             if (scareFlashEl) scareFlashEl.classList.add("active");
+            if (deathEl) deathEl.classList.add("active");
             flickerBase = 0;
             keys.w = keys.a = keys.s = keys.d = false;
-            setTimeout(() => closeEasterEgg(), 1350);
+            setTimeout(() => closeEasterEgg(), 4200);
         }
 
         /* Movement: WASD */
@@ -1040,6 +1384,21 @@
         const onKeyDown = (e) => {
             const k = e.key.toLowerCase();
             if (k in keys) keys[k] = true;
+            if (k === "e") {
+                const clueDistance = Math.hypot(camera.position.x - cluePosition.x, camera.position.z - cluePosition.z);
+                const terminalDistance = Math.hypot(camera.position.x - terminalPosition.x, camera.position.z - terminalPosition.z);
+                if (eventStage === 0 && clueDistance < 2.0) {
+                    eventStage = 1;
+                    if (clueLight) clueLight.material.emissive.set(0x2ee68d);
+                    if (hudEl) hudEl.textContent = "Power restored — find the hidden terminal in the west alcove";
+                } else if (eventStage === 1 && terminalDistance < 2.2) {
+                    startHack();
+                }
+            }
+            if (hackActive && k === hackCode[hackIndex]) {
+                hackIndex++;
+                if (hackIndex === hackCode.length) completeHack();
+            }
             if (e.key === "Escape") closeEasterEgg();
         };
         const onKeyUp = (e) => {
@@ -1073,6 +1432,8 @@
         function animate() {
             rafId = requestAnimationFrame(animate);
             const dt = Math.min(clock.getDelta(), 0.1);
+            if (figureMixer) figureMixer.update(dt);
+            updateObjective(performance.now());
 
             camera.rotation.order = "YXZ";
             camera.rotation.y = yaw;
@@ -1098,31 +1459,48 @@
             const noise = Math.sin(flickerT * 37) * Math.sin(flickerT * 5.2);
             flicker.intensity = flickerBase + noise * (flickerBase * 0.55) + (Math.random() < 0.035 ? -flickerBase * 0.85 : 0);
 
-            /* Statue mechanic: creep closer while unseen, freeze while watched,
-               jump-scare + lights-out once it reaches the player. */
-            const distToFigure = camera.position.distanceTo(figure.position);
-            if (!scareTriggered) {
-                if (distToFigure <= 1.6) {
+                /* The figure stalks slowly while watched and rushes in unseen,
+                    making the player react instead of waiting for a frozen statue. */
+            const dxToFigure = camera.position.x - figure.position.x;
+            const dzToFigure = camera.position.z - figure.position.z;
+            const distToFigure = Math.hypot(dxToFigure, dzToFigure);
+            if (!scareTriggered && !escapeTriggered) {
+                if (hackComplete && Math.hypot(camera.position.x, camera.position.z + 10.7) < 1.7) {
+                    triggerEscape();
+                }
+                if (distToFigure <= PLAYER_RADIUS + FIGURE_CONTACT_RADIUS) {
                     triggerJumpScare();
                 } else {
-                    if (!isFigureVisible()) {
-                        const step = new THREE.Vector3(
-                            camera.position.x - figure.position.x,
-                            0,
-                            camera.position.z - figure.position.z
+                    const visibility = isFigureVisible();
+                    const step = new THREE.Vector3(
+                        camera.position.x - figure.position.x,
+                        0,
+                        camera.position.z - figure.position.z
+                    );
+                    if (step.lengthSq() > 0.0001) {
+                        const chaseSpeed = visibility ? 0.3 : 1.05;
+                        const contactDistance = PLAYER_RADIUS + FIGURE_CONTACT_RADIUS;
+                        const remainingDistance = Math.max(0, distToFigure - contactDistance);
+                        step.normalize().multiplyScalar(Math.min(chaseSpeed * dt, remainingDistance));
+                        figure.position.add(step);
+                        figure.position.x = THREE.MathUtils.clamp(
+                            figure.position.x,
+                            roomBound.minX,
+                            roomBound.maxX
                         );
-                        if (step.lengthSq() > 0.0001) {
-                            step.normalize().multiplyScalar(Math.min(1.5 * dt, distToFigure - 1.3));
-                            figure.position.add(step);
-                        }
-                        figure.lookAt(camera.position.x, figure.position.y, camera.position.z);
+                        figure.position.z = THREE.MathUtils.clamp(
+                            figure.position.z,
+                            roomBound.minZ,
+                            roomBound.maxZ
+                        );
+                    }
+                    figure.lookAt(camera.position.x, figure.position.y + 1.1, camera.position.z);
 
-                        footstepTimer -= dt;
-                        if (footstepTimer <= 0) {
-                            const proximity = THREE.MathUtils.clamp(1 - distToFigure / 15, 0, 1);
-                            eggPlayFootstep(audioCtx, masterGain, 0.12 + proximity * 0.35);
-                            footstepTimer = THREE.MathUtils.lerp(2.4, 0.4, proximity) + Math.random() * 0.5;
-                        }
+                    footstepTimer -= dt;
+                    if (footstepTimer <= 0) {
+                        const proximity = THREE.MathUtils.clamp(1 - distToFigure / 15, 0, 1);
+                        eggPlayFootstep(audioCtx, masterGain, 0.12 + proximity * 0.35);
+                        footstepTimer = THREE.MathUtils.lerp(2.4, 0.35, proximity) + Math.random() * 0.5;
                     }
                     if (masterGain) {
                         const proximity = THREE.MathUtils.clamp(1 - distToFigure / 15, 0, 1);
@@ -1153,6 +1531,8 @@
             if (document.pointerLockElement === canvas) document.exitPointerLock();
             renderer.dispose();
             if (scareFlashEl) scareFlashEl.classList.remove("active");
+            if (deathEl) deathEl.classList.remove("active");
+            if (escapeEl) escapeEl.classList.remove("active");
             if (audioCtx) {
                 [drone && drone.osc, drone && drone.lfo, drone && drone.noiseSrc].forEach((node) => {
                     if (!node) return;
@@ -1178,9 +1558,13 @@
         gameEl.innerHTML =
             '<canvas id="egg-canvas"></canvas>' +
             '<div class="egg-crosshair"></div>' +
-            '<p class="egg-hud">WASD to move &middot; move mouse to look &middot; click to lock cursor &middot; Esc to leave</p>' +
+            '<p class="egg-hud">Find the red breaker</p>' +
             '<button class="egg-exit" id="egg-exit" aria-label="Leave the office">Esc — leave</button>' +
-            '<div class="egg-scare-flash" id="egg-scare-flash"></div>';
+            '<div class="egg-scare-flash" id="egg-scare-flash"></div>' +
+            '<div class="egg-death" id="egg-death" aria-live="assertive">' +
+            '<strong>YOU ARE DEAD</strong><span>the office has you</span></div>' +
+            '<div class="egg-escape" id="egg-escape" aria-live="assertive">' +
+            '<strong>YOU ESCAPED WORK</strong><span>security override complete</span></div>';
         document.getElementById("egg-exit").addEventListener("click", () => closeEasterEgg());
         overlay.classList.remove("active");
         overlay.setAttribute("aria-hidden", "true");

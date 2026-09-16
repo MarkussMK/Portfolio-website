@@ -13,7 +13,7 @@
      never delays first paint. -->
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"></noscript>
-<link rel="stylesheet" href="css/style.css?v=16">
+<link rel="stylesheet" href="css/style.css?v=18">
 <script type="importmap">
 {
     "imports": {
@@ -480,12 +480,20 @@
         <div class="egg-game" id="egg-game">
             <canvas id="egg-canvas"></canvas>
             <div class="egg-crosshair"></div>
-            <p class="egg-hud">WASD to move &middot; move mouse to look &middot; click to lock cursor &middot; Esc to leave</p>
+            <p class="egg-hud">Find the red breaker</p>
             <button class="egg-exit" id="egg-exit" aria-label="Leave the office">Esc — leave</button>
             <div class="egg-scare-flash" id="egg-scare-flash"></div>
+            <div class="egg-death" id="egg-death" aria-live="assertive">
+                <strong>YOU ARE DEAD</strong>
+                <span>the office has you</span>
+            </div>
+            <div class="egg-escape" id="egg-escape" aria-live="assertive">
+                <strong>YOU ESCAPED WORK</strong>
+                <span>security override complete</span>
+            </div>
         </div>
     </div>
 
-    <script src="js/main.js?v=16"></script>
+    <script src="js/main.js?v=39"></script>
 </body>
 </html>
