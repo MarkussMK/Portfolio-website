@@ -23,6 +23,8 @@ built with plain HTML/CSS/JS — no framework, no build step.
 - **Hidden easter egg (desktop only)** — clicking "Work" 10x quickly launches a WASD
   horror-office mini-game (lazy-loads three.js only when triggered). Skipped entirely on
   touch devices since it needs a keyboard + pointer lock.
+- **Animated zombie chaser** — the easter egg uses Quaternius' Zombie_Ribcage model from the
+  Zombie Apocalypse Kit, licensed CC0 1.0; the model is served locally from `models/`.
 - **Responsive** — tuned layout, spacing, and 3D-box fallback for phones/tablets.
 
 ---
@@ -43,5 +45,8 @@ built with plain HTML/CSS/JS — no framework, no build step.
 ## 🛠 Notes
 
 - No external dependencies except Google Fonts and, only when the easter egg is triggered,
-  three.js from a CDN.
+  three.js and its GLTF loader from a CDN.
+- `models/Zombie_Ribcage.gltf` is by Quaternius, from the
+  [Zombie Apocalypse Kit](https://quaternius.com/packs/zombieapocalypsekit.html), under
+  [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
 - Deployed via GitHub Pages straight from `main` (custom domain via `CNAME`).

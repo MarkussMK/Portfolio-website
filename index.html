@@ -312,47 +312,122 @@
 
         <!-- Project case-file modals -->
         <div class="project-modal-overlay" id="modal-p1" data-modal>
-            <div class="project-modal">
+            <div class="project-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-p1">
                 <button class="project-modal-close" data-close aria-label="Close case file">✕</button>
-                <span class="box-tag legendary">[ Legendary ]</span>
-                <h3>Electricity Price Forecasting for Solar Panels</h3>
-                <p>Real-time automation solution streaming NordPool electricity market data straight into a
-                    PLC via TwinCAT 3, so solar systems react to live pricing — charging, discharging, or
-                    exporting power at the most cost-efficient moments without any manual intervention.</p>
-                <div class="work-tags"><span>TwinCAT 3</span><span>PLC</span><span>API Integration</span><span>Real-time Systems</span></div>
+                <div class="project-modal-heading">
+                    <span class="project-file-id">PROJECT FILE <span>01</span></span>
+                    <span class="box-tag legendary">[ Legendary ]</span>
+                </div>
+                <div class="project-modal-main">
+                    <div class="project-modal-copy">
+                        <h3 id="modal-title-p1">Electricity Price Forecasting for Solar Panels</h3>
+                        <p>Real-time automation solution streaming NordPool electricity market data straight into a
+                            PLC via TwinCAT 3, so solar systems react to live pricing — charging, discharging, or
+                            exporting power at the most cost-efficient moments without any manual intervention.</p>
+                    </div>
+                    <div class="project-modal-art art-energy" aria-hidden="true">
+                        <span class="art-label">LIVE ENERGY FLOW</span>
+                        <span class="art-live"><i></i> STREAMING</span>
+                        <div class="art-energy-chart">
+                            <i style="--bar: 32%"></i><i style="--bar: 48%"></i><i style="--bar: 38%"></i>
+                            <i style="--bar: 68%"></i><i style="--bar: 54%"></i><i style="--bar: 86%"></i>
+                            <i style="--bar: 72%"></i><i style="--bar: 100%"></i>
+                        </div>
+                        <span class="art-readout">€ 42.8 <small>/ MWh</small></span>
+                    </div>
+                </div>
+                <div class="project-modal-footer">
+                    <span class="project-stack-label">SYSTEM STACK</span>
+                    <div class="work-tags"><span>TwinCAT 3</span><span>PLC</span><span>API Integration</span><span>Real-time Systems</span></div>
+                </div>
             </div>
         </div>
         <div class="project-modal-overlay" id="modal-p2" data-modal>
-            <div class="project-modal">
+            <div class="project-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-p2">
                 <button class="project-modal-close" data-close aria-label="Close case file">✕</button>
-                <span class="box-tag epic">[ Epic ]</span>
-                <h3>Youth Entrepreneurship Research — Latvia</h3>
-                <p>Authored a scientific research paper analysing the commercial activity and advertising tools
-                    used by young entrepreneurs in the food industry — combining field data collection with
-                    structured academic documentation.</p>
-                <div class="work-tags"><span>Research</span><span>Data Analysis</span><span>Documentation</span></div>
+                <div class="project-modal-heading">
+                    <span class="project-file-id">PROJECT FILE <span>02</span></span>
+                    <span class="box-tag epic">[ Epic ]</span>
+                </div>
+                <div class="project-modal-main">
+                    <div class="project-modal-copy">
+                        <h3 id="modal-title-p2">Youth Entrepreneurship Research — Latvia</h3>
+                        <p>Authored a scientific research paper analysing the commercial activity and advertising tools
+                            used by young entrepreneurs in the food industry — combining field data collection with
+                            structured academic documentation.</p>
+                    </div>
+                    <div class="project-modal-art art-research" aria-hidden="true">
+                        <span class="art-label">FIELD NOTES / LV</span>
+                        <div class="art-paper">
+                            <span class="art-paper-title"></span><span></span><span></span>
+                            <span class="art-paper-short"></span><span></span><span></span><span class="art-paper-short"></span>
+                            <i>RESEARCH</i>
+                        </div>
+                        <span class="art-paper-index">56°57' N&nbsp; 24°06' E</span>
+                    </div>
+                </div>
+                <div class="project-modal-footer">
+                    <span class="project-stack-label">METHODS &amp; TOOLS</span>
+                    <div class="work-tags"><span>Research</span><span>Data Analysis</span><span>Documentation</span></div>
+                </div>
             </div>
         </div>
         <div class="project-modal-overlay" id="modal-p3" data-modal>
-            <div class="project-modal">
+            <div class="project-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-p3">
                 <button class="project-modal-close" data-close aria-label="Close case file">✕</button>
-                <span class="box-tag rare">[ Rare ]</span>
-                <h3>Web QA &amp; Performance Testing</h3>
-                <p>Worked as a junior tester implementing JMeter performance testing to ensure optimal load
-                    handling and response times for web applications, building repeatable test plans and
-                    reporting on throughput/latency under simulated load.</p>
-                <div class="work-tags"><span>JMeter</span><span>Performance</span><span>QA</span></div>
+                <div class="project-modal-heading">
+                    <span class="project-file-id">PROJECT FILE <span>03</span></span>
+                    <span class="box-tag rare">[ Rare ]</span>
+                </div>
+                <div class="project-modal-main">
+                    <div class="project-modal-copy">
+                        <h3 id="modal-title-p3">Web QA &amp; Performance Testing</h3>
+                        <p>Worked as a junior tester implementing JMeter performance testing to ensure optimal load
+                            handling and response times for web applications, building repeatable test plans and
+                            reporting on throughput/latency under simulated load.</p>
+                    </div>
+                    <div class="project-modal-art art-testing" aria-hidden="true">
+                        <span class="art-label">LOAD TEST / 04</span>
+                        <div class="art-test-status"><i></i> ALL CHECKS PASSED</div>
+                        <div class="art-test-line"><span>RESPONSE</span><i><b style="--bar: 84%"></b></i><small>84ms</small></div>
+                        <div class="art-test-line"><span>THROUGHPUT</span><i><b style="--bar: 68%"></b></i><small>6.8k</small></div>
+                        <div class="art-test-line"><span>STABILITY</span><i><b style="--bar: 96%"></b></i><small>96%</small></div>
+                        <span class="art-test-footer">J M E T E R&nbsp; /&nbsp; REPORT READY</span>
+                    </div>
+                </div>
+                <div class="project-modal-footer">
+                    <span class="project-stack-label">TOOLS &amp; FOCUS</span>
+                    <div class="work-tags"><span>JMeter</span><span>Performance</span><span>QA</span></div>
+                </div>
             </div>
         </div>
         <div class="project-modal-overlay" id="modal-p4" data-modal>
-            <div class="project-modal">
+            <div class="project-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-p4">
                 <button class="project-modal-close" data-close aria-label="Close case file">✕</button>
-                <span class="box-tag common">[ Live ]</span>
-                <h3>Portfolio Quest — Gamified Portfolio</h3>
-                <p>A fully gamified, XP-leveling portfolio site with a retro arcade (Pac-Man, Tetris, Breakout,
-                    Pong, Space Invaders, Asteroids) built in vanilla JS — including this very redesign, built
-                    from scratch as a self-contained experiment in a different visual direction.</p>
-                <div class="work-tags"><span>HTML5</span><span>CSS3</span><span>JavaScript</span></div>
+                <div class="project-modal-heading">
+                    <span class="project-file-id">PROJECT FILE <span>04</span></span>
+                    <span class="box-tag common">[ Live ]</span>
+                </div>
+                <div class="project-modal-main">
+                    <div class="project-modal-copy">
+                        <h3 id="modal-title-p4">Portfolio Quest — Gamified Portfolio</h3>
+                        <p>A fully gamified, XP-leveling portfolio site with a retro arcade (Pac-Man, Tetris, Breakout,
+                            Pong, Space Invaders, Asteroids) built in vanilla JS — including this very redesign, built
+                            from scratch as a self-contained experiment in a different visual direction.</p>
+                    </div>
+                    <div class="project-modal-art art-quest" aria-hidden="true">
+                        <span class="art-label">PLAYER 01 / READY</span>
+                        <div class="art-pixels">
+                            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                        </div>
+                        <div class="art-quest-level"><span>LVL 08</span><i><b></b></i><span>XP +240</span></div>
+                    </div>
+                </div>
+                <div class="project-modal-footer">
+                    <span class="project-stack-label">BUILT WITH</span>
+                    <div class="work-tags"><span>HTML5</span><span>CSS3</span><span>JavaScript</span></div>
+                </div>
             </div>
         </div>
 
@@ -494,6 +569,6 @@
         </div>
     </div>
 
-    <script src="js/main.js?v=39"></script>
+    <script src="js/main.js?v=42"></script>
 </body>
 </html>

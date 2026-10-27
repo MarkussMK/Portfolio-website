@@ -833,7 +833,7 @@
         scene.add(ambient);
         const fill = new THREE.HemisphereLight(0xa38b78, 0x34251a, 2.6);
         scene.add(fill);
-        const flicker = new THREE.PointLight(0xff7938, 220, 26, 2);
+        const flicker = new THREE.PointLight(0xff7938, 130, 26, 2);
         flicker.position.set(0, 2.6, 1.5);
         flicker.castShadow = true;
         flicker.shadow.mapSize.set(1024, 1024);
@@ -841,7 +841,7 @@
         flicker.shadow.camera.far = 18;
         flicker.shadow.bias = -0.003;
         scene.add(flicker);
-        let flickerBase = 220;
+        let flickerBase = 130;
 
         /* Room + desks: a procedural office (rows of cubicle desks, monitors)
            built entirely from primitives - no external 3D model/texture assets
@@ -861,15 +861,45 @@
         let colliders = [];
         {
             const roomSize = 24;
-            const floorMat = new THREE.MeshStandardMaterial({ color: 0x120e0b, roughness: 0.95 });
-            const wallMat = new THREE.MeshStandardMaterial({ color: 0x1b1613, roughness: 0.9 });
+            const floorCanvas = document.createElement("canvas");
+            floorCanvas.width = 512;
+            floorCanvas.height = 512;
+            const floorContext = floorCanvas.getContext("2d");
+            floorContext.fillStyle = "#111316";
+            floorContext.fillRect(0, 0, 512, 512);
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const shade = (row + col) % 2 === 0 ? "#151719" : "#121416";
+                    floorContext.fillStyle = shade;
+                    floorContext.fillRect(col * 64, row * 64, 64, 64);
+                    floorContext.strokeStyle = "rgba(151, 118, 87, 0.13)";
+                    floorContext.lineWidth = 2;
+                    floorContext.strokeRect(col * 64 + 1, row * 64 + 1, 62, 62);
+                }
+            }
+            floorContext.strokeStyle = "rgba(222, 121, 55, 0.12)";
+            floorContext.lineWidth = 3;
+            floorContext.beginPath();
+            floorContext.moveTo(0, 256);
+            floorContext.lineTo(512, 256);
+            floorContext.moveTo(256, 0);
+            floorContext.lineTo(256, 512);
+            floorContext.stroke();
+            const floorTexture = new THREE.CanvasTexture(floorCanvas);
+            floorTexture.wrapS = THREE.RepeatWrapping;
+            floorTexture.wrapT = THREE.RepeatWrapping;
+            floorTexture.repeat.set(6, 6);
+            floorTexture.colorSpace = THREE.SRGBColorSpace;
+            const floorMat = new THREE.MeshStandardMaterial({ map: floorTexture, color: 0xb9b9b9, roughness: 0.95 });
+            const wallMat = new THREE.MeshStandardMaterial({ color: 0x201b18, roughness: 0.88, metalness: 0.12 });
+            const ceilingMat = new THREE.MeshStandardMaterial({ color: 0x171719, roughness: 0.96 });
 
             const floor = new THREE.Mesh(new THREE.PlaneGeometry(roomSize, roomSize), floorMat);
             floor.rotation.x = -Math.PI / 2;
             floor.receiveShadow = true;
             scene.add(floor);
 
-            const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(roomSize, roomSize), floorMat);
+            const ceiling = new THREE.Mesh(new THREE.PlaneGeometry(roomSize, roomSize), ceilingMat);
             ceiling.position.y = 3.2;
             ceiling.rotation.x = Math.PI / 2;
             ceiling.receiveShadow = true;
@@ -904,54 +934,65 @@
                     scene.add(trim);
                 });
             });
-            for (let i = -8; i <= 8; i += 4) {
-                const ceilingLight = new THREE.Mesh(
-                    new THREE.BoxGeometry(1.4, 0.04, 0.28),
-                    new THREE.MeshStandardMaterial({ color: 0x62605a, emissive: 0xb34b24, emissiveIntensity: 0.8 })
-                );
-                ceilingLight.position.set(i, 3.05, 0);
-                scene.add(ceilingLight);
+            const wallRibMat = new THREE.MeshStandardMaterial({ color: 0x34251f, roughness: 0.76, metalness: 0.16 });
+            for (let i = -10; i <= 10; i += 4) {
+                if (i === 2 || i === -2) continue;
+                [-11.82, 11.82].forEach((z) => {
+                    const rib = new THREE.Mesh(new THREE.BoxGeometry(0.08, 2.65, 0.1), wallRibMat);
+                    rib.position.set(i, 1.55, z);
+                    scene.add(rib);
+                });
             }
-            [-8, 8].forEach((x) => {
-                const panel = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.2, 2.2), metalMat);
-                panel.position.set(x, 1.65, -2);
-                scene.add(panel);
-                const warning = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.28, 1.4), warningMat);
-                warning.position.set(x + (x < 0 ? 0.06 : -0.06), 1.8, -2);
-                scene.add(warning);
+            [-8, -4, 0, 4, 8].forEach((z) => {
+                [-11.82, 11.82].forEach((x) => {
+                    const rib = new THREE.Mesh(new THREE.BoxGeometry(0.1, 2.65, 0.08), wallRibMat);
+                    rib.position.set(x, 1.55, z);
+                    scene.add(rib);
+                });
             });
-
+            const fixtureFrameMat = new THREE.MeshStandardMaterial({ color: 0x252729, roughness: 0.55, metalness: 0.6 });
+            const fixtureLightMat = new THREE.MeshStandardMaterial({
+                color: 0x9b4726,
+                emissive: 0xff6a32,
+                emissiveIntensity: 0.9,
+                roughness: 0.35,
+            });
+            for (let z = -8; z <= 8; z += 8) {
+                for (let x = -8; x <= 8; x += 8) {
+                    const fixture = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.12, 0.62), fixtureFrameMat);
+                    fixture.position.set(x, 3.02, z);
+                    scene.add(fixture);
+                    const diffuser = new THREE.Mesh(new THREE.BoxGeometry(1.86, 0.035, 0.38), fixtureLightMat);
+                    diffuser.position.set(x, 2.94, z);
+                    scene.add(diffuser);
+                }
+            }
             function addWarningBoard(lines, x, z, facing) {
                 const boardCanvas = document.createElement("canvas");
                 boardCanvas.width = 512;
                 boardCanvas.height = 128;
                 const boardContext = boardCanvas.getContext("2d");
-                boardContext.fillStyle = "#120809";
+                boardContext.fillStyle = "#111719";
                 boardContext.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
-                boardContext.strokeStyle = "#8e2723";
-                boardContext.lineWidth = 5;
+                boardContext.strokeStyle = "#765739";
+                boardContext.lineWidth = 4;
                 boardContext.strokeRect(8, 8, boardCanvas.width - 16, boardCanvas.height - 16);
-                boardContext.font = "bold 25px monospace";
+                boardContext.font = "bold 24px monospace";
                 boardContext.textAlign = "center";
                 boardContext.textBaseline = "middle";
-                boardContext.fillStyle = "#ed3730";
-                boardContext.shadowColor = "#ff1710";
-                boardContext.shadowBlur = 14;
+                boardContext.fillStyle = "#e3b46b";
                 lines.forEach((line, index) => {
                     boardContext.fillText(line, boardCanvas.width / 2, 38 + index * 42);
                 });
                 const boardTexture = new THREE.CanvasTexture(boardCanvas);
                 const board = new THREE.Mesh(
-                    new THREE.PlaneGeometry(1.8, 0.45),
+                    new THREE.PlaneGeometry(1.45, 0.36),
                     new THREE.MeshBasicMaterial({ map: boardTexture, transparent: true, toneMapped: false })
                 );
                 board.position.set(x, 2.35, z);
                 board.rotation.y = facing;
                 scene.add(board);
             }
-            addWarningBoard(["DO NOT LOOK BACK", "IT LEARNS YOUR NAME"], -11.78, -2.0, Math.PI / 2);
-            addWarningBoard(["OVERTIME NEVER ENDS", "KEEP RUNNING"], 11.78, -2.0, -Math.PI / 2);
-            addWarningBoard(["NO EXIT", "UNTIL POWER RETURNS"], 0, -11.78, 0);
 
             const doorFrameMat = new THREE.MeshStandardMaterial({ color: 0x25292b, roughness: 0.5, metalness: 0.65 });
             const doorMat = new THREE.MeshStandardMaterial({
@@ -979,11 +1020,27 @@
             const threshold = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.12, 0.5), doorFrameMat);
             threshold.position.set(0, 0.06, -11.55);
             exitDoor.add(threshold);
+            const exitCanvas = document.createElement("canvas");
+            exitCanvas.width = 512;
+            exitCanvas.height = 128;
+            const exitContext = exitCanvas.getContext("2d");
+            exitContext.fillStyle = "#09261a";
+            exitContext.fillRect(0, 0, 512, 128);
+            exitContext.strokeStyle = "#48d995";
+            exitContext.lineWidth = 6;
+            exitContext.strokeRect(5, 5, 502, 118);
+            exitContext.fillStyle = "#7df3b2";
+            exitContext.font = "bold 58px monospace";
+            exitContext.textAlign = "center";
+            exitContext.textBaseline = "middle";
+            exitContext.fillText("EXIT  //  OPEN", 256, 65);
+            const exitTexture = new THREE.CanvasTexture(exitCanvas);
+            exitTexture.colorSpace = THREE.SRGBColorSpace;
             const exitSign = new THREE.Mesh(
-                new THREE.BoxGeometry(1.25, 0.32, 0.08),
-                new THREE.MeshStandardMaterial({ color: 0x173b2b, emissive: 0x2eaf70, emissiveIntensity: 2.2 })
+                new THREE.PlaneGeometry(1.45, 0.36),
+                new THREE.MeshBasicMaterial({ map: exitTexture, toneMapped: false })
             );
-            exitSign.position.set(0, 2.72, -11.55);
+            exitSign.position.set(0, 2.72, -11.48);
             exitDoor.add(exitSign);
             [-0.74, 0.74].forEach((x) => {
                 const lightStrip = new THREE.Mesh(
@@ -1004,16 +1061,65 @@
             const terminalMat = new THREE.MeshStandardMaterial({ color: 0x202628, roughness: 0.5, metalness: 0.4 });
             const terminalScreenMat = new THREE.MeshStandardMaterial({ color: 0x10251e, emissive: 0x2ee68d, emissiveIntensity: 1.2 });
             const terminal = new THREE.Group();
-            const terminalBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.7, 0.42), terminalMat);
-            terminalBody.position.set(terminalPosition.x, 0.35, terminalPosition.z);
+            terminal.position.set(terminalPosition.x, 0, terminalPosition.z);
+            terminal.rotation.y = Math.PI / 2;
+            const terminalBase = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.12, 0.72), doorFrameMat);
+            terminalBase.position.y = 0.06;
+            terminal.add(terminalBase);
+            const terminalBody = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.84, 0.56), terminalMat);
+            terminalBody.position.y = 0.52;
             terminal.add(terminalBody);
-            terminalScreen = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.3, 0.03), terminalScreenMat);
-            terminalScreen.position.set(terminalPosition.x, 0.55, terminalPosition.z - 0.23);
+            terminalScreen = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.48, 0.05), terminalScreenMat);
+            terminalScreen.position.set(0, 1.22, 0);
             terminal.add(terminalScreen);
+            const terminalCanvas = document.createElement("canvas");
+            terminalCanvas.width = 512;
+            terminalCanvas.height = 288;
+            const terminalContext = terminalCanvas.getContext("2d");
+            terminalContext.fillStyle = "#07150f";
+            terminalContext.fillRect(0, 0, 512, 288);
+            terminalContext.strokeStyle = "rgba(91, 230, 160, 0.2)";
+            terminalContext.lineWidth = 2;
+            for (let grid = 0; grid < 512; grid += 32) {
+                terminalContext.beginPath();
+                terminalContext.moveTo(grid, 0);
+                terminalContext.lineTo(grid, 288);
+                terminalContext.stroke();
+            }
+            terminalContext.fillStyle = "#8fffc1";
+            terminalContext.font = "bold 30px monospace";
+            terminalContext.fillText("SECURITY OVERRIDE", 28, 62);
+            terminalContext.fillStyle = "#48d995";
+            terminalContext.font = "22px monospace";
+            terminalContext.fillText("POWER LINK  /  STANDBY", 28, 112);
+            terminalContext.fillStyle = "#e7a24e";
+            terminalContext.fillText("AUTHORIZATION REQUIRED", 28, 184);
+            terminalContext.fillStyle = "#589477";
+            terminalContext.font = "16px monospace";
+            terminalContext.fillText("ACCESS TERMINAL 04", 28, 246);
+            const terminalTexture = new THREE.CanvasTexture(terminalCanvas);
+            terminalTexture.colorSpace = THREE.SRGBColorSpace;
+            const terminalFace = new THREE.Mesh(
+                new THREE.PlaneGeometry(0.61, 0.36),
+                new THREE.MeshBasicMaterial({ map: terminalTexture, toneMapped: false })
+            );
+            terminalFace.position.set(0, 1.22, 0.028);
+            terminal.add(terminalFace);
+            const terminalKeys = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.04, 0.24), doorFrameMat);
+            terminalKeys.position.set(0, 0.98, 0.22);
+            terminal.add(terminalKeys);
+            for (let key = 0; key < 6; key++) {
+                const terminalKey = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.018, 0.045), metalMat);
+                terminalKey.position.set(-0.2 + (key % 3) * 0.2, 1.01, 0.15 + Math.floor(key / 3) * 0.1);
+                terminal.add(terminalKey);
+            }
             terminalLight = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.06, 0.03), warningMat);
-            terminalLight.position.set(terminalPosition.x + 0.28, 0.18, terminalPosition.z - 0.23);
+            terminalLight.position.set(0.22, 0.2, 0.29);
             terminal.add(terminalLight);
             scene.add(terminal);
+            const terminalGlow = new THREE.PointLight(0x2ee68d, 3.5, 3.6, 2);
+            terminalGlow.position.set(terminalPosition.x + 1.1, 1.15, terminalPosition.z);
+            scene.add(terminalGlow);
 
             const alcoveMat = new THREE.MeshStandardMaterial({ color: 0x262a2c, roughness: 0.8, metalness: 0.3 });
             [-2.95, -1.05].forEach((z) => {
@@ -1025,31 +1131,34 @@
             });
             const breakerFrame = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.92, 0.08), doorFrameMat);
             breakerFrame.position.set(cluePosition.x, 1.15, cluePosition.z - 0.08);
-            breakerFrame.rotation.y = Math.PI / 2;
+            breakerFrame.rotation.y = -Math.PI / 2;
             scene.add(breakerFrame);
             const breaker = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.68, 0.14), metalMat);
             breaker.position.set(cluePosition.x, 1.15, cluePosition.z);
-            breaker.rotation.y = Math.PI / 2;
+            breaker.rotation.y = -Math.PI / 2;
             scene.add(breaker);
             const breakerLabel = new THREE.Mesh(
                 new THREE.PlaneGeometry(0.5, 0.16),
                 new THREE.MeshBasicMaterial({ color: 0xe4b43b, toneMapped: false })
             );
             breakerLabel.position.set(cluePosition.x - 0.09, 1.62, cluePosition.z - 0.08);
-            breakerLabel.rotation.y = Math.PI / 2;
+            breakerLabel.rotation.y = -Math.PI / 2;
             scene.add(breakerLabel);
             const breakerLever = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.3, 0.08), warningMat);
             breakerLever.position.set(cluePosition.x - 0.08, 1.12, cluePosition.z - 0.18);
-            breakerLever.rotation.set(0, Math.PI / 2, -0.35);
+            breakerLever.rotation.set(0, -Math.PI / 2, -0.35);
             scene.add(breakerLever);
             clueLight = new THREE.Mesh(
                 new THREE.BoxGeometry(0.12, 0.12, 0.04),
                 new THREE.MeshStandardMaterial({ color: 0x9b211b, emissive: 0x8e170f, emissiveIntensity: 1.5 })
             );
             clueLight.position.set(cluePosition.x, 1.15, cluePosition.z - 0.08);
-            clueLight.rotation.y = Math.PI / 2;
+            clueLight.rotation.y = -Math.PI / 2;
             scene.add(clueLight);
             addWarningBoard(["BREAKER", "RESTORE POWER"], cluePosition.x - 0.08, cluePosition.z, -Math.PI / 2);
+            const breakerGlow = new THREE.PointLight(0xff3522, 4.5, 3.8, 2);
+            breakerGlow.position.set(cluePosition.x - 1.1, 1.4, cluePosition.z);
+            scene.add(breakerGlow);
             for (let i = -1; i <= 1; i++) {
                 const hazardStripe = new THREE.Mesh(
                     new THREE.BoxGeometry(0.07, 0.06, 0.26),
@@ -1060,71 +1169,201 @@
                 scene.add(hazardStripe);
             }
 
-            const deskMat = new THREE.MeshStandardMaterial({ color: 0x4a2c20, roughness: 0.72 });
-            const deskEdgeMat = new THREE.MeshStandardMaterial({ color: 0x21130f, roughness: 0.85 });
-            const monitorMat = new THREE.MeshStandardMaterial({
-                color: 0x111716,
-                emissive: 0x245544,
-                emissiveIntensity: 0.7,
-                roughness: 0.45,
-            });
-            const chairMat = new THREE.MeshStandardMaterial({ color: 0x171c20, roughness: 0.78 });
+            const deskMat = new THREE.MeshStandardMaterial({ color: 0x49382c, roughness: 0.58, metalness: 0.08 });
+            const deskEdgeMat = new THREE.MeshStandardMaterial({ color: 0x222326, roughness: 0.72, metalness: 0.35 });
+            const partitionMat = new THREE.MeshStandardMaterial({ color: 0x323234, roughness: 0.92 });
+            const partitionTrimMat = new THREE.MeshStandardMaterial({ color: 0x665144, roughness: 0.62, metalness: 0.2 });
+            const monitorFrameMat = new THREE.MeshStandardMaterial({ color: 0x171a1c, roughness: 0.42, metalness: 0.45 });
+            const keyboardMat = new THREE.MeshStandardMaterial({ color: 0x17191b, roughness: 0.62, metalness: 0.2 });
+            const keyMat = new THREE.MeshStandardMaterial({ color: 0x474440, roughness: 0.72 });
+            const chairMat = new THREE.MeshStandardMaterial({ color: 0x292a2b, roughness: 0.76 });
+            const chairSeamMat = new THREE.MeshStandardMaterial({ color: 0x45403a, roughness: 0.9 });
+            const ledMat = new THREE.MeshBasicMaterial({ color: 0x61d89b });
             const deskPositions = [
                 [-4, -4, 0], [0, -4, 0], [4, -4, 0],
                 [-4, 0, Math.PI], [4, 0, Math.PI],
-                [-4, 4, 0], [0, 4, 0], [4, 4, 0],
+                [-4, 4, 0], [4, 4, 0],
             ];
-            const deskGeo = new THREE.BoxGeometry(1.8, 0.12, 0.9);
-            const legGeo = new THREE.BoxGeometry(0.1, 0.72, 0.1);
-            const chairSeatGeo = new THREE.BoxGeometry(0.46, 0.1, 0.46);
-            const chairBackGeo = new THREE.BoxGeometry(0.46, 0.56, 0.1);
+            const deskGeo = new THREE.BoxGeometry(2.0, 0.13, 1.05);
+            const legGeo = new THREE.BoxGeometry(0.09, 0.72, 0.09);
+            const keyGeo = new THREE.BoxGeometry(0.038, 0.012, 0.035);
+            deskPositions.forEach(([x, z, rotY], index) => {
+                const station = new THREE.Group();
+                station.position.set(x, 0, z);
+                station.rotation.y = rotY;
+                scene.add(station);
 
-            deskPositions.forEach(([x, z, rotY]) => {
                 const desk = new THREE.Mesh(deskGeo, deskMat);
-                desk.position.set(x, 0.78, z);
-                desk.rotation.y = rotY;
+                desk.position.y = 0.78;
                 desk.castShadow = true;
                 desk.receiveShadow = true;
-                scene.add(desk);
+                station.add(desk);
                 colliders.push({
                     min: { x: x - 1.0, z: z - 0.62 },
                     max: { x: x + 1.0, z: z + 0.62 },
                 });
 
-                [[-0.78, -0.34], [0.78, -0.34], [-0.78, 0.34], [0.78, 0.34]].forEach(([lx, lz]) => {
+                [[-0.86, -0.43], [0.86, -0.43], [-0.86, 0.43], [0.86, 0.43]].forEach(([lx, lz]) => {
                     const leg = new THREE.Mesh(legGeo, deskEdgeMat);
-                    leg.position.set(x + lx, 0.39, z + lz);
+                    leg.position.set(lx, 0.39, lz);
                     leg.castShadow = true;
-                    scene.add(leg);
+                    station.add(leg);
                 });
-                const modesty = new THREE.Mesh(new THREE.BoxGeometry(1.45, 0.34, 0.06), deskEdgeMat);
-                modesty.position.set(x, 0.58, z + 0.38);
-                modesty.rotation.y = rotY;
-                scene.add(modesty);
 
-                const monitor = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.34, 0.05), monitorMat);
-                monitor.position.set(x, 1.06, z - 0.12);
-                monitor.rotation.y = rotY;
+                const modesty = new THREE.Mesh(new THREE.BoxGeometry(1.58, 0.32, 0.08), deskEdgeMat);
+                modesty.position.set(0, 0.58, -0.43);
+                station.add(modesty);
+
+                const divider = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.66, 0.1), partitionMat);
+                divider.position.set(0, 1.14, -0.58);
+                divider.castShadow = true;
+                station.add(divider);
+                const dividerTop = new THREE.Mesh(new THREE.BoxGeometry(1.96, 0.035, 0.12), partitionTrimMat);
+                dividerTop.position.set(0, 1.49, -0.58);
+                station.add(dividerTop);
+                const dividerBadge = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.12, 0.018), deskEdgeMat);
+                dividerBadge.position.set(0.68, 1.34, -0.523);
+                station.add(dividerBadge);
+                const badgeLight = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.045, 0.025), ledMat);
+                badgeLight.position.set(0.68, 1.34, -0.507);
+                station.add(badgeLight);
+                [-0.94, 0.94].forEach((side) => {
+                    const wing = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.66, 0.84), partitionMat);
+                    wing.position.set(side, 1.14, 0.02);
+                    wing.castShadow = true;
+                    station.add(wing);
+                    const wingTop = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.035, 0.88), partitionTrimMat);
+                    wingTop.position.set(side, 1.49, 0.02);
+                    station.add(wingTop);
+                });
+                const drawerUnit = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.46, 0.58), deskEdgeMat);
+                drawerUnit.position.set(-0.65, 0.34, 0.04);
+                station.add(drawerUnit);
+                [0.42, 0.31, 0.2].forEach((y) => {
+                    const drawerFront = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.018, 0.018), partitionTrimMat);
+                    drawerFront.position.set(-0.65, y, 0.34);
+                    station.add(drawerFront);
+                });
+
+                const monitorStand = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.2, 0.1), deskEdgeMat);
+                monitorStand.position.set(0, 0.94, -0.18);
+                station.add(monitorStand);
+                const monitorFoot = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.035, 0.2), deskEdgeMat);
+                monitorFoot.position.set(0, 0.86, -0.18);
+                station.add(monitorFoot);
+                const monitorGroup = new THREE.Group();
+                monitorGroup.position.set(0, 1.23, -0.25);
+                station.add(monitorGroup);
+                const monitor = new THREE.Mesh(new THREE.BoxGeometry(0.94, 0.62, 0.1), monitorFrameMat);
                 monitor.castShadow = true;
-                scene.add(monitor);
-                const monitorStand = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.16, 0.06), deskEdgeMat);
-                monitorStand.position.set(x, 0.86, z - 0.12);
-                scene.add(monitorStand);
-                const keyboard = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.025, 0.16), deskEdgeMat);
-                keyboard.position.set(x, 0.86, z + 0.18);
-                keyboard.rotation.y = rotY;
-                scene.add(keyboard);
+                monitorGroup.add(monitor);
+                const screenCanvas = document.createElement("canvas");
+                screenCanvas.width = 512;
+                screenCanvas.height = 288;
+                const screenContext = screenCanvas.getContext("2d");
+                screenContext.fillStyle = "#07120f";
+                screenContext.fillRect(0, 0, 512, 288);
+                screenContext.strokeStyle = "rgba(60, 161, 112, 0.12)";
+                screenContext.lineWidth = 1;
+                for (let gridX = 0; gridX < 512; gridX += 32) {
+                    screenContext.beginPath();
+                    screenContext.moveTo(gridX, 0);
+                    screenContext.lineTo(gridX, 288);
+                    screenContext.stroke();
+                }
+                for (let gridY = 0; gridY < 288; gridY += 24) {
+                    screenContext.beginPath();
+                    screenContext.moveTo(0, gridY);
+                    screenContext.lineTo(512, gridY);
+                    screenContext.stroke();
+                }
+                screenContext.fillStyle = "#7de0aa";
+                screenContext.font = "bold 20px monospace";
+                screenContext.fillText(`SYS 0${index + 1}  /  ${index % 2 ? "QA" : "OPS"}`, 24, 36);
+                screenContext.fillStyle = "#477f68";
+                screenContext.font = "15px monospace";
+                for (let line = 0; line < 5; line++) {
+                    screenContext.fillText(
+                        `${line % 2 ? ">" : "·"} ${["PIPELINE NOMINAL", "CHECKING SIGNAL", "LATENCY  0" + (8 + line) + "ms", "NODE CONNECTED", "SYNC COMPLETE"][line]}`,
+                        24,
+                        84 + line * 31
+                    );
+                }
+                screenContext.fillStyle = "#e79248";
+                screenContext.fillRect(420, 238, 42, 8);
+                const deskSignalTexture = new THREE.CanvasTexture(screenCanvas);
+                deskSignalTexture.colorSpace = THREE.SRGBColorSpace;
+                const screen = new THREE.Mesh(
+                    new THREE.PlaneGeometry(0.82, 0.48),
+                    new THREE.MeshBasicMaterial({ map: deskSignalTexture, toneMapped: false })
+                );
+                screen.position.z = 0.052;
+                monitorGroup.add(screen);
 
-                const chairZ = z + (rotY === 0 ? 0.95 : -0.95);
-                const chair = new THREE.Mesh(chairSeatGeo, chairMat);
-                chair.position.set(x, 0.48, chairZ);
-                chair.castShadow = true;
-                scene.add(chair);
-                const chairBack = new THREE.Mesh(chairBackGeo, chairMat);
-                chairBack.position.set(x, 0.78, chairZ + (rotY === 0 ? 0.2 : -0.2));
-                chairBack.rotation.y = rotY;
+                const keyboard = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.035, 0.2), keyboardMat);
+                keyboard.position.set(0, 0.86, 0.23);
+                station.add(keyboard);
+                const keys = new THREE.InstancedMesh(keyGeo, keyMat, 30);
+                const keyTransform = new THREE.Object3D();
+                let keyIndex = 0;
+                for (let row = 0; row < 3; row++) {
+                    for (let col = 0; col < 10; col++) {
+                        keyTransform.position.set(-0.235 + col * 0.051, 0.884, 0.16 + row * 0.052);
+                        keyTransform.updateMatrix();
+                        keys.setMatrixAt(keyIndex++, keyTransform.matrix);
+                    }
+                }
+                station.add(keys);
+                const mouse = new THREE.Mesh(new THREE.SphereGeometry(0.055, 10, 8), deskEdgeMat);
+                mouse.scale.set(0.72, 0.55, 1.15);
+                mouse.position.set(0.48, 0.875, 0.22);
+                station.add(mouse);
+
+                const coffee = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.085, 0.07, 0.13, 12),
+                    new THREE.MeshStandardMaterial({ color: 0x292421, roughness: 0.38 })
+                );
+                coffee.position.set(-0.68, 0.9, 0.22);
+                station.add(coffee);
+                const coffeeTop = new THREE.Mesh(
+                    new THREE.CircleGeometry(0.073, 12),
+                    new THREE.MeshStandardMaterial({ color: 0x100d0b, roughness: 0.22 })
+                );
+                coffeeTop.rotation.x = -Math.PI / 2;
+                coffeeTop.position.set(-0.68, 0.968, 0.22);
+                station.add(coffeeTop);
+
+                const chair = new THREE.Group();
+                chair.position.set(0, 0, 1.08);
+                station.add(chair);
+                const chairPost = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.055, 0.42, 10), deskEdgeMat);
+                chairPost.position.y = 0.42;
+                chair.add(chairPost);
+                const chairBase = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.07, 12), deskEdgeMat);
+                chairBase.position.y = 0.22;
+                chair.add(chairBase);
+                const chairSeat = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.14, 0.54), chairMat);
+                chairSeat.position.y = 0.65;
+                chairSeat.castShadow = true;
+                chair.add(chairSeat);
+                const chairCushion = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.045, 0.42), chairSeamMat);
+                chairCushion.position.set(0, 0.74, 0.01);
+                chair.add(chairCushion);
+                const chairBack = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.65, 0.13), chairMat);
+                chairBack.position.set(0, 1.05, 0.25);
                 chairBack.castShadow = true;
-                scene.add(chairBack);
+                chair.add(chairBack);
+                const chairBackInset = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.45, 0.025), chairSeamMat);
+                chairBackInset.position.set(0, 1.07, 0.176);
+                chair.add(chairBackInset);
+                [-0.37, 0.37].forEach((side) => {
+                    const arm = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.34, 0.06), deskEdgeMat);
+                    arm.position.set(side, 0.82, 0.08);
+                    chair.add(arm);
+                    const armPad = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.045, 0.32), chairMat);
+                    armPad.position.set(side, 0.98, 0.04);
+                    chair.add(armPad);
+                });
             });
 
             roomBound = { minX: -roomSize / 2 + 0.6, maxX: roomSize / 2 - 0.6, minZ: -roomSize / 2 + 0.6, maxZ: roomSize / 2 - 0.6 };
@@ -1132,117 +1371,76 @@
             figureSpawn = { x: roomBound.maxX - 0.3, z: roomBound.maxZ - 0.3 };
         }
 
-                /* A watching presence in the far corner: it creeps closer while outside
-                     the player's view cone. The primitive keeps the game playable offline
-                     until the animated humanoid finishes loading. */
-        let figure;
-                let figureMixer = null;
-        {
-            const figureMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
-            figure = new THREE.Group();
-
-            const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.24, 0.7, 8), figureMat);
-            torso.position.y = 1.05;
-            figure.add(torso);
-
-            const shoulders = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.14, 0.24), figureMat);
-            shoulders.position.y = 1.38;
-            figure.add(shoulders);
-
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 10), figureMat);
-            head.position.y = 1.62;
-            figure.add(head);
-
-            const legGeoFigure = new THREE.CylinderGeometry(0.085, 0.09, 0.85, 6);
-            const legL = new THREE.Mesh(legGeoFigure, figureMat);
-            legL.position.set(-0.11, 0.425, 0);
-            figure.add(legL);
-            const legR = new THREE.Mesh(legGeoFigure, figureMat);
-            legR.position.set(0.11, 0.425, 0);
-            figure.add(legR);
-
-            const armGeoFigure = new THREE.CylinderGeometry(0.06, 0.065, 0.68, 6);
-            const armL = new THREE.Mesh(armGeoFigure, figureMat);
-            armL.position.set(-0.32, 1.02, 0);
-            armL.rotation.z = 0.1;
-            figure.add(armL);
-            const armR = new THREE.Mesh(armGeoFigure, figureMat);
-            armR.position.set(0.32, 1.02, 0);
-            armR.rotation.z = -0.1;
-            figure.add(armR);
-
-            figure.traverse((child) => {
-                if (child.isMesh) child.castShadow = true;
-            });
-        }
+        let figureMixer = null;
+        let figureWalkAction = null;
+        let figureRunAction = null;
+        let figureCurrentAction = null;
+        const figure = new THREE.Group();
         figure.position.set(figureSpawn.x, 0, figureSpawn.z);
+        figure.visible = false;
         scene.add(figure);
 
-        /* Replace the fallback silhouette with a real animated humanoid when the
-           Three.js example asset is available. A dark material pass and red
-           emissive accents keep the model inside the scene's horror language. */
         (async () => {
             try {
                 const { GLTFLoader } = await import(
                     "https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js"
                 );
                 const loader = new GLTFLoader();
-                loader.load(
-                    "https://threejs.org/examples/models/gltf/Soldier.glb",
-                    (gltf) => {
-                        const model = gltf.scene;
-                        const bounds = new THREE.Box3().setFromObject(model);
-                        const height = Math.max(bounds.max.y - bounds.min.y, 0.001);
-                        model.scale.setScalar(0.6 / height);
-                        model.rotation.y = Math.PI;
-                        model.updateMatrixWorld(true);
-                        const fittedBounds = new THREE.Box3().setFromObject(model);
-                        model.position.y -= fittedBounds.min.y;
-                        model.traverse((child) => {
-                            if (!child.isMesh) return;
-                            child.castShadow = false;
-                            child.receiveShadow = false;
-                            const materials = Array.isArray(child.material) ? child.material : [child.material];
-                            materials.forEach((material) => {
-                                const darkMaterial = material.clone();
-                                if (darkMaterial.color) darkMaterial.color.set(0x4a2928);
-                                if (darkMaterial.emissive) {
-                                    darkMaterial.emissive.set(0x260505);
-                                    darkMaterial.emissiveIntensity = 0.55;
-                                }
-                                if ("roughness" in darkMaterial) darkMaterial.roughness = 0.85;
-                                child.material = Array.isArray(child.material)
-                                    ? materials.map(() => darkMaterial)
-                                    : darkMaterial;
-                            });
-                        });
-                        const eyeMaterial = new THREE.MeshBasicMaterial({
-                            color: 0xff1818,
-                            toneMapped: false,
-                        });
-                        [-0.035, 0.035].forEach((x) => {
-                            const eye = new THREE.Mesh(new THREE.SphereGeometry(0.018, 8, 8), eyeMaterial);
-                            eye.position.set(x, 0.47, 0.045);
-                            model.add(eye);
-                        });
-                        figure.clear();
-                        figure.add(model);
-                        figureMixer = gltf.animations.length
-                            ? new THREE.AnimationMixer(model)
-                            : null;
-                        const walkClip = THREE.AnimationClip.findByName(gltf.animations, "Walk") ||
-                            THREE.AnimationClip.findByName(gltf.animations, "Run");
-                        if (figureMixer && walkClip) {
-                            const walkAction = figureMixer.clipAction(walkClip);
-                            walkAction.setEffectiveTimeScale(0.8);
-                            walkAction.play();
-                        }
-                    },
-                    undefined,
-                    () => {}
-                );
-            } catch (err) {
-                // The primitive fallback remains in place without network access.
+                const gltf = await new Promise((resolve, reject) => {
+                    loader.load(
+                        new URL("models/Zombie_Ribcage.gltf", document.baseURI).href,
+                        resolve,
+                        undefined,
+                        reject
+                    );
+                });
+                const model = gltf.scene;
+                let bounds = new THREE.Box3().setFromObject(model);
+                const modelHeight = bounds.max.y - bounds.min.y;
+                if (!Number.isFinite(modelHeight) || modelHeight <= 0) {
+                    throw new Error("The zombie model has invalid dimensions.");
+                }
+                model.scale.setScalar(1.9 / modelHeight);
+                model.updateMatrixWorld(true);
+                bounds = new THREE.Box3().setFromObject(model);
+                model.position.y -= bounds.min.y;
+                model.rotation.y = Math.PI;
+                model.traverse((child) => {
+                    if (!child.isMesh) return;
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                    const materials = Array.isArray(child.material) ? child.material : [child.material];
+                    materials.forEach((material) => {
+                        if ("roughness" in material) material.roughness = 0.9;
+                    });
+                });
+                figure.add(model);
+                figureMixer = new THREE.AnimationMixer(model);
+                const walkClip = THREE.AnimationClip.findByName(gltf.animations, "Walk");
+                const runClip = THREE.AnimationClip.findByName(gltf.animations, "Run");
+                figureWalkAction = walkClip ? figureMixer.clipAction(walkClip) : null;
+                figureRunAction = runClip ? figureMixer.clipAction(runClip) : null;
+                figureCurrentAction = figureWalkAction || figureRunAction;
+                if (figureCurrentAction) figureCurrentAction.play();
+                figure.visible = true;
+            } catch (error) {
+                console.error("Could not load the office chaser model.", error);
+                const fallback = new THREE.Group();
+                const fallbackMat = new THREE.MeshStandardMaterial({ color: 0x171312, roughness: 0.96 });
+                const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.28, 1.05, 4, 8), fallbackMat);
+                body.position.y = 0.98;
+                fallback.add(body);
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.21, 12, 10), fallbackMat);
+                head.position.y = 1.78;
+                fallback.add(head);
+                const eyes = new THREE.MeshBasicMaterial({ color: 0xff241a, toneMapped: false });
+                [-0.07, 0.07].forEach((x) => {
+                    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 6), eyes);
+                    eye.position.set(x, 1.8, -0.18);
+                    fallback.add(eye);
+                });
+                figure.add(fallback);
+                figure.visible = true;
             }
         })();
 
@@ -1432,7 +1630,6 @@
         function animate() {
             rafId = requestAnimationFrame(animate);
             const dt = Math.min(clock.getDelta(), 0.1);
-            if (figureMixer) figureMixer.update(dt);
             updateObjective(performance.now());
 
             camera.rotation.order = "YXZ";
@@ -1464,6 +1661,16 @@
             const dxToFigure = camera.position.x - figure.position.x;
             const dzToFigure = camera.position.z - figure.position.z;
             const distToFigure = Math.hypot(dxToFigure, dzToFigure);
+            const visibility = isFigureVisible();
+            const desiredAction = visibility
+                ? figureWalkAction || figureRunAction
+                : figureRunAction || figureWalkAction;
+            if (desiredAction && figureCurrentAction !== desiredAction) {
+                figureCurrentAction && figureCurrentAction.fadeOut(0.25);
+                desiredAction.reset().fadeIn(0.25).play();
+                figureCurrentAction = desiredAction;
+            }
+            if (figureMixer) figureMixer.update(dt);
             if (!scareTriggered && !escapeTriggered) {
                 if (hackComplete && Math.hypot(camera.position.x, camera.position.z + 10.7) < 1.7) {
                     triggerEscape();
@@ -1471,7 +1678,6 @@
                 if (distToFigure <= PLAYER_RADIUS + FIGURE_CONTACT_RADIUS) {
                     triggerJumpScare();
                 } else {
-                    const visibility = isFigureVisible();
                     const step = new THREE.Vector3(
                         camera.position.x - figure.position.x,
                         0,
@@ -1494,7 +1700,10 @@
                             roomBound.maxZ
                         );
                     }
-                    figure.lookAt(camera.position.x, figure.position.y + 1.1, camera.position.z);
+                    figure.rotation.y = Math.atan2(
+                        figure.position.x - camera.position.x,
+                        figure.position.z - camera.position.z
+                    );
 
                     footstepTimer -= dt;
                     if (footstepTimer <= 0) {
@@ -1529,6 +1738,21 @@
             canvas.removeEventListener("click", onCanvasClick);
             window.removeEventListener("resize", onResize);
             if (document.pointerLockElement === canvas) document.exitPointerLock();
+            const geometries = new Set();
+            const materials = new Set();
+            const textures = new Set();
+            scene.traverse((child) => {
+                if (!child.isMesh) return;
+                geometries.add(child.geometry);
+                const meshMaterials = Array.isArray(child.material) ? child.material : [child.material];
+                meshMaterials.forEach((material) => {
+                    if (material.map) textures.add(material.map);
+                    materials.add(material);
+                });
+            });
+            geometries.forEach((geometry) => geometry.dispose());
+            textures.forEach((texture) => texture.dispose());
+            materials.forEach((material) => material.dispose());
             renderer.dispose();
             if (scareFlashEl) scareFlashEl.classList.remove("active");
             if (deathEl) deathEl.classList.remove("active");
