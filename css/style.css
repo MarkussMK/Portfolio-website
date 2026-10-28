@@ -1088,6 +1088,8 @@ main { position: relative; z-index: 2; }
     max-height: calc(100dvh - 40px);
     overflow-x: hidden;
     overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     background:
         radial-gradient(ellipse at 82% 28%, color-mix(in srgb, var(--project-accent) 7%, transparent), transparent 34%),
         linear-gradient(145deg, #0b0d11, var(--bg) 68%);
@@ -1097,6 +1099,7 @@ main { position: relative; z-index: 2; }
     transform: scale(0.94) translateY(14px);
     transition: transform 0.35s var(--ease);
 }
+.project-modal::-webkit-scrollbar { display: none; }
 #modal-p2 .project-modal { --project-accent: #c58bff; }
 #modal-p3 .project-modal { --project-accent: #22d3ee; }
 #modal-p4 .project-modal { --project-accent: #4ade80; }

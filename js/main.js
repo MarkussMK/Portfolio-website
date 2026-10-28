@@ -460,6 +460,10 @@
     const ctx = canvas.getContext("2d");
     let circuits = [];
     let canvasWidth, canvasHeight;
+    const lowPowerDevice = window.matchMedia("(max-width: 900px), (hover: none)").matches;
+    const frameInterval = lowPowerDevice ? 1000 / 24 : 0;
+    let circuitFrame = null;
+    let lastCircuitFrame = 0;
     const pointer = { x: null, y: null };
     const GRID = 46;
 
@@ -476,7 +480,9 @@
     function generateCircuits() {
         const cols = Math.ceil(canvasWidth / GRID);
         const rows = Math.ceil(canvasHeight / GRID);
-        const count = Math.min(26, Math.max(10, Math.floor((cols * rows) / 55)));
+        const maxCircuits = lowPowerDevice ? 10 : 26;
+        const minCircuits = lowPowerDevice ? 5 : 10;
+        const count = Math.min(maxCircuits, Math.max(minCircuits, Math.floor((cols * rows) / 55)));
         const palette = ["255, 106, 44", "255, 182, 72", "255, 61, 61"];
 
         circuits = Array.from({ length: count }, () => {
@@ -528,7 +534,13 @@
         return points[points.length - 1];
     }
 
-    function drawCircuits() {
+    function drawCircuits(timestamp) {
+        circuitFrame = null;
+        if (document.hidden || (frameInterval && timestamp - lastCircuitFrame < frameInterval)) {
+            startCircuitAnimation();
+            return;
+        }
+        lastCircuitFrame = timestamp;
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
         circuits.forEach((circuit) => {
@@ -587,10 +599,27 @@
             ctx.fill();
         });
 
-        requestAnimationFrame(drawCircuits);
+        startCircuitAnimation();
+    }
+
+    function startCircuitAnimation() {
+        if (reduceMotion || document.hidden || circuitFrame !== null) return;
+        circuitFrame = requestAnimationFrame(drawCircuits);
+    }
+
+    function stopCircuitAnimation() {
+        if (circuitFrame === null) return;
+        cancelAnimationFrame(circuitFrame);
+        circuitFrame = null;
     }
 
     window.addEventListener("resize", resizeCanvas);
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) stopCircuitAnimation();
+        else startCircuitAnimation();
+    });
+    window.addEventListener("pagehide", stopCircuitAnimation);
+    window.addEventListener("pageshow", startCircuitAnimation);
     window.addEventListener("mousemove", (e) => {
         pointer.x = e.clientX;
         pointer.y = e.clientY;
@@ -601,9 +630,7 @@
     });
 
     resizeCanvas();
-    if (!reduceMotion) {
-        requestAnimationFrame(drawCircuits);
-    }
+    startCircuitAnimation();
 
     /* ---------------- Robotic arm: periodic wave ---------------- */
     const roboArm = document.querySelector(".robo-arm");
