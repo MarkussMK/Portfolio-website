@@ -1,52 +1,41 @@
 # Markuss Šube — Portfolio
 
-Modern, dark-themed portfolio for Markuss Šube (Automation Engineer & creative developer),
-built with plain HTML/CSS/JS — no framework, no build step.
+A modern, dark-themed portfolio for Markuss Šube, Automation Engineer and creative developer. Built with plain HTML, CSS, and JavaScript—no framework or build step required.
 
 **Live site:** [markuss.cv](https://markuss.cv)
 
----
+**Source code:** [github.com/MarkussMK/Portfolio-website](https://github.com/MarkussMK/Portfolio-website)
 
 ## Features
 
-- **Single-page layout** — Home, About, Skills, Work, Experience, and Contact sections with
-  scroll-spy nav highlighting and smooth anchor scrolling.
-- **3D "case-file" project cards** — the Work section's project boxes tilt/rotate in 3D on
-  hover (desktop) and flatten into clean cards on touch devices; clicking one opens a modal
-  with the full project write-up.
-- **Retro Arcade Hall** — a separate arcade (`html/retro-arcade.html`) with 6 playable cabinet
-  games: Pac-Man, Tetris, Breakout, Pong, Space Invaders, Asteroids.
-- **Animated circuit-board background** — a canvas-drawn PCB/HUD look, plus an idle CSS
-  robotic-arm decoration, both respecting `prefers-reduced-motion`.
-- **Reveal-on-scroll, animated stat counters and skill bars**, with a manual fallback check
-  (not just `IntersectionObserver`) so content shows up reliably on mobile Safari.
-- **Hidden easter egg (desktop only)** — clicking "Work" 10x quickly launches a WASD
-  horror-office mini-game (lazy-loads three.js only when triggered). Skipped entirely on
-  touch devices since it needs a keyboard + pointer lock.
-- **Animated zombie chaser** — the easter egg uses Quaternius' Zombie_Ribcage model from the
-  Zombie Apocalypse Kit, licensed CC0 1.0; the model is served locally from `models/`.
-- **Responsive** — tuned layout, spacing, and 3D-box fallback for phones/tablets.
+- **Single-page portfolio** with Home, About, Skills, Work, Experience, and Contact sections.
+- **Interactive project cards** that open case-file modals, with layouts adapted for desktop and touch devices.
+- **Retro Arcade Hall** with six playable games: Pac-Man, Tetris, Breakout, Pong, Space Invaders, and Asteroids.
+- **Animated circuit-board background** and CSS robotic-arm decoration, with support for `prefers-reduced-motion`.
+- **Scroll reveals, counters, and skill bars**, including a fallback to help content appear reliably in mobile Safari.
+- **Desktop-only hidden easter egg:** click “Work” 10 times quickly to launch a WASD horror-office mini-game. Three.js is loaded only when the game is launched.
+- **Zombie model** in the easter egg, served locally from `models/` and licensed under CC0 1.0.
+- **Responsive design** with layouts for phones and tablets.
 
----
-
-##  Structure
+## Project structure
 
 | Path | Description |
-|------|-------------|
-| `index.html` | Main single-page portfolio (all sections) |
-| `css/style.css` | All styling for the portfolio |
-| `js/main.js` | All interactions: nav, reveals, canvas background, arcade easter egg, etc. |
-| `html/retro-arcade.html` | Retro Arcade Hall — links to the 6 games below |
-| `html/*.html` (pacman, tetris, breakout, pong, space-invaders, asteroids) | Individual arcade games |
-| `old project/` | The previous XP-leveling multi-page portfolio, kept for reference |
+| --- | --- |
+| `index.html` | Main portfolio page |
+| `css/style.css` | Portfolio styles |
+| `js/main.js` | Page interactions, animations, canvas background, and easter egg |
+| `html/retro-arcade.html` | Arcade landing page |
+| `html/*.html` | Individual arcade games |
+| `images/` | Images and icons |
+| `models/` | 3D models used by the easter egg |
+| `old project/` | Previous portfolio, kept for reference |
 
----
+## Run locally
 
-## 🛠 Notes
+There is no build step or package installation. Open `index.html` in a browser, or serve the project directory with a local web server.
 
-- No external dependencies except Google Fonts and, only when the easter egg is triggered,
-  three.js and its GLTF loader from a CDN.
-- `models/Zombie_Ribcage.gltf` is by Quaternius, from the
-  [Zombie Apocalypse Kit](https://quaternius.com/packs/zombieapocalypsekit.html), under
-  [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
-- Deployed via GitHub Pages straight from `main` (custom domain via `CNAME`).
+## Credits
+
+The `models/Zombie_Ribcage.gltf` model is by Quaternius, from the [Zombie Apocalypse Kit](https://quaternius.com/packs/zombieapocalypsekit.html), and is licensed under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
+
+The site is deployed with GitHub Pages from the `main` branch, with a custom domain configured in `CNAME`.
